@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, LineChart, Line, Legend,
@@ -25,90 +25,129 @@ const revenueData = [
 ];
 
 const CustomTooltipRevenue = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-white border border-gray-100 rounded-xl shadow-lg p-3 text-sm">
-        <p className="font-semibold text-gray-700 mb-2">{label}</p>
-        {payload.map((p: any) => (
-          <div key={p.dataKey} className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-            <span className="text-gray-500">{p.name}:</span>
-            <span className="font-medium text-gray-800">Rp {Number(p.value).toLocaleString("id-ID")}</span>
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-white border border-gray-100 rounded-xl shadow-lg p-3 text-sm min-w-[160px]">
+      <p className="font-semibold text-gray-700 mb-2 text-xs">{label}</p>
+      {payload.map((p: any) => (
+        <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+            <span className="text-xs text-gray-500">{p.name}</span>
           </div>
-        ))}
-      </div>
-    );
-  }
-  return null;
+          <span className="text-xs font-semibold text-gray-800 tabular-nums">
+            Rp {Number(p.value).toLocaleString("id-ID")}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 const CustomTooltipAttendance = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-white border border-gray-100 rounded-xl shadow-lg p-3 text-sm">
-        <p className="font-semibold text-gray-700 mb-2">{label}</p>
-        {payload.map((p: any) => (
-          <div key={p.dataKey} className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-            <span className="text-gray-500">{p.name}:</span>
-            <span className="font-medium text-gray-800">{p.value} siswa</span>
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-white border border-gray-100 rounded-xl shadow-lg p-3 text-sm min-w-[120px]">
+      <p className="font-semibold text-gray-700 mb-2 text-xs">{label}</p>
+      {payload.map((p: any) => (
+        <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+            <span className="text-xs text-gray-500">{p.name}</span>
           </div>
-        ))}
-      </div>
-    );
-  }
-  return null;
+          <span className="text-xs font-semibold text-gray-800 tabular-nums">{p.value}</span>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export function DashboardCharts() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-gray-700">Absensi Minggu Ini</CardTitle>
-          <p className="text-xs text-gray-400">Kehadiran harian siswa</p>
+      {/* Attendance chart */}
+      <Card className="border-gray-100">
+        <CardHeader className="pb-3 pt-4 px-5">
+          <p className="text-sm font-semibold text-gray-800">Absensi Minggu Ini</p>
+          <p className="text-xs text-gray-400 mt-0.5">Kehadiran harian siswa (data contoh)</p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 pb-4">
           <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={attendanceData} barSize={22} barGap={4}>
+            <BarChart data={attendanceData} barSize={20} barGap={3} margin={{ top: 4, right: 8, bottom: 0, left: -8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="day" tick={{ fontSize: 12, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 12, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltipAttendance />} cursor={{ fill: "#f8fafc" }} />
+              <XAxis
+                dataKey="day"
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
+                axisLine={false}
+                tickLine={false}
+                width={28}
+              />
+              <Tooltip
+                content={<CustomTooltipAttendance />}
+                cursor={{ fill: "#f8fafc", rx: 4 }}
+              />
               <Legend
-                wrapperStyle={{ fontSize: "12px", paddingTop: "12px" }}
+                wrapperStyle={{ fontSize: "11px", paddingTop: "12px" }}
                 formatter={(value) => <span className="text-gray-500">{value}</span>}
               />
               <Bar dataKey="hadir" fill="#f97316" name="Hadir" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="absen" fill="#fde68a" name="Absen" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="absen" fill="#fcd34d" name="Absen" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-gray-700">Pendapatan 6 Bulan Terakhir</CardTitle>
-          <p className="text-xs text-gray-400">Akademi vs sewa lapangan</p>
+      {/* Revenue chart */}
+      <Card className="border-gray-100">
+        <CardHeader className="pb-3 pt-4 px-5">
+          <p className="text-sm font-semibold text-gray-800">Pendapatan 6 Bulan Terakhir</p>
+          <p className="text-xs text-gray-400 mt-0.5">Akademi vs sewa lapangan (data contoh)</p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 pb-4">
           <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={revenueData}>
+            <LineChart data={revenueData} margin={{ top: 4, right: 8, bottom: 0, left: -8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-              <YAxis
-                tick={{ fontSize: 12, fill: "#94a3b8" }}
+              <XAxis
+                dataKey="month"
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={(v) => `${v / 1000000}jt`}
+              />
+              <YAxis
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
+                axisLine={false}
+                tickLine={false}
+                width={32}
+                tickFormatter={(v) => `${v / 1_000_000}jt`}
               />
               <Tooltip content={<CustomTooltipRevenue />} />
               <Legend
-                wrapperStyle={{ fontSize: "12px", paddingTop: "12px" }}
+                wrapperStyle={{ fontSize: "11px", paddingTop: "12px" }}
                 formatter={(value) => <span className="text-gray-500">{value}</span>}
               />
-              <Line type="monotone" dataKey="akademi" stroke="#f97316" name="Akademi" strokeWidth={2.5} dot={{ r: 4, fill: "#f97316" }} activeDot={{ r: 6 }} />
-              <Line type="monotone" dataKey="sewa" stroke="#3b82f6" name="Sewa" strokeWidth={2.5} dot={{ r: 4, fill: "#3b82f6" }} activeDot={{ r: 6 }} />
+              <Line
+                type="monotone"
+                dataKey="akademi"
+                stroke="#f97316"
+                name="Akademi"
+                strokeWidth={2.5}
+                dot={{ r: 3.5, fill: "#f97316", strokeWidth: 0 }}
+                activeDot={{ r: 5, strokeWidth: 0 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="sewa"
+                stroke="#3b82f6"
+                name="Sewa"
+                strokeWidth={2.5}
+                dot={{ r: 3.5, fill: "#3b82f6", strokeWidth: 0 }}
+                activeDot={{ r: 5, strokeWidth: 0 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>

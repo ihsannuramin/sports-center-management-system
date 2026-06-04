@@ -9,7 +9,7 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="bg-gray-50/50 min-h-dvh">
         {children}
       </SidebarInset>
     </SidebarProvider>
