@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { ExpenseCategory, ApprovalStatus } from "@/generated/prisma";
+import { ExpenseCategory, ApprovalStatus } from "@prisma/client";
 
 export async function getExpenses(branchId?: string) {
   return prisma.expense.findMany({

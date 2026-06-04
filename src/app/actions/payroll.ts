@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { PayrollType, PayrollStatus } from "@/generated/prisma";
+import { PayrollType, PayrollStatus } from "@prisma/client";
 
 export async function getPayrolls(period?: string) {
   return prisma.coachPayroll.findMany({

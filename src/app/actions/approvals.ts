@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { ApprovalType } from "@/generated/prisma";
+import { ApprovalType } from "@prisma/client";
 
 export async function getApprovalRequests(status?: string) {
   return prisma.approvalRequest.findMany({

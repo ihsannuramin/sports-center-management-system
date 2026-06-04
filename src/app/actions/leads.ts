@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { LeadSource, LeadStage } from "@/generated/prisma";
+import { LeadSource, LeadStage } from "@prisma/client";
 
 export async function getLeads(branchId?: string) {
   return prisma.lead.findMany({

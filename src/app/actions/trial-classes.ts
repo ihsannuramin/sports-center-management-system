@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { TrialStatus } from "@/generated/prisma";
+import { TrialStatus } from "@prisma/client";
 
 export async function getTrialClasses() {
   return prisma.trialClass.findMany({

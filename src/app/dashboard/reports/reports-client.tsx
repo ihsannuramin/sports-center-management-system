@@ -93,7 +93,7 @@ export function ReportsClient({ revenue, pl, collectionRate, branches, year }: P
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1000000).toFixed(0)}jt`} />
-                  <Tooltip formatter={(v: number) => fmt(v)} />
+                  <Tooltip formatter={(v) => fmt(Number(v))} />
                   <Legend />
                   <Bar dataKey="academy" name="Akademi" fill="#f97316" radius={[3,3,0,0]} />
                   <Bar dataKey="rental" name="Rental" fill="#3b82f6" radius={[3,3,0,0]} />

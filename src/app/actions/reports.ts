@@ -77,12 +77,12 @@ export async function getPLReport(branchId?: string, year?: number) {
 export async function getOutstandingInvoices(branchId?: string) {
   const invoices = await prisma.invoice.findMany({
     where: { status: { in: ["UNPAID", "OVERDUE"] } },
-    include: { student: { select: { name: true, branch: { select: { name: true } } } } },
+    include: { student: { select: { name: true, branchId: true, branch: { select: { name: true } } } } },
     orderBy: { dueDate: "asc" },
   });
 
   if (branchId) {
-    return invoices.filter((i) => i.student.branch.name && i.student.branchId === branchId);
+    return invoices.filter((i) => i.student.branchId === branchId);
   }
   return invoices;
 }

@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { MaintenanceStatus, Priority } from "@/generated/prisma";
+import { MaintenanceStatus, Priority } from "@prisma/client";
 
 export async function getMaintenanceTickets(branchId?: string, status?: MaintenanceStatus) {
   return prisma.maintenanceTicket.findMany({

@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { DiscountType } from "@/generated/prisma";
+import { DiscountType } from "@prisma/client";
 
 export async function getPromotions() {
   return prisma.promotion.findMany({

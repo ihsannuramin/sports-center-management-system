@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { MembershipType } from "@/generated/prisma";
+import { MembershipType } from "@prisma/client";
 
 export async function getMembershipPlans() {
   return prisma.membershipPlan.findMany({

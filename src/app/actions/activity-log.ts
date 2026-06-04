@@ -1,6 +1,6 @@
 "use server";
 import { prisma } from "@/lib/prisma";
-import { LogAction } from "@/generated/prisma";
+import { LogAction } from "@prisma/client";
 
 export async function logActivity(params: {
   userId?: string;

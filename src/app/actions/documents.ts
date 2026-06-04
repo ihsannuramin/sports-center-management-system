@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { DocCategory } from "@/generated/prisma";
+import { DocCategory } from "@prisma/client";
 
 export async function getDocuments(branchId?: string, category?: DocCategory) {
   return prisma.document.findMany({

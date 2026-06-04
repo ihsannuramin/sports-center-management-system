@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { CommChannel, CommDirection } from "@/generated/prisma";
+import { CommChannel, CommDirection } from "@prisma/client";
 
 export async function getParents(branchId?: string) {
   return prisma.parent.findMany({

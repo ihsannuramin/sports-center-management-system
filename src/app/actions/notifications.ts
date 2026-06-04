@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { NotificationType, NotifChannel } from "@/generated/prisma";
+import { NotificationType, NotifChannel } from "@prisma/client";
 
 export async function getNotifications(userId?: string, limit = 50) {
   return prisma.notification.findMany({
