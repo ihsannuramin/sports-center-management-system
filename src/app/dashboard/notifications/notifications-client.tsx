@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Bell, Plus, Search, CheckCheck, Trash2, Mail, MessageSquare, Smartphone } from "lucide-react";
+import { Bell, Plus, Search, CheckCheck, Trash2, Mail, MessageSquare, Smartphone, Loader2 } from "lucide-react";
 import { createNotification, markAsRead, markAllAsRead, deleteNotification } from "@/app/actions/notifications";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -195,7 +195,7 @@ export function NotificationsClient({ notifications: initial }: Props) {
             <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Pesan *</Label><textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} required rows={3} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm resize-none" /></div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Mengirim..." : "Buat & Kirim"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Mengirim...</> : "Buat & Kirim"}</Button>
             </div>
           </form>
         </DialogContent>
