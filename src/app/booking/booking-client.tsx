@@ -1,0 +1,574 @@
+"use client";
+
+import { useState } from "react";
+import { checkPublicAvailability, createPublicBooking, getBookingStatus } from "./actions";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
+import {
+  Calendar, Clock, MapPin, User, Phone, CheckCircle2,
+  Search, ArrowRight, Building2, Info, ChevronRight, X,
+  AlertCircle, Loader2,
+} from "lucide-react";
+
+interface Court {
+  id: string;
+  name: string;
+  courtNumber: number;
+  type: string;
+  description: string | null;
+  branch: { id: string; name: string };
+}
+
+interface Props {
+  courts: Court[];
+  businessName: string;
+}
+
+type Step = "form" | "confirm" | "success" | "track";
+
+const HOURS = Array.from({ length: 15 }, (_, i) => {
+  const h = i + 7;
+  return `${String(h).padStart(2, "0")}:00`;
+});
+
+const DEFAULT_PRICE = 100000;
+
+function fmt(n: number) {
+  return `Rp ${n.toLocaleString("id-ID")}`;
+}
+
+export function BookingClient({ courts, businessName }: Props) {
+  const [step, setStep] = useState<Step>("form");
+  const [loading, setLoading] = useState(false);
+  const [avail, setAvail] = useState<{ available: boolean; reason?: string } | null>(null);
+  const [checkingAvail, setCheckingAvail] = useState(false);
+  const [error, setError] = useState("");
+  const [successBooking, setSuccessBooking] = useState<any>(null);
+
+  // Track form
+  const [trackNum, setTrackNum] = useState("");
+  const [trackResult, setTrackResult] = useState<any>(null);
+  const [trackLoading, setTrackLoading] = useState(false);
+  const [trackError, setTrackError] = useState("");
+
+  const [form, setForm] = useState({
+    courtId: "",
+    customerName: "",
+    customerPhone: "",
+    date: "",
+    startTime: "08:00",
+    endTime: "09:00",
+    notes: "",
+  });
+
+  const selectedCourt = courts.find((c) => c.id === form.courtId);
+  const startH = parseInt(form.startTime);
+  const endH = parseInt(form.endTime);
+  const duration = endH > startH ? endH - startH : 0;
+  const total = duration * DEFAULT_PRICE;
+
+  function set(key: string, val: string) {
+    setForm((p) => ({ ...p, [key]: val }));
+    setAvail(null);
+    setError("");
+  }
+
+  async function handleCheckAvail() {
+    if (!form.courtId || !form.date || !form.startTime || !form.endTime) return;
+    setCheckingAvail(true);
+    setAvail(null);
+    const res = await checkPublicAvailability(form.courtId, form.date, form.startTime, form.endTime);
+    setAvail(res);
+    setCheckingAvail(false);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.customerName || !form.customerPhone || !form.courtId || !form.date || duration <= 0) {
+      setError("Lengkapi semua data yang diperlukan");
+      return;
+    }
+    setStep("confirm");
+  }
+
+  async function handleConfirm() {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await createPublicBooking(form);
+      if (!res.success) {
+        setError(res.error ?? "Terjadi kesalahan");
+        setStep("form");
+      } else {
+        setSuccessBooking(res.booking);
+        setStep("success");
+      }
+    } catch (err: any) {
+      setError(err.message);
+      setStep("form");
+    }
+    setLoading(false);
+  }
+
+  async function handleTrack() {
+    if (!trackNum.trim()) return;
+    setTrackLoading(true);
+    setTrackError("");
+    const res = await getBookingStatus(trackNum.trim().toUpperCase());
+    if (!res.found) setTrackError("Nomor booking tidak ditemukan");
+    else setTrackResult(res.booking);
+    setTrackLoading(false);
+  }
+
+  const STATUS_MAP: Record<string, { label: string; cls: string }> = {
+    PENDING: { label: "Menunggu Konfirmasi", cls: "text-amber-700 bg-amber-50 border-amber-200" },
+    CONFIRMED: { label: "Dikonfirmasi", cls: "text-green-700 bg-green-50 border-green-200" },
+    CANCELLED: { label: "Dibatalkan", cls: "text-red-700 bg-red-50 border-red-200" },
+    COMPLETED: { label: "Selesai", cls: "text-blue-700 bg-blue-50 border-blue-200" },
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-sm shadow-orange-200">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="1.5"/>
+                <path d="M12 2C12 2 8 7 8 12C8 17 12 22 12 22" stroke="white" strokeWidth="1.5"/>
+                <path d="M12 2C12 2 16 7 16 12C16 17 12 22 12 22" stroke="white" strokeWidth="1.5"/>
+                <path d="M2 12H22" stroke="white" strokeWidth="1.5"/>
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold text-sm text-gray-900 leading-tight">{businessName}</p>
+              <p className="text-xs text-gray-400">Online Booking</p>
+            </div>
+          </div>
+          <button
+            onClick={() => { setStep("track"); setTrackResult(null); setTrackError(""); }}
+            className="flex items-center gap-1.5 text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors px-3 py-1.5 rounded-lg hover:bg-orange-50"
+          >
+            <Search className="w-4 h-4" />
+            Cek Status Booking
+          </button>
+        </div>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-4 py-8">
+        {/* Track Step */}
+        {step === "track" && (
+          <div className="max-w-md mx-auto">
+            <button onClick={() => setStep("form")} className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
+              <X className="w-3.5 h-3.5" /> Kembali ke Booking
+            </button>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-1">Cek Status Booking</h2>
+              <p className="text-sm text-gray-400 mb-5">Masukkan nomor booking yang kamu terima saat pemesanan</p>
+              <div className="flex gap-2">
+                <input
+                  value={trackNum}
+                  onChange={(e) => setTrackNum(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => e.key === "Enter" && handleTrack()}
+                  placeholder="BK-20240601-1234"
+                  className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                />
+                <button
+                  onClick={handleTrack}
+                  disabled={trackLoading}
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                  {trackLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                  Cari
+                </button>
+              </div>
+              {trackError && (
+                <div className="mt-4 flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" /> {trackError}
+                </div>
+              )}
+              {trackResult && (
+                <div className="mt-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="font-bold text-gray-900">{trackResult.bookingNumber}</p>
+                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${STATUS_MAP[trackResult.status]?.cls}`}>
+                      {STATUS_MAP[trackResult.status]?.label ?? trackResult.status}
+                    </span>
+                  </div>
+                  <div className="space-y-2 text-sm text-gray-600 bg-gray-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2"><User className="w-4 h-4 text-gray-400" />{trackResult.customerName}</div>
+                    <div className="flex items-center gap-2"><Building2 className="w-4 h-4 text-gray-400" />{trackResult.court?.name} — {trackResult.court?.branch?.name}</div>
+                    <div className="flex items-center gap-2"><Calendar className="w-4 h-4 text-gray-400" />
+                      {format(new Date(trackResult.date), "EEEE, dd MMMM yyyy", { locale: id })}
+                    </div>
+                    <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-gray-400" />
+                      {format(new Date(trackResult.startTime), "HH:mm")} – {format(new Date(trackResult.endTime), "HH:mm")}
+                      <span className="text-gray-400">({trackResult.duration} jam)</span>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-200 font-semibold text-gray-900">
+                      <span>Total</span>
+                      <span className="text-orange-600">{fmt(Number(trackResult.totalAmount))}</span>
+                    </div>
+                  </div>
+                  {trackResult.status === "PENDING" && (
+                    <div className="flex items-start gap-2 text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
+                      <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                      Booking sedang diproses. Admin akan menghubungi kamu melalui WhatsApp untuk konfirmasi pembayaran.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Success Step */}
+        {step === "success" && successBooking && (
+          <div className="max-w-md mx-auto">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-8 h-8 text-green-500" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Booking Berhasil!</h2>
+              <p className="text-sm text-gray-400 mb-6">Simpan nomor booking kamu di bawah ini</p>
+
+              <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-6">
+                <p className="text-xs text-gray-400 mb-1">Nomor Booking</p>
+                <p className="text-2xl font-bold text-orange-600 tracking-wider">{successBooking.bookingNumber}</p>
+              </div>
+
+              <div className="text-left space-y-2 text-sm bg-gray-50 rounded-xl p-4 mb-6">
+                <div className="flex items-center gap-2 text-gray-600"><Building2 className="w-4 h-4 text-gray-400" />{successBooking.court?.name}</div>
+                <div className="flex items-center gap-2 text-gray-600"><MapPin className="w-4 h-4 text-gray-400" />{successBooking.court?.branch?.name}</div>
+                <div className="flex items-center gap-2 text-gray-600"><Calendar className="w-4 h-4 text-gray-400" />
+                  {format(new Date(successBooking.date), "EEEE, dd MMMM yyyy", { locale: id })}
+                </div>
+                <div className="flex items-center gap-2 text-gray-600"><Clock className="w-4 h-4 text-gray-400" />
+                  {format(new Date(successBooking.startTime), "HH:mm")} – {format(new Date(successBooking.endTime), "HH:mm")}
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-gray-200 font-semibold text-gray-900">
+                  <span>Total Pembayaran</span>
+                  <span className="text-orange-600">{fmt(Number(successBooking.totalAmount))}</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2 text-xs text-blue-700 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-6 text-left">
+                <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                Admin kami akan menghubungi <strong>{successBooking.customerPhone}</strong> via WhatsApp untuk konfirmasi pembayaran.
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => { setStep("track"); setTrackNum(successBooking.bookingNumber); setTrackResult(null); }}
+                  className="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-xl font-medium text-sm hover:bg-gray-50 transition-colors"
+                >
+                  Cek Status
+                </button>
+                <button
+                  onClick={() => {
+                    setStep("form");
+                    setForm({ courtId: "", customerName: "", customerPhone: "", date: "", startTime: "08:00", endTime: "09:00", notes: "" });
+                    setAvail(null);
+                    setSuccessBooking(null);
+                    setError("");
+                  }}
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2.5 rounded-xl font-medium text-sm transition-colors"
+                >
+                  Booking Lagi
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Confirm Step */}
+        {step === "confirm" && (
+          <div className="max-w-md mx-auto">
+            <button onClick={() => setStep("form")} className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
+              <X className="w-3.5 h-3.5" /> Kembali edit
+            </button>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-1">Konfirmasi Booking</h2>
+              <p className="text-sm text-gray-400 mb-5">Pastikan detail booking sudah benar</p>
+
+              <div className="space-y-3 text-sm bg-gray-50 rounded-xl p-4 mb-5">
+                <div className="flex items-center gap-2 text-gray-600"><User className="w-4 h-4 text-gray-400" />{form.customerName}</div>
+                <div className="flex items-center gap-2 text-gray-600"><Phone className="w-4 h-4 text-gray-400" />{form.customerPhone}</div>
+                <div className="flex items-center gap-2 text-gray-600"><Building2 className="w-4 h-4 text-gray-400" />{selectedCourt?.name} — {selectedCourt?.branch?.name}</div>
+                <div className="flex items-center gap-2 text-gray-600"><Calendar className="w-4 h-4 text-gray-400" />
+                  {form.date && format(new Date(form.date), "EEEE, dd MMMM yyyy", { locale: id })}
+                </div>
+                <div className="flex items-center gap-2 text-gray-600"><Clock className="w-4 h-4 text-gray-400" />
+                  {form.startTime} – {form.endTime} <span className="text-gray-400">({duration} jam)</span>
+                </div>
+                {form.notes && <div className="flex items-start gap-2 text-gray-600 pt-1 border-t border-gray-200"><Info className="w-4 h-4 text-gray-400 mt-0.5" />{form.notes}</div>}
+                <div className="flex items-center justify-between pt-2 border-t border-gray-200 font-bold text-gray-900">
+                  <span>Total</span>
+                  <span className="text-orange-600">{fmt(total)}</span>
+                </div>
+              </div>
+
+              {error && (
+                <div className="mb-4 flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" /> {error}
+                </div>
+              )}
+
+              <button
+                onClick={handleConfirm}
+                disabled={loading}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                {loading ? "Memproses..." : "Konfirmasi & Buat Booking"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Form Step */}
+        {step === "form" && (
+          <div className="grid lg:grid-cols-5 gap-6">
+            {/* Left: Form */}
+            <div className="lg:col-span-3">
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Booking Lapangan</h1>
+                <p className="text-sm text-gray-400">Pesan lapangan basket secara online, konfirmasi via WhatsApp</p>
+              </div>
+
+              {error && (
+                <div className="mb-5 flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" /> {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Court Selection */}
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+                  <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-orange-500" /> Pilih Lapangan
+                  </h3>
+                  <div className="grid gap-3">
+                    {courts.map((court) => (
+                      <button
+                        key={court.id}
+                        type="button"
+                        onClick={() => set("courtId", court.id)}
+                        className={`text-left border rounded-xl p-4 transition-all ${
+                          form.courtId === court.id
+                            ? "border-orange-400 bg-orange-50 shadow-sm shadow-orange-100"
+                            : "border-gray-100 hover:border-orange-200 hover:bg-orange-50/50"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="font-semibold text-gray-900 text-sm">{court.name}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-xs text-gray-400">{court.branch.name}</span>
+                              <span className="text-xs text-gray-300">•</span>
+                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${court.type === "INDOOR" ? "bg-blue-50 text-blue-600" : "bg-green-50 text-green-600"}`}>
+                                {court.type === "INDOOR" ? "Indoor" : "Outdoor"}
+                              </span>
+                            </div>
+                            {court.description && <p className="text-xs text-gray-400 mt-1">{court.description}</p>}
+                          </div>
+                          {form.courtId === court.id && (
+                            <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                              <CheckCircle2 className="w-3 h-3 text-white" />
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-xs font-semibold text-orange-600 mt-2">{fmt(DEFAULT_PRICE)}/jam</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Date & Time */}
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+                  <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-orange-500" /> Tanggal & Waktu
+                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-medium text-gray-600 block mb-1.5">Tanggal *</label>
+                      <input
+                        type="date"
+                        value={form.date}
+                        min={new Date().toISOString().split("T")[0]}
+                        onChange={(e) => set("date", e.target.value)}
+                        required
+                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs font-medium text-gray-600 block mb-1.5">Mulai *</label>
+                        <select
+                          value={form.startTime}
+                          onChange={(e) => set("startTime", e.target.value)}
+                          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        >
+                          {HOURS.map((h) => <option key={h} value={h}>{h}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-600 block mb-1.5">Selesai *</label>
+                        <select
+                          value={form.endTime}
+                          onChange={(e) => set("endTime", e.target.value)}
+                          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        >
+                          {HOURS.filter((h) => h > form.startTime).map((h) => <option key={h} value={h}>{h}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Availability check */}
+                  {form.courtId && form.date && form.startTime && form.endTime && (
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={handleCheckAvail}
+                        disabled={checkingAvail}
+                        className="flex items-center gap-2 text-sm text-orange-600 font-medium hover:text-orange-700 transition-colors disabled:opacity-50"
+                      >
+                        {checkingAvail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                        {checkingAvail ? "Mengecek..." : "Cek Ketersediaan"}
+                      </button>
+                      {avail?.available === true && (
+                        <div className="mt-2 flex items-center gap-2 text-xs text-green-700 bg-green-50 border border-green-100 rounded-xl px-3 py-2">
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Lapangan tersedia pada waktu ini
+                        </div>
+                      )}
+                      {avail?.available === false && (
+                        <div className="mt-2 flex items-center gap-2 text-xs text-red-700 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
+                          <AlertCircle className="w-3.5 h-3.5" /> {avail.reason ?? "Lapangan tidak tersedia. Pilih waktu lain."}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Personal Info */}
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+                  <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
+                    <User className="w-4 h-4 text-orange-500" /> Data Pemesan
+                  </h3>
+                  <div>
+                    <label className="text-xs font-medium text-gray-600 block mb-1.5">Nama Lengkap *</label>
+                    <input
+                      type="text"
+                      value={form.customerName}
+                      onChange={(e) => set("customerName", e.target.value)}
+                      placeholder="Masukkan nama lengkap"
+                      required
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-600 block mb-1.5">Nomor WhatsApp *</label>
+                    <input
+                      type="tel"
+                      value={form.customerPhone}
+                      onChange={(e) => set("customerPhone", e.target.value)}
+                      placeholder="08xxxxxxxxxx"
+                      required
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">Konfirmasi booking akan dikirim ke nomor ini</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-600 block mb-1.5">Catatan (opsional)</label>
+                    <textarea
+                      rows={2}
+                      value={form.notes}
+                      onChange={(e) => set("notes", e.target.value)}
+                      placeholder="Contoh: butuh bola, dll."
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3.5 rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2 shadow-md shadow-orange-200"
+                >
+                  Lanjutkan <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
+            </div>
+
+            {/* Right: Summary */}
+            <div className="lg:col-span-2">
+              <div className="sticky top-24 space-y-4">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                  <h3 className="font-semibold text-gray-800 mb-4 text-sm">Ringkasan Booking</h3>
+                  {!form.courtId && !form.date ? (
+                    <p className="text-sm text-gray-400 text-center py-4">Pilih lapangan dan waktu untuk melihat ringkasan</p>
+                  ) : (
+                    <div className="space-y-3 text-sm">
+                      {selectedCourt && (
+                        <div className="flex items-start gap-2">
+                          <Building2 className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-medium text-gray-900">{selectedCourt.name}</p>
+                            <p className="text-xs text-gray-400">{selectedCourt.branch.name}</p>
+                          </div>
+                        </div>
+                      )}
+                      {form.date && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Calendar className="w-4 h-4 text-gray-400" />
+                          {format(new Date(form.date), "EEE, dd MMM yyyy", { locale: id })}
+                        </div>
+                      )}
+                      {form.startTime && form.endTime && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Clock className="w-4 h-4 text-gray-400" />
+                          {form.startTime} – {form.endTime}
+                          {duration > 0 && <span className="text-gray-400">({duration} jam)</span>}
+                        </div>
+                      )}
+                      {duration > 0 && (
+                        <div className="pt-3 border-t border-gray-100 space-y-2">
+                          <div className="flex justify-between text-gray-500">
+                            <span>{duration} jam × {fmt(DEFAULT_PRICE)}</span>
+                            <span>{fmt(total)}</span>
+                          </div>
+                          <div className="flex justify-between font-bold text-gray-900 text-base">
+                            <span>Total</span>
+                            <span className="text-orange-600">{fmt(total)}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 space-y-2">
+                  <p className="text-xs font-semibold text-blue-700 flex items-center gap-1.5"><Info className="w-3.5 h-3.5" /> Cara Booking</p>
+                  {["Isi form booking", "Konfirmasi detail", "Admin hubungi via WA", "Lakukan pembayaran", "Selesai!"].map((s, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center flex-shrink-0">{i + 1}</span>
+                      <span className="text-xs text-blue-700">{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="mt-16 border-t border-gray-100 py-6">
+        <div className="max-w-5xl mx-auto px-4 text-center text-xs text-gray-400">
+          © {new Date().getFullYear()} {businessName} · Sistem Booking Online
+        </div>
+      </footer>
+    </div>
+  );
+}
