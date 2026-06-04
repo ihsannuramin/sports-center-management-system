@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { serializeDecimals } from "@/lib/serialize";
 
 const RentalSchema = z.object({
   courtId: z.string().min(1),
@@ -57,7 +58,7 @@ function findClassConflict(
 }
 
 export async function getRentals(filters?: { status?: string; courtId?: string; date?: string }) {
-  return prisma.rentalBooking.findMany({
+  const data = await prisma.rentalBooking.findMany({
     where: {
       ...(filters?.status ? { status: filters.status as any } : {}),
       ...(filters?.courtId ? { courtId: filters.courtId } : {}),
@@ -73,6 +74,7 @@ export async function getRentals(filters?: { status?: string; courtId?: string; 
     include: { court: true, branch: true, payments: true },
     orderBy: { date: "desc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function checkAvailability(

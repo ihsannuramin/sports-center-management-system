@@ -1,5 +1,6 @@
 "use server";
 import { prisma } from "@/lib/prisma";
+import { serializeDecimals } from "@/lib/serialize";
 
 export async function getRevenueReport(branchId?: string, year?: number) {
   const y = year ?? new Date().getFullYear();
@@ -81,10 +82,11 @@ export async function getOutstandingInvoices(branchId?: string) {
     orderBy: { dueDate: "asc" },
   });
 
-  if (branchId) {
-    return invoices.filter((i) => i.student.branchId === branchId);
-  }
-  return invoices;
+  const filtered = branchId
+    ? invoices.filter((i) => i.student.branchId === branchId)
+    : invoices;
+
+  return serializeDecimals(filtered);
 }
 
 export async function getCollectionRate(branchId?: string, year?: number) {

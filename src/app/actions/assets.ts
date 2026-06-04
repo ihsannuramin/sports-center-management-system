@@ -1,9 +1,10 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { serializeDecimals } from "@/lib/serialize";
 
 export async function getAssets(branchId?: string) {
-  return prisma.asset.findMany({
+  const data = await prisma.asset.findMany({
     where: branchId ? { branchId } : undefined,
     include: {
       branch: { select: { name: true } },
@@ -11,6 +12,7 @@ export async function getAssets(branchId?: string) {
     },
     orderBy: { createdAt: "desc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function createAsset(data: {

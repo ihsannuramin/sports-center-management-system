@@ -106,32 +106,38 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar className="border-r border-gray-100">
-      <SidebarHeader className="px-4 py-5 border-b border-gray-100">
+    <Sidebar className="border-r border-gray-100/80">
+      {/* Header */}
+      <SidebarHeader className="px-4 py-4 border-b border-gray-100/80">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-sm shadow-orange-200 flex-shrink-0">
+          <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md shadow-orange-200/50 flex-shrink-0">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="1.5"/>
-              <path d="M12 2C12 2 8 7 8 12C8 17 12 22 12 22" stroke="white" strokeWidth="1.5"/>
-              <path d="M12 2C12 2 16 7 16 12C16 17 12 22 12 22" stroke="white" strokeWidth="1.5"/>
-              <path d="M2 12H22" stroke="white" strokeWidth="1.5"/>
+              <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="1.5" />
+              <path d="M12 2C12 2 8 7 8 12C8 17 12 22 12 22" stroke="white" strokeWidth="1.5" />
+              <path d="M12 2C12 2 16 7 16 12C16 17 12 22 12 22" stroke="white" strokeWidth="1.5" />
+              <path d="M2 12H22" stroke="white" strokeWidth="1.5" />
             </svg>
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sm text-gray-900 leading-tight">Sports Center</p>
-            <p className="text-xs text-gray-400 font-medium tracking-wide">MANAGEMENT</p>
+            <p className="font-bold text-sm text-gray-900 leading-tight tracking-tight">Sports Center</p>
+            <p className="text-[10px] text-gray-400 font-semibold tracking-widest uppercase mt-0.5">
+              Management
+            </p>
           </div>
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-2 py-3">
-        {menuItems.map((group) => (
-          <SidebarGroup key={group.group} className="mb-1">
-            <SidebarGroupLabel className="text-[10px] font-semibold tracking-widest text-gray-400 uppercase px-3 mb-1">
-              {group.group}
-            </SidebarGroupLabel>
+      {/* Nav */}
+      <SidebarContent className="px-2 py-2 overflow-y-auto">
+        {menuItems.map((group, gi) => (
+          <SidebarGroup key={group.group} className={gi === 0 ? "" : "mt-1"}>
+            {group.group !== "Utama" && (
+              <SidebarGroupLabel className="text-[10px] font-bold tracking-widest text-gray-400/80 uppercase px-3 mb-0.5 mt-2 select-none">
+                {group.group}
+              </SidebarGroupLabel>
+            )}
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="gap-0.5">
                 {group.items.map((item) => {
                   const active = isActive(item.href, (item as any).exact);
                   return (
@@ -139,17 +145,21 @@ export function AppSidebar() {
                       <SidebarMenuButton
                         render={<Link href={item.href} />}
                         isActive={active}
-                        className={`
-                          relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150
-                          ${active
-                            ? "bg-orange-50 text-orange-600 before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-5 before:w-0.5 before:rounded-full before:bg-orange-500"
-                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                          }
-                        `}
+                        className={[
+                          "relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150 w-full",
+                          active
+                            ? "bg-orange-50 text-orange-700 before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[18px] before:w-0.5 before:rounded-r-full before:bg-orange-500"
+                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-800",
+                        ].join(" ")}
                       >
-                        <item.icon className={`w-4 h-4 flex-shrink-0 ${active ? "text-orange-500" : "text-gray-400"}`} />
-                        <span className="flex-1">{item.label}</span>
-                        {active && <ChevronRight className="w-3 h-3 text-orange-400 ml-auto" />}
+                        <item.icon
+                          className={`w-[15px] h-[15px] flex-shrink-0 ${active ? "text-orange-500" : "text-gray-400"}`}
+                          aria-hidden="true"
+                        />
+                        <span className="flex-1 truncate">{item.label}</span>
+                        {active && (
+                          <ChevronRight className="w-3 h-3 text-orange-400/70 ml-auto flex-shrink-0" />
+                        )}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
@@ -160,12 +170,14 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="px-4 py-4 border-t border-gray-100">
+      {/* Footer */}
+      <SidebarFooter className="px-3 py-3 border-t border-gray-100/80">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2.5 text-sm text-gray-400 hover:text-red-500 transition-colors duration-150 w-full px-2 py-2 rounded-lg hover:bg-red-50 group"
+          aria-label="Keluar dari sistem"
+          className="flex items-center gap-2.5 text-sm text-gray-400 hover:text-red-500 transition-all duration-150 w-full px-3 py-2 rounded-lg hover:bg-red-50 group"
         >
-          <LogOut className="w-4 h-4 group-hover:text-red-400" />
+          <LogOut className="w-[15px] h-[15px] flex-shrink-0 group-hover:text-red-400 transition-colors" />
           <span className="font-medium">Keluar</span>
         </button>
       </SidebarFooter>

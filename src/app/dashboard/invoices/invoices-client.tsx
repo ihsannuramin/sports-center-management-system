@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
-import { Plus, Search, Layers, Download, FileText, CheckCircle2 } from "lucide-react";
+import { Plus, Search, Layers, Download, FileText, CheckCircle2, Loader2 } from "lucide-react";
 import { createInvoice, updateInvoiceStatus, bulkCreateMonthlyInvoices } from "@/app/actions/invoices";
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
@@ -214,7 +214,7 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
             <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Keterangan</Label><Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Buat Invoice"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Menyimpan...</> : "Buat Invoice"}</Button>
             </div>
           </form>
         </DialogContent>
@@ -240,7 +240,7 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
             <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Keterangan</Label><Input value={bulkForm.description} onChange={(e) => setBulkForm({ ...bulkForm, description: e.target.value })} placeholder="e.g. Tagihan Bulanan Juni 2026" /></div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setBulkOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={bulkLoading}>{bulkLoading ? "Membuat..." : "Buat Tagihan"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={bulkLoading}>{bulkLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Membuat...</> : "Buat Tagihan"}</Button>
             </div>
           </form>
         </DialogContent>
