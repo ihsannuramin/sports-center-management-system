@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -20,10 +21,12 @@ function genderOf(name: string): "MALE" | "FEMALE" {
 }
 
 async function main() {
+  const DEFAULT_PASSWORD = await bcrypt.hash("Admin@12345", 12);
+
   // ─── STEP 0: Preserve user ────────────────────────────────────────────────
   const preserved = await prisma.user.findUnique({ where: { email: PRESERVED_EMAIL } });
   console.log(preserved
-    ? `✓ Preserved user: ${preserved.name} (${preserved.supabaseId})`
+    ? `✓ Preserved user: ${preserved.name}`
     : `⚠  ${PRESERVED_EMAIL} not in DB — will be skipped`
   );
 
@@ -139,8 +142,8 @@ async function main() {
     await prisma.user.create({
       data: {
         id: u.id,
-        supabaseId: `placeholder-${u.id}`,
         email: u.email,
+        password: DEFAULT_PASSWORD,
         name: u.name,
         roleId: R[u.role],
         branchId: u.branch,
@@ -153,8 +156,8 @@ async function main() {
     await prisma.user.create({
       data: {
         id: preserved.id,
-        supabaseId: preserved.supabaseId,
         email: preserved.email,
+        password: preserved.password ?? DEFAULT_PASSWORD,
         name: preserved.name,
         phone: preserved.phone,
         avatarUrl: preserved.avatarUrl,

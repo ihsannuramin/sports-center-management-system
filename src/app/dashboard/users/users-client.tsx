@@ -38,7 +38,7 @@ const MODULES = [
 const ACTIONS = ["view","create","update","delete","export","approve"];
 
 const emptyCreate = { email: "", password: "", name: "", phone: "", roleId: "", branchId: "" };
-const emptyEdit = { name: "", phone: "", roleId: "", branchId: "" };
+const emptyEdit = { name: "", phone: "", roleId: "", branchId: "", password: "" };
 
 const roleBadgeColor: Record<string, string> = {
   SUPER_ADMIN: "bg-purple-100 text-purple-700",
@@ -138,6 +138,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
       phone: user.phone ?? "",
       roleId: user.roleId,
       branchId: user.branchId ?? "",
+      password: "",
     });
     setEditOpen(true);
   }
@@ -152,6 +153,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
         phone: editForm.phone || undefined,
         roleId: editForm.roleId,
         branchId: editForm.branchId || undefined,
+        password: editForm.password || undefined,
       });
       toast.success("Pengguna diperbarui");
       setEditOpen(false);
@@ -543,6 +545,16 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   required
+                />
+              </div>
+              <div className="col-span-2 space-y-1.5">
+                <Label className="text-xs font-medium text-gray-700">Password Baru (opsional)</Label>
+                <Input
+                  type="password"
+                  value={editForm.password}
+                  onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
+                  placeholder="Kosongkan jika tidak ingin mengubah"
+                  minLength={editForm.password ? 6 : undefined}
                 />
               </div>
               <div className="space-y-1.5">

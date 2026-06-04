@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Bell, ChevronDown } from "lucide-react";
 
@@ -15,16 +14,18 @@ export function Header({ title }: { title: string }) {
   const router = useRouter();
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) setUserEmail(data.user.email || "");
-    });
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then(({ user }) => {
+        if (user?.email) setUserEmail(user.email);
+      })
+      .catch(() => {});
   }, []);
 
   async function handleLogout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await fetch("/api/auth/logout", { method: "POST" });
     router.push("/auth/login");
+    router.refresh();
   }
 
   const initials = userEmail.slice(0, 2).toUpperCase() || "AD";

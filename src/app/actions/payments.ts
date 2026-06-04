@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
+import { getSession } from "@/lib/session";
 
 const PaymentSchema = z.object({
   invoiceId: z.string().optional(),
@@ -33,14 +33,8 @@ export async function createPayment(data: z.infer<typeof PaymentSchema>) {
 }
 
 export async function verifyPayment(id: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  let verifiedBy: string | undefined;
-  if (user) {
-    const dbUser = await prisma.user.findUnique({ where: { supabaseId: user.id }, select: { id: true } });
-    verifiedBy = dbUser?.id;
-  }
+  const session = await getSession();
+  const verifiedBy = session?.userId;
 
   const payment = await prisma.payment.update({
     where: { id },

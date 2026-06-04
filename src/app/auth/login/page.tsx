@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,15 +17,19 @@ export default function LoginPage() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const supabase = createClient();
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-    if (error) {
-      toast.error(error.message);
-    } else {
+    if (res.ok) {
       router.push("/dashboard");
       router.refresh();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      toast.error(data.error || "Email atau password salah");
     }
     setLoading(false);
   }
@@ -69,11 +72,6 @@ export default function LoginPage() {
               {loading ? "Memuat..." : "Masuk"}
             </Button>
           </form>
-          <div className="mt-4 text-center">
-            <a href="/auth/reset-password" className="text-sm text-orange-500 hover:underline">
-              Lupa password?
-            </a>
-          </div>
         </CardContent>
       </Card>
     </div>

@@ -15,7 +15,6 @@ import {
   SidebarGroupContent, SidebarGroupLabel, SidebarHeader,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 const menuItems = [
@@ -96,8 +95,7 @@ export function AppSidebar() {
   const router = useRouter();
 
   async function handleLogout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await fetch("/api/auth/logout", { method: "POST" });
     router.push("/auth/login");
     router.refresh();
   }
