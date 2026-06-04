@@ -13,7 +13,7 @@ import { verifyPayment, rejectPayment, createPayment } from "@/app/actions/payme
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { CheckCircle, XCircle, Eye, Plus, Download, CreditCard, AlertCircle } from "lucide-react";
+import { CheckCircle, XCircle, Eye, Plus, Download, CreditCard, AlertCircle, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const statusBadge: Record<string, string> = {
@@ -204,7 +204,7 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
             <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Catatan</Label><Input value={cashForm.notes} onChange={(e) => setCashForm({ ...cashForm, notes: e.target.value })} placeholder="Opsional" /></div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setCashOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={cashLoading}>{cashLoading ? "Menyimpan..." : "Catat Pembayaran"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={cashLoading}>{cashLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Menyimpan...</> : "Catat Pembayaran"}</Button>
             </div>
           </form>
         </DialogContent>
