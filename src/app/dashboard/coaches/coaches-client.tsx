@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
-import { Plus, MoreHorizontal, Download, Search, UserCheck } from "lucide-react";
+import { Plus, MoreHorizontal, Download, Search, UserCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { exportToExcel } from "@/lib/export";
@@ -184,7 +184,7 @@ export function CoachesClient({ coaches: initial, branches }: Props) {
             </div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Menyimpan...</> : "Simpan"}</Button>
             </div>
           </form>
         </DialogContent>

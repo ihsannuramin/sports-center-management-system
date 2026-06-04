@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
-import { Plus, Search, MoreHorizontal, ExternalLink, Download, Users } from "lucide-react";
+import { Plus, Search, MoreHorizontal, ExternalLink, Download, Users, Loader2 } from "lucide-react";
 import { createStudent, updateStudent, suspendStudent, activateStudent } from "@/app/actions/students";
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
@@ -253,7 +253,7 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
               <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>
-                {loading ? "Menyimpan..." : "Simpan"}
+                {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Menyimpan...</> : "Simpan"}
               </Button>
             </div>
           </form>

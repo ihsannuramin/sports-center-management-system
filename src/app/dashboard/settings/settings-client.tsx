@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { upsertSettings } from "@/app/actions/settings";
 import { toast } from "sonner";
-import { Settings, Building2, DollarSign, GraduationCap, Save, MessageCircle, CheckCircle2 } from "lucide-react";
+import { Settings, Building2, DollarSign, GraduationCap, Save, MessageCircle, CheckCircle2, Loader2 } from "lucide-react";
 
 const GROUPS = [
   {
@@ -204,7 +204,7 @@ export function SettingsClient({ settings: initial }: { settings: Record<string,
               className="bg-green-500 hover:bg-green-600 text-white shadow-sm shadow-green-200"
             >
               <MessageCircle className="w-4 h-4 mr-1.5" />
-              {waLoading ? "Menyimpan..." : "Simpan Konfigurasi WhatsApp"}
+              {waLoading ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" />Menyimpan...</> : "Simpan Konfigurasi WhatsApp"}
             </Button>
           </div>
         </CardContent>
@@ -218,7 +218,7 @@ export function SettingsClient({ settings: initial }: { settings: Record<string,
           disabled={loading}
         >
           <Save className="w-4 h-4 mr-1.5" />
-          {loading ? "Menyimpan..." : "Simpan Pengaturan"}
+          {loading ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" />Menyimpan...</> : "Simpan Pengaturan"}
         </Button>
       </div>
     </div>
