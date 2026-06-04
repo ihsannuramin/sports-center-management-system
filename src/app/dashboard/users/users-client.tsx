@@ -332,12 +332,10 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                         </TableCell>
                         <TableCell className="pr-3">
                           <DropdownMenu>
-                            <DropdownMenuTrigger render={<span />}>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-700">
-                                {togglingId === user.id
-                                  ? <Loader2 className="w-4 h-4 animate-spin" />
-                                  : <MoreHorizontal className="w-4 h-4" />}
-                              </Button>
+                            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-700" aria-label="Aksi" />}>
+                              {togglingId === user.id
+                                ? <Loader2 className="w-4 h-4 animate-spin" />
+                                : <MoreHorizontal className="w-4 h-4" />}
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-44">
                               <DropdownMenuItem

@@ -191,10 +191,8 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
                   </TableCell>
                   <TableCell className="pr-3">
                     <DropdownMenu>
-                      <DropdownMenuTrigger render={<span />}>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-700">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
+                      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-700" aria-label="Aksi" />}>
+                        <MoreHorizontal className="w-4 h-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => router.push(`/dashboard/students/${s.id}`)} className="cursor-pointer">
