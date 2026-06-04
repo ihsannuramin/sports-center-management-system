@@ -2,12 +2,14 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { MembershipType } from "@prisma/client";
+import { serializeDecimals } from "@/lib/serialize";
 
 export async function getMembershipPlans() {
-  return prisma.membershipPlan.findMany({
+  const data = await prisma.membershipPlan.findMany({
     include: { _count: { select: { studentMemberships: true } } },
     orderBy: { type: "asc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function createMembershipPlan(data: {

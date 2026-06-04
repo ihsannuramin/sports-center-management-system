@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getSession } from "@/lib/session";
+import { serializeDecimals } from "@/lib/serialize";
 
 const PaymentSchema = z.object({
   invoiceId: z.string().optional(),
@@ -14,7 +15,7 @@ const PaymentSchema = z.object({
 });
 
 export async function getPayments(status?: string) {
-  return prisma.payment.findMany({
+  const data = await prisma.payment.findMany({
     where: status ? { status: status as any } : {},
     include: {
       invoice: { include: { student: true } },
@@ -23,6 +24,7 @@ export async function getPayments(status?: string) {
     },
     orderBy: { createdAt: "desc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function createPayment(data: z.infer<typeof PaymentSchema>) {

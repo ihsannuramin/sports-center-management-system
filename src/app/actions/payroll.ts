@@ -2,13 +2,15 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { PayrollType, PayrollStatus } from "@prisma/client";
+import { serializeDecimals } from "@/lib/serialize";
 
 export async function getPayrolls(period?: string) {
-  return prisma.coachPayroll.findMany({
+  const data = await prisma.coachPayroll.findMany({
     where: period ? { period } : undefined,
     include: { coach: { select: { name: true, branch: { select: { name: true } } } }, verifier: { select: { name: true } } },
     orderBy: { createdAt: "desc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function createPayroll(data: {
@@ -47,7 +49,8 @@ export async function deletePayroll(id: string) {
 }
 
 export async function getCoachRates(coachId: string) {
-  return prisma.coachRate.findMany({ where: { coachId }, orderBy: { effectiveFrom: "desc" } });
+  const data = await prisma.coachRate.findMany({ where: { coachId }, orderBy: { effectiveFrom: "desc" } });
+  return serializeDecimals(data);
 }
 
 export async function setCoachRate(data: { coachId: string; payrollType: PayrollType; rateAmount: number }) {

@@ -2,12 +2,14 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { DiscountType } from "@prisma/client";
+import { serializeDecimals } from "@/lib/serialize";
 
 export async function getPromotions() {
-  return prisma.promotion.findMany({
+  const data = await prisma.promotion.findMany({
     include: { rules: true, _count: { select: { rules: true } } },
     orderBy: { createdAt: "desc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function createPromotion(data: {

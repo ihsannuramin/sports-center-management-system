@@ -2,9 +2,10 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { ExpenseCategory, ApprovalStatus } from "@prisma/client";
+import { serializeDecimals } from "@/lib/serialize";
 
 export async function getExpenses(branchId?: string) {
-  return prisma.expense.findMany({
+  const data = await prisma.expense.findMany({
     where: branchId ? { branchId } : undefined,
     include: {
       branch: { select: { name: true } },
@@ -12,6 +13,7 @@ export async function getExpenses(branchId?: string) {
     },
     orderBy: { date: "desc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function createExpense(data: {

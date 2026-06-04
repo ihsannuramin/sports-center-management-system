@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { serializeDecimals } from "@/lib/serialize";
 
 const InvoiceSchema = z.object({
   studentId: z.string().min(1),
@@ -21,7 +22,7 @@ function generateInvoiceNumber() {
 }
 
 export async function getInvoices(filters?: { studentId?: string; status?: string }) {
-  return prisma.invoice.findMany({
+  const data = await prisma.invoice.findMany({
     where: {
       ...(filters?.studentId ? { studentId: filters.studentId } : {}),
       ...(filters?.status ? { status: filters.status as any } : {}),
@@ -29,6 +30,7 @@ export async function getInvoices(filters?: { studentId?: string; status?: strin
     include: { student: { include: { branch: true } }, payments: true },
     orderBy: { createdAt: "desc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function createInvoice(data: z.infer<typeof InvoiceSchema>) {
