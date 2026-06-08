@@ -235,3 +235,7 @@ prisma/
 | `npm run start`   | Start production server                 |
 | `npm run db:push` | Push Prisma schema to database          |
 | `npm run db:seed` | Seed initial roles and branch data      |
+
+## REVISED
+
+This project is a comprehensive Sports Center Management System designed to streamline operations for a Basketball Academy and Court Rental business. It features a multi-branch management system with an intuitive dashboard for admins and field operators. The system includes modules for student and coach management, class scheduling, attendance tracking, performance assessments, invoicing, payment processing, court management, inventory control, and a unified calendar view. Built with Next.js, TypeScript, Tailwind CSS, Prisma, and Supabase, it offers robust functionality while maintaining ease of use.
