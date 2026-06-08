@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,7 +29,7 @@ const STATUS_COLORS: Record<string, string> = {
 const PAGE_SIZE = 15;
 
 export function ApprovalsClient({ requests: initial }: Props) {
-  const [requests] = useState(initial);
+  const requests = initial;
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("PENDING");
   const [noteDialog, setNoteDialog] = useState<{ id: string; action: "approve" | "reject" } | null>(null);

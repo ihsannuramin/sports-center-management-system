@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { Plus, Building2, Calendar, Download } from "lucide-react";
@@ -24,8 +24,8 @@ const emptyS = { courtId:"", branchId:"", title:"", type:"MAINTENANCE" as any, s
 
 export function CourtsClient({ courts:initial, schedules:initSched, branches }:Props) {
   const router = useRouter();
-  const [courts] = useState(initial);
-  const [schedules] = useState(initSched);
+  const courts = initial;
+  const schedules = initSched;
   const [cOpen,setCOpen] = useState(false);
   const [sOpen,setSOpen] = useState(false);
   const [cForm,setCForm] = useState(emptyC);
@@ -124,8 +124,8 @@ export function CourtsClient({ courts:initial, schedules:initSched, branches }:P
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">Nama *</Label><Input value={cForm.name} onChange={e=>setCForm({...cForm,name:e.target.value})} required/></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Nomor *</Label><Input type="number" value={cForm.courtNumber} onChange={e=>setCForm({...cForm,courtNumber:Number(e.target.value)})} required/></div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Tipe</Label><Select value={cForm.type} onValueChange={v=>v&&setCForm({...cForm,type:v as any})}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="INDOOR">Indoor</SelectItem><SelectItem value="OUTDOOR">Outdoor</SelectItem></SelectContent></Select></div>
-              <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">Cabang *</Label><Select value={cForm.branchId} onValueChange={v=>v&&setCForm({...cForm,branchId:v})}><SelectTrigger><SelectValue placeholder="Pilih cabang"/></SelectTrigger><SelectContent>{branches.map((b:any)=><SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent></Select></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Tipe</Label><SearchableSelect value={cForm.type} onValueChange={v=>v&&setCForm({...cForm,type:v as any})} placeholder="Pilih tipe"><SearchableSelectItem value="INDOOR">Indoor</SearchableSelectItem><SearchableSelectItem value="OUTDOOR">Outdoor</SearchableSelectItem></SearchableSelect></div>
+              <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">Cabang *</Label><SearchableSelect value={cForm.branchId} onValueChange={v=>v&&setCForm({...cForm,branchId:v})} placeholder="Pilih cabang">{branches.map((b:any)=><SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}</SearchableSelect></div>
             </div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100"><Button type="button" variant="outline" onClick={()=>setCOpen(false)}>Batal</Button><Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading?"Menyimpan...":"Simpan"}</Button></div>
           </form>
@@ -136,8 +136,8 @@ export function CourtsClient({ courts:initial, schedules:initSched, branches }:P
         <DialogContent><DialogHeader><DialogTitle>Tambah Jadwal Blokir</DialogTitle></DialogHeader>
           <form onSubmit={submitSched} className="space-y-3 pt-1">
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Lapangan *</Label><Select value={sForm.courtId} onValueChange={v=>{if(!v)return;const c=courts.find((x:any)=>x.id===v);setSForm({...sForm,courtId:v,branchId:c?.branchId||""})}}><SelectTrigger><SelectValue placeholder="Pilih"/></SelectTrigger><SelectContent>{courts.map((c:any)=><SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Tipe *</Label><Select value={sForm.type} onValueChange={v=>v&&setSForm({...sForm,type:v as any})}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="MAINTENANCE">Perawatan</SelectItem><SelectItem value="ACADEMY">Latihan</SelectItem></SelectContent></Select></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Lapangan *</Label><SearchableSelect value={sForm.courtId} onValueChange={v=>{if(!v)return;const c=courts.find((x:any)=>x.id===v);setSForm({...sForm,courtId:v,branchId:c?.branchId||""})}} placeholder="Pilih">{courts.map((c:any)=><SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}</SearchableSelect></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Tipe *</Label><SearchableSelect value={sForm.type} onValueChange={v=>v&&setSForm({...sForm,type:v as any})} placeholder="Pilih tipe"><SearchableSelectItem value="MAINTENANCE">Perawatan</SearchableSelectItem><SearchableSelectItem value="ACADEMY">Latihan</SearchableSelectItem></SearchableSelect></div>
               <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">Judul *</Label><Input value={sForm.title} onChange={e=>setSForm({...sForm,title:e.target.value})} required/></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Mulai *</Label><Input type="datetime-local" value={sForm.startTime} onChange={e=>setSForm({...sForm,startTime:e.target.value})} required/></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Selesai *</Label><Input type="datetime-local" value={sForm.endTime} onChange={e=>setSForm({...sForm,endTime:e.target.value})} required/></div>

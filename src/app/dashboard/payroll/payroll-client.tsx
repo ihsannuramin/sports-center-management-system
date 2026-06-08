@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,7 +23,7 @@ const emptyForm = { coachId: "", period: "", payrollType: "PER_SESSION", session
 const PAGE_SIZE = 15;
 
 export function PayrollClient({ payrolls: initial, coaches }: Props) {
-  const [payrolls] = useState(initial);
+  const payrolls = initial;
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);

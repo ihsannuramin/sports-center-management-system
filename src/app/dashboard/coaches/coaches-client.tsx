@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { Plus, MoreHorizontal, Download, Search, UserCheck, Loader2 } from "lucide-react";
@@ -21,7 +21,7 @@ const emptyForm = { name: "", phone: "", email: "", specialty: "", branchId: "",
 
 export function CoachesClient({ coaches: initial, branches }: Props) {
   const router = useRouter();
-  const [coaches] = useState(initial);
+  const coaches = initial;
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
@@ -173,10 +173,9 @@ export function CoachesClient({ coaches: initial, branches }: Props) {
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Spesialisasi</Label><Input value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} placeholder="e.g. Shooting, Defense" /></div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Cabang *</Label>
-                <Select value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Pilih cabang" /></SelectTrigger>
-                  <SelectContent>{branches.map((b: any) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
-                </Select>
+                <SearchableSelect value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })} placeholder="Pilih cabang">
+                  {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">User ID (Supabase) *</Label><Input value={form.userId} onChange={(e) => setForm({ ...form, userId: e.target.value })} required /></div>
             </div>

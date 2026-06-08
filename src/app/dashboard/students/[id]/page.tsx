@@ -84,7 +84,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
       <Header title="Detail Siswa" />
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" render={<Link href="/dashboard/students" />}>
+          <Button variant="ghost" size="sm" render={<Link href="/dashboard/students" />} nativeButton={false}>
             <ArrowLeft className="w-4 h-4 mr-1" />Kembali
           </Button>
         </div>

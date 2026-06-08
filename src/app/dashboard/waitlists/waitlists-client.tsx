@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { Plus, Download, Users, ArrowUpCircle, XCircle, CalendarClock } from "lucide-react";
@@ -316,10 +316,9 @@ export function WaitlistsClient({ classWaitlists: initClass, rentalWaitlists: in
           <form onSubmit={handleAddClass} className="space-y-3 pt-1">
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-gray-700">Kelas *</Label>
-              <Select value={classForm.classId} onValueChange={(v) => v && setClassForm({ ...classForm, classId: v })}>
-                <SelectTrigger><SelectValue placeholder="Pilih kelas" /></SelectTrigger>
-                <SelectContent>{classes.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
-              </Select>
+              <SearchableSelect value={classForm.classId} onValueChange={(v) => v && setClassForm({ ...classForm, classId: v })} placeholder="Pilih kelas">
+                {classes.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
+              </SearchableSelect>
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-gray-700">Nama *</Label>
@@ -348,10 +347,9 @@ export function WaitlistsClient({ classWaitlists: initClass, rentalWaitlists: in
           <form onSubmit={handleAddRental} className="space-y-3 pt-1">
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-gray-700">Lapangan *</Label>
-              <Select value={rentalForm.courtId} onValueChange={(v) => v && setRentalForm({ ...rentalForm, courtId: v })}>
-                <SelectTrigger><SelectValue placeholder="Pilih lapangan" /></SelectTrigger>
-                <SelectContent>{courts.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
-              </Select>
+              <SearchableSelect value={rentalForm.courtId} onValueChange={(v) => v && setRentalForm({ ...rentalForm, courtId: v })} placeholder="Pilih lapangan">
+                {courts.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
+              </SearchableSelect>
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-gray-700">Nama *</Label>

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { Plus, MoreHorizontal, Download, BookOpen, Clock, MapPin } from "lucide-react";
@@ -71,7 +71,7 @@ const emptyForm = {
 
 export function ClassesClient({ classes: initial, branches, coaches, courts }: Props) {
   const router = useRouter();
-  const [classes] = useState(initial);
+  const classes = initial;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState(emptyForm);
@@ -313,12 +313,9 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Kelompok Umur *</Label>
-                <Select value={form.ageGroup} onValueChange={(v) => v && setForm({ ...form, ageGroup: v as any })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(ageGroupLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <SearchableSelect value={form.ageGroup} onValueChange={(v) => v && setForm({ ...form, ageGroup: v as any })} placeholder="Pilih kelompok umur">
+                  {Object.entries(ageGroupLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Maks. Siswa</Label>
@@ -326,24 +323,19 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Cabang *</Label>
-                <Select
+                <SearchableSelect
                   value={form.branchId}
                   onValueChange={(v) => v && setForm({ ...form, branchId: v, scheduleCourtId: "" })}
+                  placeholder="Pilih cabang"
                 >
-                  <SelectTrigger><SelectValue placeholder="Pilih cabang" /></SelectTrigger>
-                  <SelectContent>
-                    {branches.map((b: any) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                  {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Pelatih</Label>
-                <Select value={form.coachId} onValueChange={(v) => v && setForm({ ...form, coachId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Pilih pelatih" /></SelectTrigger>
-                  <SelectContent>
-                    {coaches.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <SearchableSelect value={form.coachId} onValueChange={(v) => v && setForm({ ...form, coachId: v })} placeholder="Pilih pelatih">
+                  {coaches.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
             </div>
 
@@ -378,29 +370,25 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <p className="text-xs text-gray-500">Jam Mulai</p>
-                  <Select
+                  <SearchableSelect
                     value={form.scheduleStart}
                     onValueChange={(v) => v && setForm({ ...form, scheduleStart: v })}
+                    className="bg-white"
                   >
-                    <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {HOURS.map((h) => <SelectItem key={h} value={h}>{h}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                    {HOURS.map((h) => <SearchableSelectItem key={h} value={h}>{h}</SearchableSelectItem>)}
+                  </SearchableSelect>
                 </div>
                 <div className="space-y-1.5">
                   <p className="text-xs text-gray-500">Jam Selesai</p>
-                  <Select
+                  <SearchableSelect
                     value={form.scheduleEnd}
                     onValueChange={(v) => v && setForm({ ...form, scheduleEnd: v })}
+                    className="bg-white"
                   >
-                    <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {HOURS.filter((h) => h > form.scheduleStart).map((h) => (
-                        <SelectItem key={h} value={h}>{h}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    {HOURS.filter((h) => h > form.scheduleStart).map((h) => (
+                      <SearchableSelectItem key={h} value={h}>{h}</SearchableSelectItem>
+                    ))}
+                  </SearchableSelect>
                 </div>
               </div>
 
@@ -410,21 +398,18 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
                   Lapangan yang Digunakan
                   <span className="text-orange-500 ml-1">— slot ini akan diblokir dari penyewaan</span>
                 </p>
-                <Select
+                <SearchableSelect
                   value={form.scheduleCourtId}
                   onValueChange={(v) => setForm({ ...form, scheduleCourtId: v ?? "" })}
                   disabled={!form.branchId}
+                  className="bg-white"
+                  placeholder={!form.branchId ? "Pilih cabang dulu" : "Tidak ada / semua lapangan"}
                 >
-                  <SelectTrigger className="bg-white">
-                    <SelectValue placeholder={form.branchId ? "Pilih lapangan" : "Pilih cabang dulu"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Tidak ada / semua lapangan</SelectItem>
-                    {filteredCourts.map((c: any) => (
-                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <SearchableSelectItem value="">Tidak ada / semua lapangan</SearchableSelectItem>
+                  {filteredCourts.map((c: any) => (
+                    <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>
+                  ))}
+                </SearchableSelect>
               </div>
 
               {form.scheduleDays.length > 0 && form.scheduleCourtId && (

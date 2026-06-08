@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,7 +28,7 @@ const emptyForm = { fullName: "", phone: "", email: "", source: "INSTAGRAM", not
 const PAGE_SIZE = 10;
 
 export function LeadsClient({ leads: initial, funnel, branches }: Props) {
-  const [leads] = useState(initial);
+  const leads = initial;
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState("");
   const [open, setOpen] = useState(false);

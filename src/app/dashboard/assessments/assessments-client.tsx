@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { Plus, Download, Star } from "lucide-react";
@@ -27,7 +27,7 @@ const emptyForm = { studentId: "", period: "", dribbling: 70, passing: 70, shoot
 
 export function AssessmentsClient({ assessments: initial, students }: Props) {
   const router = useRouter();
-  const [assessments] = useState(initial);
+  const assessments = initial;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState(emptyForm);
@@ -154,10 +154,9 @@ export function AssessmentsClient({ assessments: initial, students }: Props) {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Siswa *</Label>
-                <Select value={form.studentId} onValueChange={(v) => v && setForm({ ...form, studentId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Pilih siswa" /></SelectTrigger>
-                  <SelectContent>{students.map((s: any) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
-                </Select>
+                <SearchableSelect value={form.studentId} onValueChange={(v) => v && setForm({ ...form, studentId: v })} placeholder="Pilih siswa">
+                  {students.map((s: any) => <SearchableSelectItem key={s.id} value={s.id}>{s.name}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Periode *</Label><Input value={form.period} onChange={(e) => setForm({ ...form, period: e.target.value })} placeholder="e.g. Q1-2026" required /></div>
             </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,7 +26,7 @@ const emptyForm = { title: "", category: "UTILITIES", amount: "", date: "", desc
 const PAGE_SIZE = 15;
 
 export function ExpensesClient({ expenses: initial, summary, branches }: Props) {
-  const [expenses] = useState(initial);
+  const expenses = initial;
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("");
   const [open, setOpen] = useState(false);

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,7 +27,7 @@ const emptyForm = { name: "", category: "Equipment", branchId: "", purchaseDate:
 const PAGE_SIZE = 9;
 
 export function AssetsClient({ assets: initial, branches }: Props) {
-  const [assets] = useState(initial);
+  const assets = initial;
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);

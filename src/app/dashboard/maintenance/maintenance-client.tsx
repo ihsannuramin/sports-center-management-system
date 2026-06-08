@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,7 +36,7 @@ const STATUS_COLORS: Record<string, string> = {
 const emptyForm = { title: "", description: "", priority: "MEDIUM", branchId: "", assetId: "" };
 
 export function MaintenanceClient({ tickets: initial, assets, branches }: Props) {
-  const [tickets] = useState(initial);
+  const tickets = initial;
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [open, setOpen] = useState(false);

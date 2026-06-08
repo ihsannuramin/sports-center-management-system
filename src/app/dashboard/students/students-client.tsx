@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { Plus, Search, MoreHorizontal, ExternalLink, Download, Users, Loader2 } from "lucide-react";
@@ -31,7 +31,7 @@ const emptyForm = { name: "", birthDate: "", gender: "MALE" as const, phone: "",
 
 export function StudentsClient({ students: initialStudents, branches, classes }: Props) {
   const router = useRouter();
-  const [students, setStudents] = useState(initialStudents);
+  const students = initialStudents;
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [filterClass, setFilterClass] = useState("ALL");
@@ -114,27 +114,18 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input placeholder="Cari nama, nomor siswa..." className="pl-9 w-52 h-9 text-sm border-gray-200" value={search} onChange={(e) => { setSearch(e.target.value); resetPage(); }} />
             </div>
-            <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v ?? "ALL"); resetPage(); }}>
-              <SelectTrigger className="w-34 h-9 text-sm border-gray-200"><SelectValue placeholder="Status" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">Semua Status</SelectItem>
-                {Object.entries(statusLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Select value={filterClass} onValueChange={(v) => { setFilterClass(v ?? "ALL"); resetPage(); }}>
-              <SelectTrigger className="w-32 h-9 text-sm border-gray-200"><SelectValue placeholder="Kelas" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">Semua Kelas</SelectItem>
-                {classes.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Select value={filterBranch} onValueChange={(v) => { setFilterBranch(v ?? "ALL"); resetPage(); }}>
-              <SelectTrigger className="w-32 h-9 text-sm border-gray-200"><SelectValue placeholder="Cabang" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">Semua Cabang</SelectItem>
-                {branches.map((b: any) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <SearchableSelect value={filterStatus} onValueChange={(v) => { setFilterStatus(v ?? "ALL"); resetPage(); }} className="w-34 h-9 text-sm border-gray-200">
+              <SearchableSelectItem value="ALL">Semua Status</SearchableSelectItem>
+              {Object.entries(statusLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
+            </SearchableSelect>
+            <SearchableSelect value={filterClass} onValueChange={(v) => { setFilterClass(v ?? "ALL"); resetPage(); }} className="w-32 h-9 text-sm border-gray-200">
+              <SearchableSelectItem value="ALL">Semua Kelas</SearchableSelectItem>
+              {classes.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
+            </SearchableSelect>
+            <SearchableSelect value={filterBranch} onValueChange={(v) => { setFilterBranch(v ?? "ALL"); resetPage(); }} className="w-32 h-9 text-sm border-gray-200">
+              <SearchableSelectItem value="ALL">Semua Cabang</SearchableSelectItem>
+              {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
+            </SearchableSelect>
             <Button variant="outline" size="sm" onClick={handleExport} className="h-9 border-gray-200 text-gray-600 hover:text-gray-900">
               <Download className="w-4 h-4 mr-1.5" /> Excel
             </Button>
@@ -224,27 +215,25 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Tanggal Lahir</Label><Input type="date" value={form.birthDate} onChange={(e) => setForm({ ...form, birthDate: e.target.value })} /></div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Jenis Kelamin</Label>
-                <Select value={form.gender} onValueChange={(v) => v && setForm({ ...form, gender: v as any })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent><SelectItem value="MALE">Laki-laki</SelectItem><SelectItem value="FEMALE">Perempuan</SelectItem></SelectContent>
-                </Select>
+                <SearchableSelect value={form.gender} onValueChange={(v) => v && setForm({ ...form, gender: v as any })} placeholder="Pilih jenis kelamin">
+                  <SearchableSelectItem value="MALE">Laki-laki</SearchableSelectItem>
+                  <SearchableSelectItem value="FEMALE">Perempuan</SearchableSelectItem>
+                </SearchableSelect>
               </div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">No. HP</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Nama Orang Tua</Label><Input value={form.parentName} onChange={(e) => setForm({ ...form, parentName: e.target.value })} /></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">No. HP Orang Tua</Label><Input value={form.parentPhone} onChange={(e) => setForm({ ...form, parentPhone: e.target.value })} /></div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Cabang *</Label>
-                <Select value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Pilih cabang" /></SelectTrigger>
-                  <SelectContent>{branches.map((b: any) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
-                </Select>
+                <SearchableSelect value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })} placeholder="Pilih cabang">
+                  {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Kelas</Label>
-                <Select value={form.classId} onValueChange={(v) => v && setForm({ ...form, classId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Pilih kelas" /></SelectTrigger>
-                  <SelectContent>{classes.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
-                </Select>
+                <SearchableSelect value={form.classId} onValueChange={(v) => v && setForm({ ...form, classId: v })} placeholder="Pilih kelas">
+                  {classes.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">Alamat</Label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
             </div>

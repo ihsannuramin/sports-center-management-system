@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -476,34 +476,28 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Role *</Label>
-                <Select
+                <SearchableSelect
                   value={createForm.roleId}
                   onValueChange={(v) => v && setCreateForm({ ...createForm, roleId: v })}
+                  placeholder="Pilih role"
                 >
-                  <SelectTrigger><SelectValue placeholder="Pilih role" /></SelectTrigger>
-                  <SelectContent>
-                    {visibleRoles.map((r: any) => (
-                      <SelectItem key={r.id} value={r.id}>
-                        {r.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  {visibleRoles.map((r: any) => (
+                    <SearchableSelectItem key={r.id} value={r.id}>{r.name}</SearchableSelectItem>
+                  ))}
+                </SearchableSelect>
               </div>
               <div className="col-span-2 space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Cabang</Label>
-                <Select
+                <SearchableSelect
                   value={createForm.branchId}
                   onValueChange={(v) => v && setCreateForm({ ...createForm, branchId: v })}
+                  placeholder="Pilih cabang (opsional)"
                 >
-                  <SelectTrigger><SelectValue placeholder="Pilih cabang (opsional)" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">— Tidak ada cabang —</SelectItem>
-                    {branches.map((b: any) => (
-                      <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <SearchableSelectItem value="">— Tidak ada cabang —</SearchableSelectItem>
+                  {branches.map((b: any) => (
+                    <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>
+                  ))}
+                </SearchableSelect>
               </div>
             </div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
@@ -565,32 +559,28 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Role *</Label>
-                <Select
+                <SearchableSelect
                   value={editForm.roleId}
                   onValueChange={(v) => v && setEditForm({ ...editForm, roleId: v })}
+                  placeholder="Pilih role"
                 >
-                  <SelectTrigger><SelectValue placeholder="Pilih role" /></SelectTrigger>
-                  <SelectContent>
-                    {visibleRoles.map((r: any) => (
-                      <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  {visibleRoles.map((r: any) => (
+                    <SearchableSelectItem key={r.id} value={r.id}>{r.name}</SearchableSelectItem>
+                  ))}
+                </SearchableSelect>
               </div>
               <div className="col-span-2 space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Cabang</Label>
-                <Select
+                <SearchableSelect
                   value={editForm.branchId}
                   onValueChange={(v) => setEditForm({ ...editForm, branchId: v ?? "" })}
+                  placeholder="Pilih cabang (opsional)"
                 >
-                  <SelectTrigger><SelectValue placeholder="Pilih cabang (opsional)" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">— Tidak ada cabang —</SelectItem>
-                    {branches.map((b: any) => (
-                      <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <SearchableSelectItem value="">— Tidak ada cabang —</SearchableSelectItem>
+                  {branches.map((b: any) => (
+                    <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>
+                  ))}
+                </SearchableSelect>
               </div>
             </div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">

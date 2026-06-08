@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,7 +31,7 @@ const emptyForm = { name: "", type: "PDF", fileUrl: "", category: "OTHER", branc
 const PAGE_SIZE = 12;
 
 export function DocumentsClient({ documents: initial, branches }: Props) {
-  const [documents] = useState(initial);
+  const documents = initial;
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("");
   const [open, setOpen] = useState(false);

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { Plus, AlertTriangle, MoreHorizontal, Download, Package } from "lucide-react";
@@ -28,7 +28,7 @@ const emptyForm = { name: "", category: "BALL" as any, quantity: 0, minStock: 5,
 
 export function InventoryClient({ inventory: initial, branches }: Props) {
   const router = useRouter();
-  const [inventory] = useState(initial);
+  const inventory = initial;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState(emptyForm);
@@ -169,20 +169,18 @@ export function InventoryClient({ inventory: initial, branches }: Props) {
               <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">Nama Item *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Kategori *</Label>
-                <Select value={form.category} onValueChange={(v) => v && setForm({ ...form, category: v as any })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{Object.entries(categoryLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
-                </Select>
+                <SearchableSelect value={form.category} onValueChange={(v) => v && setForm({ ...form, category: v as any })} placeholder="Pilih kategori">
+                  {Object.entries(categoryLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Satuan</Label><Input value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} /></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Stok *</Label><Input type="number" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: Number(e.target.value) })} required /></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Min. Stok</Label><Input type="number" value={form.minStock} onChange={(e) => setForm({ ...form, minStock: Number(e.target.value) })} /></div>
               <div className="col-span-2 space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Cabang *</Label>
-                <Select value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Pilih cabang" /></SelectTrigger>
-                  <SelectContent>{branches.map((b: any) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
-                </Select>
+                <SearchableSelect value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })} placeholder="Pilih cabang">
+                  {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
             </div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
