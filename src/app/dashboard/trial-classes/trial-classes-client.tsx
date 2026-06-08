@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,7 +26,7 @@ const emptyTrialForm = { classId: "", date: "", maxSlots: "5", notes: "" };
 const emptyParticipantForm = { name: "", phone: "", email: "" };
 
 export function TrialClassesClient({ trials: initial, classes }: Props) {
-  const [trials] = useState(initial);
+  const trials = initial;
   const [trialOpen, setTrialOpen] = useState(false);
   const [participantOpen, setParticipantOpen] = useState(false);
   const [selectedTrial, setSelectedTrial] = useState<any>(null);

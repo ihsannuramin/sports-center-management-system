@@ -16,7 +16,7 @@ const emptyForm = { name: "", address: "", phone: "" };
 const PAGE_SIZE = 9;
 
 export function BranchesClient({ branches: initial }: Props) {
-  const [branches] = useState(initial);
+  const branches = initial;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState(emptyForm);

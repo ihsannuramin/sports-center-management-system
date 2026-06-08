@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataPagination } from "@/components/ui/data-pagination";
@@ -42,7 +42,7 @@ export function RentalsClient({ courts, rentals:initialRentals, branches }:Props
   const [avail,setAvail] = useState<any>(null);
   const [loading,setLoading] = useState(false);
   const [checking,setChecking] = useState(false);
-  const [rentals] = useState(initialRentals);
+  const rentals = initialRentals;
   const [listFilter,setListFilter] = useState("ALL");
   const [page,setPage] = useState(1);
   const [pageSize,setPageSize] = useState(10);
@@ -68,10 +68,10 @@ export function RentalsClient({ courts, rentals:initialRentals, branches }:Props
   return (
     <>
       <div className="flex items-center gap-2 flex-wrap">
-        <Select value={courtFilter} onValueChange={v=>handleCourtFilter(v??"ALL")}>
-          <SelectTrigger className="w-48 h-9 text-sm border-gray-200"><SelectValue placeholder="Semua Lapangan"/></SelectTrigger>
-          <SelectContent><SelectItem value="ALL">Semua Lapangan</SelectItem>{courts.filter((c:any)=>c.isActive).map((c:any)=><SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
-        </Select>
+        <SearchableSelect value={courtFilter} onValueChange={v=>handleCourtFilter(v??"ALL")} className="w-48 h-9 text-sm border-gray-200">
+          <SearchableSelectItem value="ALL">Semua Lapangan</SearchableSelectItem>
+          {courts.filter((c:any)=>c.isActive).map((c:any)=><SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
+        </SearchableSelect>
         <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 ml-auto" onClick={()=>{setForm(emptyF);setAvail(null);setCreateOpen(true);}}>
           <Plus className="w-4 h-4 mr-1.5"/>Buat Booking
         </Button>
@@ -103,10 +103,10 @@ export function RentalsClient({ courts, rentals:initialRentals, branches }:Props
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <h2 className="font-semibold text-gray-900">Semua Booking <span className="text-gray-400 font-normal text-sm">({filteredRentals.length})</span></h2>
                 <div className="flex gap-2 items-center">
-                  <Select value={listFilter} onValueChange={v=>{setListFilter(v??"ALL");setPage(1);}}>
-                    <SelectTrigger className="w-36 h-9 text-sm border-gray-200"><SelectValue/></SelectTrigger>
-                    <SelectContent><SelectItem value="ALL">Semua Status</SelectItem>{Object.entries(statusLabels).map(([k,v])=><SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
-                  </Select>
+                  <SearchableSelect value={listFilter} onValueChange={v=>{setListFilter(v??"ALL");setPage(1);}} className="w-36 h-9 text-sm border-gray-200">
+                    <SearchableSelectItem value="ALL">Semua Status</SearchableSelectItem>
+                    {Object.entries(statusLabels).map(([k,v])=><SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
+                  </SearchableSelect>
                   <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600" onClick={()=>{const d=filteredRentals.map((r:any)=>({"No.Booking":r.bookingNumber,Pelanggan:r.customerName,"No.HP":r.customerPhone,Lapangan:r.court?.name,Tanggal:format(new Date(r.date),"dd/MM/yyyy"),"Jam Mulai":format(new Date(r.startTime),"HH:mm"),"Jam Selesai":format(new Date(r.endTime),"HH:mm"),"Durasi(jam)":r.duration,"Total(Rp)":Number(r.totalAmount),Status:statusLabels[r.status]}));exportToExcel(d,"Booking-Lapangan","Booking");toast.success(`${d.length} diekspor`);}}><Download className="w-4 h-4 mr-1.5"/>Excel</Button>
                 </div>
               </div>
@@ -143,7 +143,7 @@ export function RentalsClient({ courts, rentals:initialRentals, branches }:Props
           <DialogHeader><DialogTitle>Buat Booking Sewa Lapangan</DialogTitle></DialogHeader>
           <form onSubmit={handleCreate} className="space-y-3 pt-1">
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Lapangan *</Label><Select value={form.courtId} onValueChange={v=>{if(!v)return;const c=courts.find((x:any)=>x.id===v);setForm({...form,courtId:v,branchId:c?.branchId||""});setAvail(null);}}><SelectTrigger><SelectValue placeholder="Pilih lapangan"/></SelectTrigger><SelectContent>{courts.filter((c:any)=>c.isActive).map((c:any)=><SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Lapangan *</Label><SearchableSelect value={form.courtId} onValueChange={v=>{if(!v)return;const c=courts.find((x:any)=>x.id===v);setForm({...form,courtId:v,branchId:c?.branchId||""});setAvail(null);}} placeholder="Pilih lapangan">{courts.filter((c:any)=>c.isActive).map((c:any)=><SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}</SearchableSelect></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Tanggal *</Label><Input type="date" value={form.date} onChange={e=>{setForm({...form,date:e.target.value});setAvail(null);}} required/></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jam Mulai *</Label><Input type="time" value={form.startTime} onChange={e=>{setForm({...form,startTime:e.target.value});setAvail(null);}} required/></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jam Selesai *</Label><Input type="time" value={form.endTime} onChange={e=>{setForm({...form,endTime:e.target.value});setAvail(null);}} required/></div>

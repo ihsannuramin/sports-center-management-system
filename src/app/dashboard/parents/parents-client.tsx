@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,7 +21,7 @@ const emptyForm = { fullName: "", phone: "", email: "", address: "", notes: "", 
 const PAGE_SIZE = 9;
 
 export function ParentsClient({ parents: initial, branches }: Props) {
-  const [parents] = useState(initial);
+  const parents = initial;
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -54,6 +54,7 @@ const WA_TEMPLATES = [
 
 export function SettingsClient({ settings: initial }: { settings: Record<string, string> }) {
   const [form, setForm] = useState(initial);
+  useEffect(() => { setForm(initial); }, [initial]);
   const [loading, setLoading] = useState(false);
   const [waLoading, setWaLoading] = useState(false);
 

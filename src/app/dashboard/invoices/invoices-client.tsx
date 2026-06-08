@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { Plus, Search, Layers, Download, FileText, CheckCircle2, Loader2 } from "lucide-react";
@@ -35,7 +35,7 @@ const emptyBulkForm = { amount: 0, dueDate: "", description: "", branchId: "" };
 
 export function InvoicesClient({ invoices: initial, students, branches }: Props) {
   const router = useRouter();
-  const [invoices] = useState(initial);
+  const invoices = initial;
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [open, setOpen] = useState(false);
@@ -124,13 +124,10 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input placeholder="Cari invoice..." className="pl-9 w-48 h-9 text-sm border-gray-200" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
               </div>
-              <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v ?? "ALL"); setPage(1); }}>
-                <SelectTrigger className="w-38 h-9 text-sm border-gray-200"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ALL">Semua Status</SelectItem>
-                  {Object.entries(statusLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <SearchableSelect value={statusFilter} onValueChange={(v) => { setStatusFilter(v ?? "ALL"); setPage(1); }} className="w-38 h-9 text-sm border-gray-200">
+                <SearchableSelectItem value="ALL">Semua Status</SearchableSelectItem>
+                {Object.entries(statusLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
+              </SearchableSelect>
               <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600" onClick={handleExport}>
                 <Download className="w-4 h-4 mr-1.5" /> Excel
               </Button>
@@ -195,18 +192,16 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
           <form onSubmit={handleSubmit} className="space-y-3 pt-1">
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-gray-700">Siswa *</Label>
-              <Select value={form.studentId} onValueChange={(v) => v && setForm({ ...form, studentId: v })}>
-                <SelectTrigger><SelectValue placeholder="Pilih siswa" /></SelectTrigger>
-                <SelectContent>{students.map((s: any) => <SelectItem key={s.id} value={s.id}>{s.name} ({s.studentNumber})</SelectItem>)}</SelectContent>
-              </Select>
+              <SearchableSelect value={form.studentId} onValueChange={(v) => v && setForm({ ...form, studentId: v })} placeholder="Pilih siswa">
+                {students.map((s: any) => <SearchableSelectItem key={s.id} value={s.id}>{s.name} ({s.studentNumber})</SearchableSelectItem>)}
+              </SearchableSelect>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Jenis *</Label>
-                <Select value={form.type} onValueChange={(v) => v && setForm({ ...form, type: v as any })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{Object.entries(typeLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
-                </Select>
+                <SearchableSelect value={form.type} onValueChange={(v) => v && setForm({ ...form, type: v as any })} placeholder="Pilih jenis">
+                  {Object.entries(typeLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jumlah (Rp) *</Label><Input type="number" value={form.amount || ""} onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })} required /></div>
             </div>
@@ -230,10 +225,10 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
           <form onSubmit={handleBulkSubmit} className="space-y-3 pt-1">
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-gray-700">Cabang</Label>
-              <Select value={bulkForm.branchId} onValueChange={(v) => v && setBulkForm({ ...bulkForm, branchId: v === "ALL" ? "" : v })}>
-                <SelectTrigger><SelectValue placeholder="Semua cabang" /></SelectTrigger>
-                <SelectContent><SelectItem value="ALL">Semua Cabang</SelectItem>{branches.map((b: any) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
-              </Select>
+              <SearchableSelect value={bulkForm.branchId} onValueChange={(v) => v && setBulkForm({ ...bulkForm, branchId: v === "ALL" ? "" : v })} placeholder="Semua cabang">
+                <SearchableSelectItem value="ALL">Semua Cabang</SearchableSelectItem>
+                {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
+              </SearchableSelect>
             </div>
             <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jumlah (Rp) *</Label><Input type="number" value={bulkForm.amount || ""} onChange={(e) => setBulkForm({ ...bulkForm, amount: Number(e.target.value) })} required min={1} /></div>
             <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jatuh Tempo *</Label><Input type="date" value={bulkForm.dueDate} onChange={(e) => setBulkForm({ ...bulkForm, dueDate: e.target.value })} required /></div>

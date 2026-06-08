@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
 import { verifyPayment, rejectPayment, createPayment } from "@/app/actions/payments";
@@ -28,7 +28,7 @@ const emptyCashForm = { invoiceId: "", amount: 0, notes: "" };
 
 export function PaymentsClient({ payments: initial, invoices }: Props) {
   const router = useRouter();
-  const [payments] = useState(initial);
+  const payments = initial;
   const [filter, setFilter] = useState("PENDING");
   const [proofUrl, setProofUrl] = useState<string | null>(null);
   const [cashOpen, setCashOpen] = useState(false);
@@ -41,6 +41,7 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
   const pendingCount = payments.filter((p) => p.status === "PENDING").length;
   const unpaidInvoices = invoices.filter((inv: any) => inv.status === "UNPAID");
+  const selectedInv = unpaidInvoices.find((i: any) => i.id === cashForm.invoiceId);
 
   async function handleVerify(id: string) { await verifyPayment(id); toast.success("Pembayaran diverifikasi"); router.refresh(); }
   async function handleReject(id: string) { await rejectPayment(id); toast.success("Pembayaran ditolak"); router.refresh(); }
@@ -91,15 +92,12 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
               </div>
             </div>
             <div className="flex gap-2 items-center flex-wrap">
-              <Select value={filter} onValueChange={(v) => { setFilter(v ?? "PENDING"); setPage(1); }}>
-                <SelectTrigger className="w-44 h-9 text-sm border-gray-200"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ALL">Semua</SelectItem>
-                  <SelectItem value="PENDING">Menunggu Verifikasi</SelectItem>
-                  <SelectItem value="VERIFIED">Terverifikasi</SelectItem>
-                  <SelectItem value="REJECTED">Ditolak</SelectItem>
-                </SelectContent>
-              </Select>
+              <SearchableSelect value={filter} onValueChange={(v) => { setFilter(v ?? "PENDING"); setPage(1); }} className="w-44 h-9 text-sm border-gray-200">
+                <SearchableSelectItem value="ALL">Semua</SearchableSelectItem>
+                <SearchableSelectItem value="PENDING">Menunggu Verifikasi</SearchableSelectItem>
+                <SearchableSelectItem value="VERIFIED">Terverifikasi</SearchableSelectItem>
+                <SearchableSelectItem value="REJECTED">Ditolak</SearchableSelectItem>
+              </SearchableSelect>
               <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600" onClick={handleExport}>
                 <Download className="w-4 h-4 mr-1.5" /> Excel
               </Button>
@@ -189,16 +187,15 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
           <form onSubmit={handleCashSubmit} className="space-y-3 pt-1">
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-gray-700">Invoice *</Label>
-              <Select value={cashForm.invoiceId} onValueChange={(v) => {
+              <SearchableSelect value={cashForm.invoiceId} onValueChange={(v) => {
                 if (!v) return;
                 const inv = unpaidInvoices.find((i: any) => i.id === v);
                 setCashForm({ ...cashForm, invoiceId: v, amount: inv ? Number(inv.amount) : cashForm.amount });
-              }}>
-                <SelectTrigger><SelectValue placeholder="Pilih invoice belum dibayar" /></SelectTrigger>
-                <SelectContent>{unpaidInvoices.map((inv: any) => (
-                  <SelectItem key={inv.id} value={inv.id}>{inv.student?.name} — {inv.invoiceNumber} (Rp {Number(inv.amount).toLocaleString("id-ID")})</SelectItem>
-                ))}</SelectContent>
-              </Select>
+              }} placeholder="Pilih invoice belum dibayar">
+                {unpaidInvoices.map((inv: any) => (
+                  <SearchableSelectItem key={inv.id} value={inv.id}>{inv.student?.name} — {inv.invoiceNumber} (Rp {Number(inv.amount).toLocaleString("id-ID")})</SearchableSelectItem>
+                ))}
+              </SearchableSelect>
             </div>
             <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jumlah (Rp) *</Label><Input type="number" value={cashForm.amount || ""} onChange={(e) => setCashForm({ ...cashForm, amount: Number(e.target.value) })} required min={1} /></div>
             <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Catatan</Label><Input value={cashForm.notes} onChange={(e) => setCashForm({ ...cashForm, notes: e.target.value })} placeholder="Opsional" /></div>

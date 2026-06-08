@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,7 +37,7 @@ const emptyForm = { type: "INVOICE_CREATED", channel: "IN_APP", title: "", messa
 const PAGE_SIZE = 20;
 
 export function NotificationsClient({ notifications: initial }: Props) {
-  const [notifications] = useState(initial);
+  const notifications = initial;
   const [search, setSearch] = useState("");
   const [channelFilter, setChannelFilter] = useState("");
   const [open, setOpen] = useState(false);

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,7 +25,7 @@ const emptyForm = { code: "", name: "", discountType: "PERCENTAGE", discountValu
 const PAGE_SIZE = 9;
 
 export function PromosClient({ promos: initial }: Props) {
-  const [promos] = useState(initial);
+  const promos = initial;
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);

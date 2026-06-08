@@ -1,4 +1,4 @@
-import { verifyToken } from "@/lib/session";
+import { verifyJwt } from "@/lib/jwt";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
@@ -11,7 +11,7 @@ export async function proxy(request: NextRequest) {
   if (isApiRoute || isPublicRoute) return NextResponse.next();
 
   const token = request.cookies.get("session")?.value;
-  const session = token ? await verifyToken(token) : null;
+  const session = token ? await verifyJwt(token) : null;
 
   if (!session && !isAuthRoute) {
     return NextResponse.redirect(new URL("/auth/login", request.url));

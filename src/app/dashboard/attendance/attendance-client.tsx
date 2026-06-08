@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -170,12 +170,9 @@ export function AttendanceClient({ classes }: Props) {
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Kelas</Label>
-                <Select value={selectedClass} onValueChange={(v) => { setSelectedClass(v ?? ""); setStudents([]); }}>
-                  <SelectTrigger><SelectValue placeholder="Pilih kelas" /></SelectTrigger>
-                  <SelectContent>
-                    {classes.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <SearchableSelect value={selectedClass} onValueChange={(v) => { setSelectedClass(v ?? ""); setStudents([]); }} placeholder="Pilih kelas">
+                  {classes.map((c) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="space-y-2">
                 <Label>Tanggal</Label>
@@ -258,21 +255,15 @@ export function AttendanceClient({ classes }: Props) {
             <div className="grid grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label>Kelas</Label>
-                <Select value={recapClass} onValueChange={(v) => setRecapClass(v ?? "")}>
-                  <SelectTrigger><SelectValue placeholder="Pilih kelas" /></SelectTrigger>
-                  <SelectContent>
-                    {classes.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <SearchableSelect value={recapClass} onValueChange={(v) => setRecapClass(v ?? "")} placeholder="Pilih kelas">
+                  {classes.map((c) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="space-y-2">
                 <Label>Bulan</Label>
-                <Select value={recapMonth} onValueChange={(v) => setRecapMonth(v ?? recapMonth)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {months.map((m) => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <SearchableSelect value={recapMonth} onValueChange={(v) => setRecapMonth(v ?? recapMonth)} placeholder="Pilih bulan">
+                  {months.map((m) => <SearchableSelectItem key={m.value} value={m.value}>{m.label}</SearchableSelectItem>)}
+                </SearchableSelect>
               </div>
               <div className="space-y-2">
                 <Label>Tahun</Label>
@@ -346,14 +337,11 @@ export function AttendanceClient({ classes }: Props) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Kelas</Label>
-                <Select value={coachClass} onValueChange={(v) => setCoachClass(v ?? "")}>
-                  <SelectTrigger><SelectValue placeholder="Pilih kelas" /></SelectTrigger>
-                  <SelectContent>
-                    {classes.filter((c) => c.coachId).map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.name} — {c.coach?.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <SearchableSelect value={coachClass} onValueChange={(v) => setCoachClass(v ?? "")} placeholder="Pilih kelas">
+                  {classes.filter((c) => c.coachId).map((c) => (
+                    <SearchableSelectItem key={c.id} value={c.id}>{c.name} — {c.coach?.name}</SearchableSelectItem>
+                  ))}
+                </SearchableSelect>
               </div>
               <div className="space-y-2">
                 <Label>Tanggal</Label>

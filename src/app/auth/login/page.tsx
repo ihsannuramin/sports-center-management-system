@@ -27,8 +27,8 @@ export default function LoginPage() {
     });
 
     if (res.ok) {
-      router.push("/dashboard");
       router.refresh();
+      router.push("/dashboard");
     } else {
       const data = await res.json().catch(() => ({}));
       toast.error(data.error || "Email atau password salah");
