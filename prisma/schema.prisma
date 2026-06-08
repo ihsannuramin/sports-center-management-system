@@ -1,0 +1,1021 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  address   String?
+  phone     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users               User[]
+  students            Student[]
+  coaches             Coach[]
+  classes             Class[]
+  courts              Court[]
+  inventory           Inventory[]
+  rentalBookings      RentalBooking[]
+  courtSchedules      CourtSchedule[]
+  expenses            Expense[]
+  leads               Lead[]
+  parents             Parent[]
+  maintenanceTickets  MaintenanceTicket[]
+  assets              Asset[]
+  documents           Document[]
+
+  @@map("branches")
+}
+
+model Role {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+
+  users           User[]
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id     String  @id @default(cuid())
+  module String
+  action String
+  label  String?
+
+  rolePermissions RolePermission[]
+
+  @@unique([module, action])
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String @id @default(cuid())
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  name      String
+  phone     String?
+  avatarUrl String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roleId   String
+  role     Role    @relation(fields: [roleId], references: [id])
+  branchId String?
+  branch   Branch? @relation(fields: [branchId], references: [id])
+
+  coachProfile       Coach?
+  payments           Payment[]
+  activityLogs       ActivityLog[]
+  payrollsVerified   CoachPayroll[]    @relation("VerifiedPayrolls")
+  expensesApproved   Expense[]         @relation("ApprovedExpenses")
+  leadsAssigned      Lead[]            @relation("AssignedLeads")
+  notifications      Notification[]
+  requestedApprovals ApprovalRequest[] @relation("RequestedApprovals")
+  approvedApprovals  ApprovalRequest[] @relation("ApprovedApprovals")
+  assignedTickets    MaintenanceTicket[] @relation("AssignedTickets")
+  uploadedDocuments  Document[]        @relation("UploadedDocuments")
+
+  @@map("users")
+}
+
+model Student {
+  id            String        @id @default(cuid())
+  studentNumber String        @unique
+  name          String
+  birthDate     DateTime?
+  gender        Gender        @default(MALE)
+  phone         String?
+  parentName    String?
+  parentPhone   String?
+  address       String?
+  photoUrl      String?
+  status        StudentStatus @default(ACTIVE)
+  joinDate      DateTime      @default(now())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  branchId String
+  branch   Branch  @relation(fields: [branchId], references: [id])
+  classId  String?
+  class    Class?  @relation(fields: [classId], references: [id])
+  parentId String?
+  parent   Parent? @relation(fields: [parentId], references: [id])
+
+  attendances        Attendance[]
+  assessments        Assessment[]
+  invoices           Invoice[]
+  studentMemberships StudentMembership[]
+
+  @@map("students")
+}
+
+model Coach {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String?
+  email     String?
+  photoUrl  String?
+  specialty String?
+  isActive  Boolean  @default(true)
+  joinDate  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id])
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  classes     Class[]
+  attendances Attendance[]
+  payrolls    CoachPayroll[]
+  rates       CoachRate[]
+
+  @@map("coaches")
+}
+
+model Class {
+  id          String   @id @default(cuid())
+  name        String
+  ageGroup    AgeGroup
+  schedule    String?
+  maxStudents Int      @default(20)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id])
+  coachId  String?
+  coach    Coach?  @relation(fields: [coachId], references: [id])
+
+  students       Student[]
+  attendances    Attendance[]
+  trialClasses   TrialClass[]
+  classWaitlists ClassWaitlist[]
+
+  @@map("classes")
+}
+
+model Court {
+  id          String    @id @default(cuid())
+  name        String
+  courtNumber Int
+  type        CourtType @default(INDOOR)
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  rentalBookings  RentalBooking[]
+  courtSchedules  CourtSchedule[]
+  rentalWaitlists RentalWaitlist[]
+
+  @@map("courts")
+}
+
+model Inventory {
+  id          String            @id @default(cuid())
+  name        String
+  category    InventoryCategory
+  quantity    Int               @default(0)
+  minStock    Int               @default(0)
+  unit        String            @default("pcs")
+  description String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  @@map("inventory")
+}
+
+model Attendance {
+  id        String           @id @default(cuid())
+  date      DateTime         @default(now())
+  status    AttendanceStatus @default(PRESENT)
+  notes     String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  studentId String?
+  student   Student? @relation(fields: [studentId], references: [id])
+  coachId   String?
+  coach     Coach?   @relation(fields: [coachId], references: [id])
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id])
+
+  @@map("attendances")
+}
+
+model Assessment {
+  id         String   @id @default(cuid())
+  period     String
+  dribbling  Int      @default(0)
+  passing    Int      @default(0)
+  shooting   Int      @default(0)
+  defense    Int      @default(0)
+  stamina    Int      @default(0)
+  attitude   Int      @default(0)
+  notes      String?
+  assessedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+
+  @@map("assessments")
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  invoiceNumber String        @unique
+  type          InvoiceType
+  amount        Decimal       @db.Decimal(12, 2)
+  dueDate       DateTime
+  description   String?
+  status        InvoiceStatus @default(UNPAID)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+
+  payments Payment[]
+
+  @@map("invoices")
+}
+
+model Payment {
+  id         String        @id @default(cuid())
+  amount     Decimal       @db.Decimal(12, 2)
+  method     PaymentMethod @default(TRANSFER)
+  proofUrl   String?
+  notes      String?
+  status     PaymentStatus @default(PENDING)
+  verifiedAt DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  invoiceId  String?
+  invoice    Invoice?       @relation(fields: [invoiceId], references: [id])
+  bookingId  String?
+  booking    RentalBooking? @relation(fields: [bookingId], references: [id])
+  verifiedBy String?
+  verifier   User?          @relation(fields: [verifiedBy], references: [id])
+
+  @@map("payments")
+}
+
+model RentalBooking {
+  id            String        @id @default(cuid())
+  bookingNumber String        @unique
+  customerName  String
+  customerPhone String
+  date          DateTime
+  startTime     DateTime
+  endTime       DateTime
+  duration      Int
+  pricePerHour  Decimal       @db.Decimal(12, 2)
+  totalAmount   Decimal       @db.Decimal(12, 2)
+  notes         String?
+  status        BookingStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  courtId  String
+  court    Court  @relation(fields: [courtId], references: [id])
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  payments Payment[]
+
+  @@map("rental_bookings")
+}
+
+model CourtSchedule {
+  id          String       @id @default(cuid())
+  title       String
+  type        ScheduleType
+  startTime   DateTime
+  endTime     DateTime
+  isRecurring Boolean      @default(false)
+  recurDay    Int?
+  notes       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  courtId  String
+  court    Court  @relation(fields: [courtId], references: [id])
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  @@map("court_schedules")
+}
+
+// v2.0
+
+model ActivityLog {
+  id        String    @id @default(cuid())
+  action    LogAction
+  module    String
+  entityId  String?
+  oldValue  Json?
+  newValue  Json?
+  ipAddress String?
+  userAgent String?
+  note      String?
+  createdAt DateTime  @default(now())
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id])
+
+  @@index([module, action])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  label     String?
+  group     String   @default("general")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+model Expense {
+  id          String          @id @default(cuid())
+  title       String
+  category    ExpenseCategory
+  amount      Decimal         @db.Decimal(12, 2)
+  date        DateTime
+  description String?
+  receiptUrl  String?
+  status      ApprovalStatus  @default(PENDING)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  branchId    String
+  branch      Branch          @relation(fields: [branchId], references: [id])
+  approvedBy  String?
+  approver    User?           @relation("ApprovedExpenses", fields: [approvedBy], references: [id])
+
+  @@index([branchId, date])
+  @@map("expenses")
+}
+
+model CoachRate {
+  id            String      @id @default(cuid())
+  payrollType   PayrollType
+  rateAmount    Decimal     @db.Decimal(12, 2)
+  effectiveFrom DateTime    @default(now())
+  notes         String?
+  createdAt     DateTime    @default(now())
+  coachId       String
+  coach         Coach       @relation(fields: [coachId], references: [id])
+
+  @@map("coach_rates")
+}
+
+model CoachPayroll {
+  id          String        @id @default(cuid())
+  period      String
+  payrollType PayrollType
+  sessions    Int?
+  hours       Decimal?      @db.Decimal(6, 2)
+  rateAmount  Decimal       @db.Decimal(12, 2)
+  totalAmount Decimal       @db.Decimal(12, 2)
+  notes       String?
+  status      PayrollStatus @default(PENDING)
+  paidAt      DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  coachId     String
+  coach       Coach         @relation(fields: [coachId], references: [id])
+  verifiedBy  String?
+  verifier    User?         @relation("VerifiedPayrolls", fields: [verifiedBy], references: [id])
+
+  @@index([coachId, period])
+  @@map("coach_payrolls")
+}
+
+model Parent {
+  id        String   @id @default(cuid())
+  fullName  String
+  phone     String
+  email     String?
+  address   String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  branchId  String?
+  branch    Branch?  @relation(fields: [branchId], references: [id])
+
+  students             Student[]
+  parentNotes          ParentNote[]
+  parentCommunications ParentCommunication[]
+
+  @@map("parents")
+}
+
+model ParentNote {
+  id        String   @id @default(cuid())
+  note      String
+  createdAt DateTime @default(now())
+  parentId  String
+  parent    Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
+
+  @@map("parent_notes")
+}
+
+model ParentCommunication {
+  id        String        @id @default(cuid())
+  channel   CommChannel
+  direction CommDirection @default(OUTBOUND)
+  subject   String?
+  message   String
+  createdAt DateTime      @default(now())
+  parentId  String
+  parent    Parent        @relation(fields: [parentId], references: [id], onDelete: Cascade)
+
+  @@map("parent_communications")
+}
+
+model Lead {
+  id          String     @id @default(cuid())
+  fullName    String
+  phone       String
+  email       String?
+  source      LeadSource
+  stage       LeadStage  @default(LEAD)
+  notes       String?
+  followUpAt  DateTime?
+  convertedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  branchId    String?
+  branch      Branch?    @relation(fields: [branchId], references: [id])
+  assignedTo  String?
+  assignee    User?      @relation("AssignedLeads", fields: [assignedTo], references: [id])
+
+  activities        LeadActivity[]
+  trialParticipants TrialParticipant[]
+
+  @@index([stage])
+  @@map("leads")
+}
+
+model LeadActivity {
+  id        String   @id @default(cuid())
+  action    String
+  note      String?
+  createdAt DateTime @default(now())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("lead_activities")
+}
+
+// Enums
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum AgeGroup {
+  U8
+  U10
+  U12
+  U14
+  U16
+  SENIOR
+}
+
+enum CourtType {
+  INDOOR
+  OUTDOOR
+}
+
+enum InventoryCategory {
+  BALL
+  CONE
+  JERSEY
+  EQUIPMENT
+  OTHER
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  SICK
+  PERMISSION
+}
+
+enum InvoiceType {
+  REGISTRATION
+  MONTHLY
+  TOURNAMENT
+  MERCHANDISE
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  TRANSFER
+  CASH
+}
+
+enum PaymentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum ScheduleType {
+  MAINTENANCE
+  ACADEMY
+  RENTAL
+}
+
+enum LogAction {
+  CREATE
+  UPDATE
+  DELETE
+  VERIFY
+  REJECT
+  LOGIN
+  LOGOUT
+  EXPORT
+  APPROVE
+}
+
+enum ExpenseCategory {
+  UTILITIES
+  PAYROLL
+  MAINTENANCE
+  MARKETING
+  EQUIPMENT
+  RENT
+  OTHER
+}
+
+enum PayrollType {
+  PER_SESSION
+  PER_HOUR
+  FIXED_MONTHLY
+}
+
+enum PayrollStatus {
+  PENDING
+  APPROVED
+  PAID
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum LeadStage {
+  LEAD
+  CONTACTED
+  TRIAL
+  REGISTERED
+  ACTIVE
+}
+
+enum LeadSource {
+  INSTAGRAM
+  TIKTOK
+  REFERRAL
+  WALK_IN
+  WEBSITE
+  OTHER
+}
+
+enum CommChannel {
+  WHATSAPP
+  EMAIL
+  PHONE
+  IN_PERSON
+}
+
+enum CommDirection {
+  INBOUND
+  OUTBOUND
+}
+
+// v2.0 new models
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  channel   NotifChannel
+  status    NotifStatus      @default(PENDING)
+  title     String
+  message   String
+  metadata  Json?
+  sentAt    DateTime?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  logs NotificationLog[]
+
+  @@index([userId, status])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model NotificationLog {
+  id             String      @id @default(cuid())
+  status         NotifStatus
+  errorMessage   String?
+  sentAt         DateTime    @default(now())
+
+  notificationId String
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  @@map("notification_logs")
+}
+
+model ApprovalRequest {
+  id          String         @id @default(cuid())
+  type        ApprovalType
+  status      ApprovalStatus @default(PENDING)
+  entityId    String?
+  entityType  String?
+  reason      String?
+  reviewNote  String?
+  amount      Decimal?       @db.Decimal(12, 2)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  requesterId String?
+  requester   User?   @relation("RequestedApprovals", fields: [requesterId], references: [id])
+  approverId  String?
+  approver    User?   @relation("ApprovedApprovals", fields: [approverId], references: [id])
+
+  @@index([type, status])
+  @@map("approval_requests")
+}
+
+model TrialClass {
+  id        String   @id @default(cuid())
+  date      DateTime
+  maxSlots  Int      @default(5)
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  classId String
+  class   Class  @relation(fields: [classId], references: [id])
+
+  participants TrialParticipant[]
+
+  @@map("trial_classes")
+}
+
+model TrialParticipant {
+  id          String      @id @default(cuid())
+  name        String
+  phone       String
+  email       String?
+  status      TrialStatus @default(REGISTERED)
+  attended    Boolean     @default(false)
+  coachNote   String?
+  convertedAt DateTime?
+  createdAt   DateTime    @default(now())
+
+  trialClassId String
+  trialClass   TrialClass @relation(fields: [trialClassId], references: [id], onDelete: Cascade)
+  leadId       String?
+  lead         Lead?      @relation(fields: [leadId], references: [id])
+
+  @@map("trial_participants")
+}
+
+model ClassWaitlist {
+  id         String         @id @default(cuid())
+  name       String
+  phone      String
+  email      String?
+  position   Int
+  status     WaitlistStatus @default(WAITING)
+  notifiedAt DateTime?
+  createdAt  DateTime       @default(now())
+
+  classId String
+  class   Class  @relation(fields: [classId], references: [id])
+
+  @@index([classId, status])
+  @@map("class_waitlists")
+}
+
+model RentalWaitlist {
+  id         String         @id @default(cuid())
+  name       String
+  phone      String
+  date       DateTime
+  startTime  DateTime
+  endTime    DateTime
+  position   Int
+  status     WaitlistStatus @default(WAITING)
+  notifiedAt DateTime?
+  createdAt  DateTime       @default(now())
+
+  courtId String
+  court   Court  @relation(fields: [courtId], references: [id])
+
+  @@index([courtId, status])
+  @@map("rental_waitlists")
+}
+
+model MembershipPlan {
+  id           String         @id @default(cuid())
+  name         String
+  type         MembershipType
+  durationDays Int
+  price        Decimal        @db.Decimal(12, 2)
+  description  String?
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  studentMemberships StudentMembership[]
+
+  @@map("membership_plans")
+}
+
+model StudentMembership {
+  id        String           @id @default(cuid())
+  startDate DateTime
+  endDate   DateTime
+  status    MembershipStatus @default(ACTIVE)
+  autoRenew Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  studentId String
+  student   Student        @relation(fields: [studentId], references: [id])
+  planId    String
+  plan      MembershipPlan @relation(fields: [planId], references: [id])
+
+  @@index([studentId, status])
+  @@map("student_memberships")
+}
+
+model RentalPackage {
+  id          String   @id @default(cuid())
+  name        String
+  hours       Int
+  price       Decimal  @db.Decimal(12, 2)
+  validDays   Int      @default(365)
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("rental_packages")
+}
+
+model Promotion {
+  id            String       @id @default(cuid())
+  code          String       @unique
+  name          String
+  discountType  DiscountType
+  discountValue Decimal      @db.Decimal(12, 2)
+  maxUses       Int?
+  usedCount     Int          @default(0)
+  startDate     DateTime?
+  endDate       DateTime?
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  rules PromotionRule[]
+
+  @@map("promotions")
+}
+
+model PromotionRule {
+  id          String    @id @default(cuid())
+  condition   String
+  value       String?
+
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@map("promotion_rules")
+}
+
+model MaintenanceTicket {
+  id             String            @id @default(cuid())
+  title          String
+  description    String?
+  status         MaintenanceStatus @default(OPEN)
+  priority       Priority          @default(MEDIUM)
+  resolvedAt     DateTime?
+  resolutionNote String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  assetId    String?
+  asset      Asset?  @relation(fields: [assetId], references: [id])
+  branchId   String
+  branch     Branch  @relation(fields: [branchId], references: [id])
+  assignedTo String?
+  assignee   User?   @relation("AssignedTickets", fields: [assignedTo], references: [id])
+
+  @@index([branchId, status])
+  @@map("maintenance_tickets")
+}
+
+model Asset {
+  id             String    @id @default(cuid())
+  name           String
+  category       String
+  purchaseDate   DateTime?
+  cost           Decimal?  @db.Decimal(12, 2)
+  depreciation   Decimal?  @db.Decimal(5, 2)
+  warrantyExpiry DateTime?
+  condition      String    @default("GOOD")
+  description    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  maintenanceTickets MaintenanceTicket[]
+
+  @@index([branchId])
+  @@map("assets")
+}
+
+model Document {
+  id         String      @id @default(cuid())
+  name       String
+  type       String
+  fileUrl    String
+  fileSize   Int?
+  mimeType   String?
+  category   DocCategory
+  entityId   String?
+  entityType String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  uploadedBy String?
+  uploader   User?   @relation("UploadedDocuments", fields: [uploadedBy], references: [id])
+  branchId   String?
+  branch     Branch? @relation(fields: [branchId], references: [id])
+
+  @@index([category])
+  @@index([branchId])
+  @@map("documents")
+}
+
+// v2.0 new enums
+
+enum NotificationType {
+  INVOICE_CREATED
+  INVOICE_DUE
+  INVOICE_OVERDUE
+  INVOICE_PAID
+  BOOKING_CREATED
+  BOOKING_CONFIRMED
+  BOOKING_CANCELLED
+  CLASS_RESCHEDULED
+  COACH_REPLACEMENT
+  STUDENT_SUSPENSION
+}
+
+enum NotifChannel {
+  IN_APP
+  EMAIL
+  WHATSAPP
+}
+
+enum NotifStatus {
+  PENDING
+  SENT
+  FAILED
+  READ
+}
+
+enum ApprovalType {
+  REFUND
+  INVOICE_CANCELLATION
+  MANUAL_DISCOUNT
+  INVENTORY_ADJUSTMENT
+  BOOKING_CANCELLATION
+}
+
+enum TrialStatus {
+  REGISTERED
+  ATTENDED
+  ABSENT
+  CONVERTED
+}
+
+enum WaitlistStatus {
+  WAITING
+  NOTIFIED
+  PROMOTED
+  CANCELLED
+}
+
+enum MembershipType {
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUAL
+  ANNUAL
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum DiscountType {
+  FIXED
+  PERCENTAGE
+}
+
+enum MaintenanceStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum DocCategory {
+  COACH_CONTRACT
+  STUDENT_AGREEMENT
+  PAYMENT_RECEIPT
+  OTHER
+}
