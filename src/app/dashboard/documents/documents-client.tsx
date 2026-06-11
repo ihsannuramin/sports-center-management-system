@@ -131,11 +131,11 @@ export function DocumentsClient({ documents: initial, branches }: Props) {
                   {doc.uploader && <p>Oleh: {doc.uploader.name}</p>}
                   <p>{format(new Date(doc.createdAt), "dd MMM yyyy", { locale: id })}</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className="flex-1">
-                    <Button size="sm" variant="outline" className="w-full h-7 text-xs border-gray-200 hover:border-gray-300"><ExternalLink className="w-3.5 h-3.5 mr-1" /> Buka</Button>
+                    <Button size="sm" variant="outline" className="w-full h-8 text-xs border-gray-200 hover:border-gray-300 cursor-pointer"><ExternalLink className="w-3.5 h-3.5 mr-1.5" /> Buka</Button>
                   </a>
-                  <Button size="sm" variant="outline" className="h-7 text-xs text-red-500 border-red-100 hover:bg-red-50" onClick={() => handleDelete(doc.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                  <Button size="sm" variant="outline" className="h-8 w-8 p-0 text-red-500 border-red-100 hover:bg-red-50 cursor-pointer" title="Hapus" onClick={() => handleDelete(doc.id)}><Trash2 className="w-4 h-4" /></Button>
                 </div>
               </CardContent>
             </Card>

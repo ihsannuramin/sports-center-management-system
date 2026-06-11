@@ -33,8 +33,8 @@ export async function createPayroll(data: {
   revalidatePath("/dashboard/payroll");
 }
 
-export async function approvePayroll(id: string, verifierId: string) {
-  await prisma.coachPayroll.update({ where: { id }, data: { status: "APPROVED", verifiedBy: verifierId } });
+export async function approvePayroll(id: string) {
+  await prisma.coachPayroll.update({ where: { id }, data: { status: "APPROVED" } });
   revalidatePath("/dashboard/payroll");
 }
 

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tag, Plus, Search, Copy, ToggleLeft, ToggleRight } from "lucide-react";
+import { Tag, Plus, Search, Copy, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
 import { createPromotion, updatePromotion, deletePromotion } from "@/app/actions/promos";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -143,11 +143,11 @@ export function PromosClient({ promos: initial }: Props) {
                     </div>
                   )}
                 </div>
-                <div className="flex gap-2 mt-3 pt-2 border-t border-gray-50">
-                  <Button size="sm" variant="outline" className={`flex-1 h-7 text-xs ${promo.isActive ? "text-red-500 border-red-100 hover:bg-red-50" : "text-green-600 border-green-100 hover:bg-green-50"}`} onClick={() => handleToggle(promo.id, promo.isActive)}>
+                <div className="flex gap-3 mt-3 pt-2 border-t border-gray-50">
+                  <Button size="sm" variant="outline" className={`flex-1 h-8 text-xs cursor-pointer ${promo.isActive ? "text-red-500 border-red-100 hover:bg-red-50" : "text-green-600 border-green-100 hover:bg-green-50"}`} onClick={() => handleToggle(promo.id, promo.isActive)}>
                     {promo.isActive ? "Nonaktifkan" : "Aktifkan"}
                   </Button>
-                  <Button size="sm" variant="outline" className="h-7 text-xs text-red-500 border-red-100 hover:bg-red-50" onClick={() => handleDelete(promo.id)}>Hapus</Button>
+                  <Button size="sm" variant="outline" className="h-8 w-8 p-0 text-red-500 border-red-100 hover:bg-red-50 cursor-pointer" title="Hapus" onClick={() => handleDelete(promo.id)}><Trash2 className="w-4 h-4" /></Button>
                 </div>
               </CardContent>
             </Card>

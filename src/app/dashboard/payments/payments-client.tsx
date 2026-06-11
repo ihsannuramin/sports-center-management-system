@@ -153,12 +153,12 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
                     <TableCell><span className={statusBadge[p.status]}>{statusLabels[p.status]}</span></TableCell>
                     <TableCell>
                       {p.status === "PENDING" && (
-                        <div className="flex gap-1">
-                          <Button size="sm" onClick={() => handleVerify(p.id)} className="bg-green-500 hover:bg-green-600 h-7 text-xs px-2.5">
-                            <CheckCircle className="w-3 h-3 mr-1" /> Verifikasi
+                        <div className="flex items-center gap-1.5">
+                          <Button size="sm" onClick={() => handleVerify(p.id)} className="bg-green-500 hover:bg-green-600 h-8 text-xs px-2.5 cursor-pointer">
+                            <CheckCircle className="w-3.5 h-3.5 mr-1" /> Verifikasi
                           </Button>
-                          <Button size="sm" variant="outline" onClick={() => handleReject(p.id)} className="text-red-500 border-red-200 hover:bg-red-50 h-7 w-7 p-0">
-                            <XCircle className="w-3.5 h-3.5" />
+                          <Button size="sm" variant="outline" onClick={() => handleReject(p.id)} title="Tolak" className="text-red-500 border-red-200 hover:bg-red-50 h-8 w-8 p-0 cursor-pointer">
+                            <XCircle className="w-4 h-4" />
                           </Button>
                         </div>
                       )}

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Box, Plus, Search, Download, AlertCircle } from "lucide-react";
+import { Box, Plus, Search, Download, AlertCircle, Pencil, Trash2 } from "lucide-react";
 import { createAsset, updateAsset, deleteAsset } from "@/app/actions/assets";
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
@@ -148,9 +148,9 @@ export function AssetsClient({ assets: initial, branches }: Props) {
                     <AlertCircle className="w-3.5 h-3.5" /> Perlu perhatian
                   </div>
                 )}
-                <div className="flex gap-2 mt-3 pt-3 border-t border-gray-50">
-                  <Button size="sm" variant="outline" className="flex-1 h-7 text-xs border-gray-200" onClick={() => openEdit(asset)}>Edit</Button>
-                  <Button size="sm" variant="outline" className="h-7 text-xs text-red-500 border-red-100 hover:bg-red-50" onClick={() => handleDelete(asset.id)}>Hapus</Button>
+                <div className="flex gap-3 mt-3 pt-3 border-t border-gray-50">
+                  <Button size="sm" variant="outline" className="flex-1 h-8 text-xs border-gray-200 cursor-pointer" onClick={() => openEdit(asset)}><Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit</Button>
+                  <Button size="sm" variant="outline" className="h-8 w-8 p-0 text-red-500 border-red-100 hover:bg-red-50 cursor-pointer" title="Hapus" onClick={() => handleDelete(asset.id)}><Trash2 className="w-4 h-4" /></Button>
                 </div>
               </CardContent>
             </Card>

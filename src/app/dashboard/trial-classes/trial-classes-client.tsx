@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GraduationCap, Plus, Search, Users, Calendar } from "lucide-react";
+import { GraduationCap, Plus, Search, Users, Calendar, Trash2 } from "lucide-react";
 import { createTrialClass, addTrialParticipant, updateParticipantStatus, getTrialParticipants, deleteTrialClass } from "@/app/actions/trial-classes";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -134,9 +134,9 @@ export function TrialClassesClient({ trials: initial, classes }: Props) {
                   <div className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {trial._count?.participants ?? 0} / {trial.maxSlots} peserta</div>
                 </div>
                 {trial.notes && <p className="text-xs text-gray-400 mb-3 truncate">{trial.notes}</p>}
-                <div className="flex gap-2 pt-2 border-t border-gray-50">
-                  <Button size="sm" variant="outline" className="flex-1 h-7 text-xs border-gray-200" onClick={() => openParticipants(trial)}><Users className="w-3.5 h-3.5 mr-1" /> Peserta</Button>
-                  <Button size="sm" variant="outline" className="h-7 text-xs text-red-500 border-red-100 hover:bg-red-50" onClick={() => handleDeleteTrial(trial.id)}>Hapus</Button>
+                <div className="flex gap-3 pt-2 border-t border-gray-50">
+                  <Button size="sm" variant="outline" className="flex-1 h-8 text-xs border-gray-200 cursor-pointer" onClick={() => openParticipants(trial)}><Users className="w-3.5 h-3.5 mr-1.5" /> Peserta</Button>
+                  <Button size="sm" variant="outline" className="h-8 w-8 p-0 text-red-500 border-red-100 hover:bg-red-50 cursor-pointer" title="Hapus" onClick={() => handleDeleteTrial(trial.id)}><Trash2 className="w-4 h-4" /></Button>
                 </div>
               </CardContent>
             </Card>

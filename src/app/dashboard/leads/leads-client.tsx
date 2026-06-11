@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Target, Plus, Search, Phone, Mail, Download, TrendingUp } from "lucide-react";
+import { Target, Plus, Search, Phone, Mail, Download, TrendingUp, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { createLead, updateLeadStage, deleteLead, updateLead } from "@/app/actions/leads";
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
@@ -168,10 +169,16 @@ export function LeadsClient({ leads: initial, funnel, branches }: Props) {
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-500">{lead.branch?.name ?? "-"}</td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      <Button size="sm" variant="outline" className="h-7 text-xs px-2 border-gray-200" onClick={() => openEdit(lead)}>Edit</Button>
-                      <Button size="sm" variant="outline" className="h-7 text-xs px-2 text-red-500 border-red-100 hover:bg-red-50" onClick={() => handleDelete(lead.id)}>Hapus</Button>
-                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-700 cursor-pointer" aria-label="Aksi" />}>
+                        <MoreHorizontal className="w-4 h-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openEdit(lead)} className="cursor-pointer gap-2"><Pencil className="w-3.5 h-3.5" /> Edit</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleDelete(lead.id)} className="cursor-pointer gap-2 text-red-500 focus:text-red-500"><Trash2 className="w-3.5 h-3.5" /> Hapus</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </td>
                 </tr>
               ))}

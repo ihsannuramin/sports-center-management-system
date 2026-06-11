@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Wrench, Plus, Search, AlertTriangle, CheckCircle, Clock, XCircle } from "lucide-react";
+import { Wrench, Plus, Search, AlertTriangle, CheckCircle, Clock, XCircle, Trash2 } from "lucide-react";
 import { createMaintenanceTicket, updateTicketStatus, deleteTicket } from "@/app/actions/maintenance";
 import { toast } from "sonner";
 
@@ -156,14 +156,14 @@ export function MaintenanceClient({ tickets: initial, assets, branches }: Props)
                         {ticket.assignee && <span>· {ticket.assignee.name}</span>}
                       </div>
                     </div>
-                    <div className="flex gap-1 flex-shrink-0">
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
                       {ticket.status === "OPEN" && (
-                        <button onClick={() => handleStatusChange(ticket.id, "IN_PROGRESS")} className="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors">Proses</button>
+                        <button type="button" onClick={() => handleStatusChange(ticket.id, "IN_PROGRESS")} className="h-8 text-xs px-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer font-medium">Proses</button>
                       )}
                       {ticket.status === "IN_PROGRESS" && (
-                        <button onClick={() => handleStatusChange(ticket.id, "COMPLETED")} className="text-xs px-2 py-1 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors">Selesai</button>
+                        <button type="button" onClick={() => handleStatusChange(ticket.id, "COMPLETED")} className="h-8 text-xs px-3 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors cursor-pointer font-medium">Selesai</button>
                       )}
-                      <button onClick={() => handleDelete(ticket.id)} className="text-xs px-2 py-1 bg-red-50 text-red-400 rounded-lg hover:bg-red-100 transition-colors">Hapus</button>
+                      <button type="button" onClick={() => handleDelete(ticket.id)} title="Hapus" className="h-8 w-8 flex items-center justify-center rounded-lg bg-red-50 text-red-400 hover:bg-red-100 transition-colors cursor-pointer ml-1"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </div>
                 </CardContent>

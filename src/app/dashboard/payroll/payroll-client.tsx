@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DollarSign, Plus, Search, Download, CheckCircle, CreditCard } from "lucide-react";
+import { DollarSign, Plus, Search, Download, CheckCircle, CreditCard, Trash2 } from "lucide-react";
 import { createPayroll, approvePayroll, markPayrollPaid, deletePayroll } from "@/app/actions/payroll";
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
@@ -60,7 +60,7 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
   }
 
   async function handleApprove(id: string) {
-    await approvePayroll(id, "system");
+    await approvePayroll(id);
     toast.success("Payroll disetujui");
     window.location.reload();
   }
@@ -157,14 +157,14 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
                   <td className="px-4 py-3 text-right font-semibold text-gray-900">Rp {Number(p.totalAmount).toLocaleString("id-ID")}</td>
                   <td className="px-4 py-3"><span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[p.status]}`}>{p.status}</span></td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-1">
+                    <div className="flex items-center gap-1.5">
                       {p.status === "PENDING" && (
-                        <button onClick={() => handleApprove(p.id)} className="p-1.5 rounded-lg hover:bg-blue-50 text-blue-400 transition-colors" title="Approve"><CheckCircle className="w-4 h-4" /></button>
+                        <button type="button" onClick={() => handleApprove(p.id)} title="Approve" className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-blue-400 transition-colors cursor-pointer"><CheckCircle className="w-4 h-4" /></button>
                       )}
                       {p.status === "APPROVED" && (
-                        <button onClick={() => handlePaid(p.id)} className="p-1.5 rounded-lg hover:bg-green-50 text-green-500 transition-colors" title="Tandai Lunas"><CreditCard className="w-4 h-4" /></button>
+                        <button type="button" onClick={() => handlePaid(p.id)} title="Tandai Lunas" className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-green-50 text-green-500 transition-colors cursor-pointer"><CreditCard className="w-4 h-4" /></button>
                       )}
-                      <button onClick={() => handleDelete(p.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors text-xs px-2">Hapus</button>
+                      <button type="button" onClick={() => handleDelete(p.id)} title="Hapus" className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors cursor-pointer ml-1"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </td>
                 </tr>
@@ -194,7 +194,7 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
               </select>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Periode *</Label><Input placeholder="2024-01" value={form.period} onChange={(e) => setForm({ ...form, period: e.target.value })} required /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Periode *</Label><Input type="month" value={form.period} onChange={(e) => setForm({ ...form, period: e.target.value })} required /></div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Tipe Payroll *</Label>
                 <select value={form.payrollType} onChange={(e) => setForm({ ...form, payrollType: e.target.value })} className="w-full h-9 border border-gray-200 rounded-lg px-3 text-sm bg-white">

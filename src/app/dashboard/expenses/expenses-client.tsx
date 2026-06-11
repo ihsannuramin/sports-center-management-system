@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Wallet, Plus, Search, Download, CheckCircle, XCircle, Filter } from "lucide-react";
+import { Wallet, Plus, Search, Download, CheckCircle, XCircle, Filter, Trash2 } from "lucide-react";
 import { createExpense, approveExpense, rejectExpense, deleteExpense } from "@/app/actions/expenses";
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
@@ -61,23 +61,29 @@ export function ExpensesClient({ expenses: initial, summary, branches }: Props) 
     setLoading(false);
   }
 
-  async function handleApprove(id: string) {
-    await approveExpense(id, "system");
-    toast.success("Pengeluaran disetujui");
-    window.location.reload();
+  async function handleApprove(expenseId: string) {
+    try {
+      await approveExpense(expenseId, "system");
+      toast.success("Pengeluaran disetujui");
+      window.location.reload();
+    } catch (err: any) { toast.error(err.message ?? "Gagal menyetujui"); }
   }
 
-  async function handleReject(id: string) {
-    await rejectExpense(id);
-    toast.success("Pengeluaran ditolak");
-    window.location.reload();
+  async function handleReject(expenseId: string) {
+    try {
+      await rejectExpense(expenseId);
+      toast.success("Pengeluaran ditolak");
+      window.location.reload();
+    } catch (err: any) { toast.error(err.message ?? "Gagal menolak"); }
   }
 
-  async function handleDelete(id: string) {
+  async function handleDelete(expenseId: string) {
     if (!confirm("Hapus pengeluaran ini?")) return;
-    await deleteExpense(id);
-    toast.success("Pengeluaran dihapus");
-    window.location.reload();
+    try {
+      await deleteExpense(expenseId);
+      toast.success("Pengeluaran dihapus");
+      window.location.reload();
+    } catch (err: any) { toast.error(err.message ?? "Gagal menghapus"); }
   }
 
   function handleExport() {
@@ -171,14 +177,14 @@ export function ExpensesClient({ expenses: initial, summary, branches }: Props) 
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[expense.status]}`}>{expense.status}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-1">
+                    <div className="flex items-center gap-1.5">
                       {expense.status === "PENDING" && (
                         <>
-                          <button onClick={() => handleApprove(expense.id)} className="p-1.5 rounded-lg hover:bg-green-50 text-green-500 transition-colors"><CheckCircle className="w-4 h-4" /></button>
-                          <button onClick={() => handleReject(expense.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 transition-colors"><XCircle className="w-4 h-4" /></button>
+                          <button type="button" onClick={() => handleApprove(expense.id)} title="Setujui" className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-green-50 text-green-500 transition-colors cursor-pointer"><CheckCircle className="w-4 h-4" /></button>
+                          <button type="button" onClick={() => handleReject(expense.id)} title="Tolak" className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-red-400 transition-colors cursor-pointer"><XCircle className="w-4 h-4" /></button>
                         </>
                       )}
-                      <button onClick={() => handleDelete(expense.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors text-xs px-2">Hapus</button>
+                      <button type="button" onClick={() => handleDelete(expense.id)} title="Hapus" className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors cursor-pointer ml-1"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </td>
                 </tr>

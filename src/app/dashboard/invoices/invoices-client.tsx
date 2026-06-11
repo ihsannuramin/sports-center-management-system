@@ -171,8 +171,8 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
                     <TableCell>
                       {inv.status === "UNPAID" && (
                         <Button size="sm" variant="outline" onClick={() => handleStatusChange(inv.id, "PAID")}
-                          className="h-7 text-xs text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300">
-                          <CheckCircle2 className="w-3 h-3 mr-1" /> Lunas
+                          className="h-8 text-xs text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300 cursor-pointer">
+                          <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Lunas
                         </Button>
                       )}
                     </TableCell>

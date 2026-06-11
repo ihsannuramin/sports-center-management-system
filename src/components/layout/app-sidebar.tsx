@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, UserCheck, BookOpen, ClipboardCheck,
-  Star, FileText, CreditCard, Building2, Calendar, CalendarDays,
+  Star, FileText, CreditCard, Building2, Calendar,
   Package, LogOut, GitBranch, ChevronRight,
   Bell, ShieldCheck, Activity, Settings, Wallet, BarChart3,
   Wrench, Box, FolderOpen, Tags, UserPlus, Target, FlaskConical,
@@ -58,7 +58,6 @@ const menuItems = [
     items: [
       { href: "/dashboard/courts", label: "Lapangan", icon: Building2 },
       { href: "/dashboard/rentals", label: "Sewa Lapangan", icon: Calendar },
-      { href: "/dashboard/schedule", label: "Kalender", icon: CalendarDays },
       { href: "/dashboard/memberships", label: "Membership & Paket", icon: MembershipIcon },
       { href: "/dashboard/promos", label: "Promo & Diskon", icon: Percent },
     ],

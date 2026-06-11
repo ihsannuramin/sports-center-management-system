@@ -10,8 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
-import { Plus, AlertTriangle, MoreHorizontal, Download, Package } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Plus, AlertTriangle, MoreHorizontal, Download, Package, Pencil, Trash2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { createInventoryItem, updateInventoryItem, deleteInventoryItem } from "@/app/actions/inventory";
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
@@ -146,8 +146,9 @@ export function InventoryClient({ inventory: initial, branches }: Props) {
                             <MoreHorizontal className="w-4 h-4" />
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => openEdit(item)} className="cursor-pointer">Edit</DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-500 cursor-pointer" onClick={() => handleDelete(item.id)}>Hapus</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => openEdit(item)} className="cursor-pointer gap-2"><Pencil className="w-3.5 h-3.5" /> Edit</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-red-500 focus:text-red-500 cursor-pointer gap-2" onClick={() => handleDelete(item.id)}><Trash2 className="w-3.5 h-3.5" /> Hapus</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

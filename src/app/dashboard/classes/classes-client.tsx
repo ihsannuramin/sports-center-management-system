@@ -7,11 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
 import { DataPagination } from "@/components/ui/data-pagination";
-import { Plus, MoreHorizontal, Download, BookOpen, Clock, MapPin } from "lucide-react";
+import { Plus, MoreHorizontal, Download, BookOpen, Clock, MapPin, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { createClass, updateClass, deleteClass } from "@/app/actions/classes";
 import { exportToExcel } from "@/lib/export";
@@ -279,8 +279,9 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
                           <MoreHorizontal className="w-4 h-4" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openEdit(c)} className="cursor-pointer">Edit</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-500 cursor-pointer" onClick={() => handleDelete(c.id)}>Hapus</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openEdit(c)} className="cursor-pointer gap-2"><Pencil className="w-3.5 h-3.5" /> Edit</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-red-500 focus:text-red-500 cursor-pointer gap-2" onClick={() => handleDelete(c.id)}><Trash2 className="w-3.5 h-3.5" /> Hapus</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

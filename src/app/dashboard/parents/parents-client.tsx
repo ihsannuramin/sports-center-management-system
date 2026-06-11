@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, Plus, Search, Phone, Mail, MapPin,
-  MessageSquare, Download, ChevronRight,
+  MessageSquare, Download, ChevronRight, Pencil, Trash2,
 } from "lucide-react";
 import { createParent, updateParent, deleteParent, addParentNote, addParentCommunication } from "@/app/actions/parents";
 import { exportToExcel } from "@/lib/export";
@@ -147,9 +147,9 @@ export function ParentsClient({ parents: initial, branches }: Props) {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-2 mt-3 pt-2 border-t border-gray-50">
-                  <Button size="sm" variant="outline" className="flex-1 h-7 text-xs border-gray-200" onClick={(e) => { e.stopPropagation(); openEdit(p); }}>Edit</Button>
-                  <Button size="sm" variant="outline" className="h-7 text-xs text-red-500 border-red-100 hover:bg-red-50" onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }}>Hapus</Button>
+                <div className="flex gap-3 mt-3 pt-2 border-t border-gray-50">
+                  <Button size="sm" variant="outline" className="flex-1 h-8 text-xs border-gray-200 cursor-pointer" onClick={(e) => { e.stopPropagation(); openEdit(p); }}><Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit</Button>
+                  <Button size="sm" variant="outline" className="h-8 w-8 p-0 text-red-500 border-red-100 hover:bg-red-50 cursor-pointer" title="Hapus" onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }}><Trash2 className="w-4 h-4" /></Button>
                 </div>
               </CardContent>
             </Card>

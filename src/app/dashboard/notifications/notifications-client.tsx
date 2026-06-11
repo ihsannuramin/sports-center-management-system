@@ -149,11 +149,11 @@ export function NotificationsClient({ notifications: initial }: Props) {
                         <span className="ml-auto">{format(new Date(notif.createdAt), "dd MMM yyyy HH:mm", { locale: id })}</span>
                       </div>
                     </div>
-                    <div className="flex gap-1 flex-shrink-0">
+                    <div className="flex items-center gap-1 flex-shrink-0">
                       {notif.status !== "READ" && (
-                        <button onClick={() => handleMarkRead(notif.id)} className="p-1.5 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"><CheckCheck className="w-4 h-4" /></button>
+                        <button type="button" onClick={() => handleMarkRead(notif.id)} title="Tandai Sudah Dibaca" className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors cursor-pointer"><CheckCheck className="w-4 h-4" /></button>
                       )}
-                      <button onClick={() => handleDelete(notif.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-400 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      <button type="button" onClick={() => handleDelete(notif.id)} title="Hapus" className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-400 transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </div>
                 </CardContent>
