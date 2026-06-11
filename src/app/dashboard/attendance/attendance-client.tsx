@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,9 +8,9 @@ import { SearchableSelect, SearchableSelectItem } from "@/components/ui/searchab
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { saveAttendance, getAttendance, getAttendanceReport, saveCoachAttendance, getCoachAttendance } from "@/app/actions/attendance";
+import { saveAttendance, getAttendance, getAttendanceReport, saveCoachAttendance } from "@/app/actions/attendance";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
 
 const statusOptions = [
@@ -20,12 +20,48 @@ const statusOptions = [
   { value: "PERMISSION", label: "Izin", color: "bg-blue-100 text-blue-700" },
 ];
 
-const statusBadge: Record<string, string> = {
-  PRESENT: "bg-green-100 text-green-700",
-  ABSENT: "bg-red-100 text-red-700",
-  SICK: "bg-yellow-100 text-yellow-700",
-  PERMISSION: "bg-blue-100 text-blue-700",
-};
+const DAY_NAMES = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+function getScheduleDates(cls: any): string[] {
+  if (!cls?.schedule) return [];
+  try {
+    const sched = typeof cls.schedule === "string" ? JSON.parse(cls.schedule) : cls.schedule;
+    if (!Array.isArray(sched.days) || sched.days.length === 0) return [];
+    const dates: string[] = [];
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(start.getDate() - 90);
+    const end = new Date(today);
+    end.setDate(end.getDate() + 14);
+    const cursor = new Date(start);
+    while (cursor <= end) {
+      if (sched.days.includes(cursor.getDay())) {
+        dates.push(cursor.toISOString().slice(0, 10));
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return dates.reverse(); // most recent first
+  } catch {
+    return [];
+  }
+}
+
+function getScheduleDayNames(cls: any): string {
+  if (!cls?.schedule) return "";
+  try {
+    const sched = typeof cls.schedule === "string" ? JSON.parse(cls.schedule) : cls.schedule;
+    if (!Array.isArray(sched.days) || sched.days.length === 0) return "";
+    return sched.days.map((d: number) => DAY_NAMES[d]).join(", ");
+  } catch {
+    return "";
+  }
+}
+
+function pickDefaultDate(dates: string[]): string {
+  if (dates.length === 0) return format(new Date(), "yyyy-MM-dd");
+  const todayStr = format(new Date(), "yyyy-MM-dd");
+  return dates.includes(todayStr) ? todayStr : dates[0];
+}
 
 interface Props { classes: any[]; }
 
@@ -54,7 +90,34 @@ export function AttendanceClient({ classes }: Props) {
   const [coachNotes, setCoachNotes] = useState("");
   const [coachSaving, setCoachSaving] = useState(false);
 
+  // Valid dates based on class schedule
+  const validStudentDates = useMemo(() => {
+    const cls = classes.find((c) => c.id === selectedClass);
+    return getScheduleDates(cls);
+  }, [selectedClass, classes]);
+
+  const validCoachDates = useMemo(() => {
+    const cls = classes.find((c) => c.id === coachClass);
+    return getScheduleDates(cls);
+  }, [coachClass, classes]);
+
   const classData = classes.find((c) => c.id === selectedClass);
+  const coachClassData = classes.find((c) => c.id === coachClass);
+
+  function handleClassChange(v: string) {
+    setSelectedClass(v ?? "");
+    setStudents([]);
+    const cls = classes.find((c) => c.id === v);
+    const dates = getScheduleDates(cls);
+    setSelectedDate(pickDefaultDate(dates));
+  }
+
+  function handleCoachClassChange(v: string) {
+    setCoachClass(v ?? "");
+    const cls = classes.find((c) => c.id === v);
+    const dates = getScheduleDates(cls);
+    setCoachDate(pickDefaultDate(dates));
+  }
 
   async function loadAttendance() {
     if (!selectedClass) return;
@@ -156,32 +219,53 @@ export function AttendanceClient({ classes }: Props) {
 
   return (
     <Tabs defaultValue="input">
-      <TabsList>
-        <TabsTrigger value="input">Input Absensi Siswa</TabsTrigger>
-        <TabsTrigger value="recap">Rekap Bulanan</TabsTrigger>
-        <TabsTrigger value="coach">Absensi Pelatih</TabsTrigger>
+      <TabsList className="bg-gray-100 p-1 rounded-xl">
+        <TabsTrigger value="input" className="rounded-lg text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm">Input Absensi Siswa</TabsTrigger>
+        <TabsTrigger value="recap" className="rounded-lg text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm">Rekap Bulanan</TabsTrigger>
+        <TabsTrigger value="coach" className="rounded-lg text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm">Absensi Pelatih</TabsTrigger>
       </TabsList>
 
       {/* ── Tab 1: Input Absensi Siswa ── */}
-      <TabsContent value="input" className="space-y-4">
-        <Card>
-          <CardHeader><CardTitle>Input Absensi Siswa</CardTitle></CardHeader>
-          <CardContent>
+      <TabsContent value="input" className="space-y-4 mt-4">
+        <Card className="overflow-visible border-gray-100 shadow-sm">
+          <CardHeader className="pb-3 border-b border-gray-50">
+            <CardTitle className="text-base">Input Absensi Siswa</CardTitle>
+          </CardHeader>
+          <CardContent className="overflow-visible pt-4">
             <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label>Kelas</Label>
-                <SearchableSelect value={selectedClass} onValueChange={(v) => { setSelectedClass(v ?? ""); setStudents([]); }} placeholder="Pilih kelas">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-gray-700">Kelas</Label>
+                <SearchableSelect value={selectedClass} onValueChange={(v) => handleClassChange(v ?? "")} placeholder="Pilih kelas">
                   {classes.map((c) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
-              <div className="space-y-2">
-                <Label>Tanggal</Label>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
-                />
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-gray-700">
+                  Tanggal
+                  {validStudentDates.length > 0 && (
+                    <span className="ml-1.5 text-orange-500 font-normal text-[11px]">({getScheduleDayNames(classData)})</span>
+                  )}
+                </Label>
+                {validStudentDates.length > 0 ? (
+                  <SearchableSelect
+                    value={selectedDate}
+                    onValueChange={(v) => { setSelectedDate(v ?? selectedDate); setStudents([]); }}
+                    placeholder="Pilih tanggal sesi"
+                  >
+                    {validStudentDates.map((d) => (
+                      <SearchableSelectItem key={d} value={d}>
+                        {format(parseISO(d), "EEEE, d MMM yyyy", { locale: id })}
+                      </SearchableSelectItem>
+                    ))}
+                  </SearchableSelect>
+                ) : (
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => { setSelectedDate(e.target.value); setStudents([]); }}
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                  />
+                )}
               </div>
               <div className="flex items-end">
                 <Button onClick={loadAttendance} disabled={!selectedClass || loading} className="bg-orange-500 hover:bg-orange-600 w-full">
@@ -193,12 +277,12 @@ export function AttendanceClient({ classes }: Props) {
         </Card>
 
         {students.length > 0 && (
-          <Card>
-            <CardHeader className="flex-row items-center justify-between">
+          <Card className="border-gray-100 shadow-sm">
+            <CardHeader className="flex-row items-center justify-between pb-4 border-b border-gray-50">
               <div>
-                <CardTitle>Absensi — {classData?.name}</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {format(new Date(selectedDate), "EEEE, d MMMM yyyy", { locale: id })}
+                <CardTitle className="text-base">{classData?.name}</CardTitle>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {format(parseISO(selectedDate), "EEEE, d MMMM yyyy", { locale: id })}
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -209,29 +293,30 @@ export function AttendanceClient({ classes }: Props) {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>No</TableHead>
-                    <TableHead>Nama Siswa</TableHead>
-                    <TableHead>No. Siswa</TableHead>
-                    <TableHead>Status</TableHead>
+                  <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
+                    <TableHead className="pl-5 text-xs font-semibold text-gray-500 uppercase tracking-wide">No</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nama Siswa</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">No. Siswa</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {students.map((s, i) => (
                     <TableRow key={s.id}>
-                      <TableCell>{i + 1}</TableCell>
-                      <TableCell className="font-medium">{s.name}</TableCell>
-                      <TableCell className="font-mono text-sm">{s.studentNumber}</TableCell>
+                      <TableCell className="pl-5 text-gray-500">{i + 1}</TableCell>
+                      <TableCell className="font-medium text-gray-900">{s.name}</TableCell>
+                      <TableCell className="font-mono text-sm text-gray-500">{s.studentNumber}</TableCell>
                       <TableCell>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
                           {statusOptions.map((opt) => (
                             <button
                               key={opt.value}
+                              type="button"
                               onClick={() => setRecords({ ...records, [s.id]: opt.value })}
-                              className={`text-xs px-3 py-1 rounded-full font-medium transition-all border-2 ${records[s.id] === opt.value ? `${opt.color} border-current` : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"}`}
+                              className={`text-xs px-3 py-1 rounded-full font-medium transition-all border-2 cursor-pointer ${records[s.id] === opt.value ? `${opt.color} border-current` : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"}`}
                             >
                               {opt.label}
                             </button>
@@ -248,25 +333,27 @@ export function AttendanceClient({ classes }: Props) {
       </TabsContent>
 
       {/* ── Tab 2: Rekap Bulanan ── */}
-      <TabsContent value="recap" className="space-y-4">
-        <Card>
-          <CardHeader><CardTitle>Rekap Absensi Bulanan</CardTitle></CardHeader>
-          <CardContent>
+      <TabsContent value="recap" className="space-y-4 mt-4">
+        <Card className="overflow-visible border-gray-100 shadow-sm">
+          <CardHeader className="pb-3 border-b border-gray-50">
+            <CardTitle className="text-base">Rekap Absensi Bulanan</CardTitle>
+          </CardHeader>
+          <CardContent className="overflow-visible pt-4">
             <div className="grid grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <Label>Kelas</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-gray-700">Kelas</Label>
                 <SearchableSelect value={recapClass} onValueChange={(v) => setRecapClass(v ?? "")} placeholder="Pilih kelas">
                   {classes.map((c) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
-              <div className="space-y-2">
-                <Label>Bulan</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-gray-700">Bulan</Label>
                 <SearchableSelect value={recapMonth} onValueChange={(v) => setRecapMonth(v ?? recapMonth)} placeholder="Pilih bulan">
                   {months.map((m) => <SearchableSelectItem key={m.value} value={m.value}>{m.label}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
-              <div className="space-y-2">
-                <Label>Tahun</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-gray-700">Tahun</Label>
                 <input
                   type="number"
                   value={recapYear}
@@ -286,21 +373,23 @@ export function AttendanceClient({ classes }: Props) {
         </Card>
 
         {recapSummary.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Rekap — {classes.find((c) => c.id === recapClass)?.name} ({months.find((m) => m.value === recapMonth)?.label} {recapYear})</CardTitle>
+          <Card className="border-gray-100 shadow-sm">
+            <CardHeader className="pb-4 border-b border-gray-50">
+              <CardTitle className="text-base">
+                Rekap — {classes.find((c) => c.id === recapClass)?.name} ({months.find((m) => m.value === recapMonth)?.label} {recapYear})
+              </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Nama Siswa</TableHead>
-                    <TableHead>Total Pertemuan</TableHead>
-                    <TableHead>Hadir</TableHead>
-                    <TableHead>Sakit</TableHead>
-                    <TableHead>Izin</TableHead>
-                    <TableHead>Absen</TableHead>
-                    <TableHead>% Kehadiran</TableHead>
+                  <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
+                    <TableHead className="pl-5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Nama Siswa</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Pertemuan</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Hadir</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Sakit</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Izin</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Absen</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">% Hadir</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -308,8 +397,8 @@ export function AttendanceClient({ classes }: Props) {
                     const pct = r.total > 0 ? Math.round((r.present / r.total) * 100) : 0;
                     return (
                       <TableRow key={r.name}>
-                        <TableCell className="font-medium">{r.name}</TableCell>
-                        <TableCell>{r.total}</TableCell>
+                        <TableCell className="pl-5 font-medium text-gray-900">{r.name}</TableCell>
+                        <TableCell className="text-gray-600">{r.total}</TableCell>
                         <TableCell><span className="text-green-600 font-medium">{r.present}</span></TableCell>
                         <TableCell><span className="text-yellow-600">{r.sick}</span></TableCell>
                         <TableCell><span className="text-blue-600">{r.permission}</span></TableCell>
@@ -330,55 +419,77 @@ export function AttendanceClient({ classes }: Props) {
       </TabsContent>
 
       {/* ── Tab 3: Absensi Pelatih ── */}
-      <TabsContent value="coach" className="space-y-4">
-        <Card>
-          <CardHeader><CardTitle>Input Absensi Pelatih</CardTitle></CardHeader>
-          <CardContent>
+      <TabsContent value="coach" className="space-y-4 mt-4">
+        <Card className="overflow-visible border-gray-100 shadow-sm">
+          <CardHeader className="pb-3 border-b border-gray-50">
+            <CardTitle className="text-base">Input Absensi Pelatih</CardTitle>
+          </CardHeader>
+          <CardContent className="overflow-visible pt-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Kelas</Label>
-                <SearchableSelect value={coachClass} onValueChange={(v) => setCoachClass(v ?? "")} placeholder="Pilih kelas">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-gray-700">Kelas</Label>
+                <SearchableSelect value={coachClass} onValueChange={(v) => handleCoachClassChange(v ?? "")} placeholder="Pilih kelas">
                   {classes.filter((c) => c.coachId).map((c) => (
                     <SearchableSelectItem key={c.id} value={c.id}>{c.name} — {c.coach?.name}</SearchableSelectItem>
                   ))}
                 </SearchableSelect>
               </div>
-              <div className="space-y-2">
-                <Label>Tanggal</Label>
-                <input
-                  type="date"
-                  value={coachDate}
-                  onChange={(e) => setCoachDate(e.target.value)}
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
-                />
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-gray-700">
+                  Tanggal
+                  {validCoachDates.length > 0 && (
+                    <span className="ml-1.5 text-orange-500 font-normal text-[11px]">({getScheduleDayNames(coachClassData)})</span>
+                  )}
+                </Label>
+                {validCoachDates.length > 0 ? (
+                  <SearchableSelect
+                    value={coachDate}
+                    onValueChange={(v) => setCoachDate(v ?? coachDate)}
+                    placeholder="Pilih tanggal sesi"
+                  >
+                    {validCoachDates.map((d) => (
+                      <SearchableSelectItem key={d} value={d}>
+                        {format(parseISO(d), "EEEE, d MMM yyyy", { locale: id })}
+                      </SearchableSelectItem>
+                    ))}
+                  </SearchableSelect>
+                ) : (
+                  <input
+                    type="date"
+                    value={coachDate}
+                    onChange={(e) => setCoachDate(e.target.value)}
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                  />
+                )}
               </div>
             </div>
 
             {coachClass && (
               <div className="mt-4 space-y-3">
-                <div className="p-4 rounded-lg border bg-muted/30">
-                  <p className="text-sm font-medium mb-1">
-                    Pelatih: <span className="text-orange-600">{classes.find((c) => c.id === coachClass)?.coach?.name || "Tidak ada"}</span>
+                <div className="p-4 rounded-xl border border-gray-100 bg-gray-50/50">
+                  <p className="text-sm font-medium text-gray-900">
+                    Pelatih: <span className="text-orange-600">{coachClassData?.coach?.name || "Tidak ada"}</span>
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {format(new Date(coachDate), "EEEE, d MMMM yyyy", { locale: id })}
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {format(parseISO(coachDate), "EEEE, d MMMM yyyy", { locale: id })}
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <Label>Status Kehadiran</Label>
-                  <div className="flex gap-2">
+                  <Label className="text-xs font-medium text-gray-700">Status Kehadiran</Label>
+                  <div className="flex gap-2 flex-wrap">
                     {statusOptions.map((opt) => (
                       <button
                         key={opt.value}
+                        type="button"
                         onClick={() => setCoachRecord(opt.value)}
-                        className={`text-sm px-4 py-2 rounded-full font-medium transition-all border-2 ${coachRecord === opt.value ? `${opt.color} border-current` : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"}`}
+                        className={`text-sm px-4 py-2 rounded-full font-medium transition-all border-2 cursor-pointer ${coachRecord === opt.value ? `${opt.color} border-current` : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"}`}
                       >
                         {opt.label}
                       </button>
                     ))}
                   </div>
                 </div>
-                <Button onClick={handleCoachSave} className="bg-orange-500 hover:bg-orange-600" disabled={coachSaving}>
+                <Button type="button" onClick={handleCoachSave} className="bg-orange-500 hover:bg-orange-600" disabled={coachSaving}>
                   {coachSaving ? "Menyimpan..." : "Simpan Absensi Pelatih"}
                 </Button>
               </div>
