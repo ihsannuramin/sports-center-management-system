@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,10 +51,10 @@ export function RentalsClient({ courts, rentals:initialRentals, branches }:Props
   const filteredRentals = rentals.filter((r:any)=>listFilter==="ALL"||r.status===listFilter);
   const paginated = filteredRentals.slice((page-1)*pageSize, page*pageSize);
 
-  function fetchEvents(info:any,success:any,failure:any){
+  const fetchEvents = useCallback((info:any,success:any,failure:any)=>{
     const p=new URLSearchParams({start:info.startStr,end:info.endStr,...(courtFilterRef.current!=="ALL"?{courtId:courtFilterRef.current}:{})});
     fetch(`/api/rentals/events?${p}`).then(r=>r.json()).then(success).catch(()=>failure(new Error("Gagal")));
-  }
+  },[]);
   function handleCourtFilter(v:string){const val=v??"ALL";setCourtFilter(val);courtFilterRef.current=val;calRef.current?.getApi().refetchEvents();}
   function handleDateClick(info:any){const raw=info.dateStr;const date=raw.slice(0,10);const time=info.allDay?"08:00":raw.slice(11,16);setForm({...emptyF,date,startTime:time,endTime:addHour(time,1)});setAvail(null);setCreateOpen(true);}
   function handleEventClick(info:any){
