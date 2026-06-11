@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   const endDate   = new Date(end);
 
   try {
-    const [rentals, schedules] = await Promise.all([
+    const [rentals, schedules, classes] = await Promise.all([
       prisma.rentalBooking.findMany({
         where: {
           ...(courtId ? { courtId } : {}),
@@ -41,9 +41,47 @@ export async function GET(request: Request) {
         },
         include: { court: true },
       }),
+      prisma.class.findMany({
+        where: { isActive: true, schedule: { not: null } },
+        select: { id: true, name: true, schedule: true, branch: { select: { name: true } } },
+      }),
     ]);
 
+    // Expand recurring class schedules into individual events for the date range
+    const classEvents: object[] = [];
+    const cursor = new Date(startDate);
+    while (cursor < endDate) {
+      const dayOfWeek = cursor.getDay();
+      const dateStr = cursor.toISOString().slice(0, 10);
+      for (const cls of classes) {
+        if (!cls.schedule) continue;
+        try {
+          const sched = JSON.parse(cls.schedule);
+          if (!Array.isArray(sched.days) || !sched.days.includes(dayOfWeek)) continue;
+          if (courtId && sched.courtId && sched.courtId !== courtId) continue;
+          classEvents.push({
+            id: `class-${cls.id}-${dateStr}`,
+            title: `📚 ${cls.name}`,
+            start: `${dateStr}T${sched.startTime}`,
+            end:   `${dateStr}T${sched.endTime}`,
+            backgroundColor: "#7c3aed",
+            borderColor:     "#6d28d9",
+            textColor:       "#ffffff",
+            display:         "block",
+            editable:        false,
+            extendedProps: {
+              type:   "class",
+              name:   cls.name,
+              branch: cls.branch?.name,
+            },
+          });
+        } catch { /* skip malformed schedule */ }
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
     const events = [
+      ...classEvents,
       ...rentals.map((r) => {
         const color = statusColors[r.status] ?? statusColors.PENDING;
         const statusLabel: Record<string, string> = {

@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from "@fullcalendar/list";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -56,7 +57,13 @@ export function RentalsClient({ courts, rentals:initialRentals, branches }:Props
   }
   function handleCourtFilter(v:string){const val=v??"ALL";setCourtFilter(val);courtFilterRef.current=val;calRef.current?.getApi().refetchEvents();}
   function handleDateClick(info:any){const raw=info.dateStr;const date=raw.slice(0,10);const time=info.allDay?"08:00":raw.slice(11,16);setForm({...emptyF,date,startTime:time,endTime:addHour(time,1)});setAvail(null);setCreateOpen(true);}
-  function handleEventClick(info:any){const p=info.event.extendedProps;if(p.type!=="rental")return;setDetailEvent(p);}
+  function handleEventClick(info:any){
+    const p=info.event.extendedProps;
+    if(p.type==="rental") { setDetailEvent(p); return; }
+    if(p.type==="class"||p.type==="academy"||p.type==="maintenance") {
+      setDetailEvent({...p, _nonRental:true, _title:info.event.title, _start:info.event.startStr, _end:info.event.endStr});
+    }
+  }
   async function handleCheck(){if(!form.courtId||!form.date||!form.startTime||!form.endTime)return;setChecking(true);const r=await checkAvailability(form.courtId,form.date,form.startTime,form.endTime);setAvail(r);setChecking(false);}
   async function handleCreate(e:React.FormEvent){e.preventDefault();setLoading(true);try{const r=await createRental({...form,pricePerHour:Number(form.pricePerHour)});if(!r.success){toast.error(r.error);}else{toast.success(`Booking ${r.booking?.bookingNumber} dibuat`);setCreateOpen(false);setForm(emptyF);setAvail(null);router.refresh();calRef.current?.getApi().refetchEvents();}}catch(err:any){toast.error(err.message);}setLoading(false);}
   async function handleStatus(id:string,status:string){await updateBookingStatus(id,status);toast.success("Status diperbarui");setDetailEvent(null);router.refresh();calRef.current?.getApi().refetchEvents();}
@@ -78,7 +85,7 @@ export function RentalsClient({ courts, rentals:initialRentals, branches }:Props
       </div>
 
       <div className="flex gap-4 text-xs flex-wrap">
-        {[{color:"bg-amber-500",label:"Menunggu"},{color:"bg-green-600",label:"Dikonfirmasi"},{color:"bg-slate-600",label:"Selesai"},{color:"bg-gray-400",label:"Dibatalkan"},{color:"bg-blue-600",label:"Latihan"},{color:"bg-red-600",label:"Perawatan"}].map(l=>(
+        {[{color:"bg-amber-500",label:"Menunggu"},{color:"bg-green-600",label:"Dikonfirmasi"},{color:"bg-slate-600",label:"Selesai"},{color:"bg-gray-400",label:"Dibatalkan"},{color:"bg-violet-600",label:"Jadwal Kelas"},{color:"bg-blue-600",label:"Latihan"},{color:"bg-red-600",label:"Perawatan"}].map(l=>(
           <div key={l.label} className="flex items-center gap-1.5"><span className={`w-2.5 h-2.5 rounded-sm ${l.color} inline-block`}/><span className="text-gray-500">{l.label}</span></div>
         ))}
       </div>
@@ -91,10 +98,53 @@ export function RentalsClient({ courts, rentals:initialRentals, branches }:Props
 
         <TabsContent value="calendar">
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mt-4">
-            <style>{`.fc-event-cancelled{opacity:.5;text-decoration:line-through}.fc .fc-timegrid-slot{height:2.5em}.fc .fc-col-header-cell{background:#fafafa}.fc-day-today{background:#fff7ed!important}.fc-button-primary{background-color:#f97316!important;border-color:#ea580c!important}.fc-button-primary:hover{background-color:#ea580c!important}.fc-button-active{background-color:#c2410c!important}`}</style>
-            <FullCalendar ref={calRef} plugins={[dayGridPlugin,timeGridPlugin,interactionPlugin]} initialView="timeGridWeek" headerToolbar={{left:"prev,next today",center:"title",right:"dayGridMonth,timeGridWeek,timeGridDay"}} buttonText={{today:"Hari Ini",month:"Bulan",week:"Minggu",day:"Harian"}} locale="id" height="auto" slotMinTime="06:00:00" slotMaxTime="23:00:00" allDaySlot={false} nowIndicator selectable dateClick={handleDateClick} eventClick={handleEventClick} events={fetchEvents} eventTimeFormat={{hour:"2-digit",minute:"2-digit",meridiem:false,hour12:false}} eventDisplay="block" eventMinHeight={30} slotLabelFormat={{hour:"2-digit",minute:"2-digit",hour12:false}} eventDidMount={info=>{if(info.event.extendedProps.type!=="rental")info.el.style.cursor="default";}}/>
+            <style>{`
+              .fc-event-cancelled{opacity:.5;text-decoration:line-through}
+              .fc .fc-timegrid-slot{height:2.2em}
+              .fc .fc-col-header-cell{background:#fafafa}
+              .fc-day-today{background:#fff7ed!important}
+              .fc-button-primary{background-color:#f97316!important;border-color:#ea580c!important}
+              .fc-button-primary:hover{background-color:#ea580c!important}
+              .fc-button-active{background-color:#c2410c!important}
+              .fc-scroller{scrollbar-width:thin;scrollbar-color:#e5e7eb transparent}
+              .fc-scroller::-webkit-scrollbar{width:6px}
+              .fc-scroller::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:3px}
+              .fc-list-event{cursor:pointer}
+              .fc-list-event:hover td{background:#fff7ed!important}
+              .fc-list-event-dot{border-radius:3px!important;width:10px!important;height:10px!important;border:none!important}
+              .fc-list-day-cushion{background:#f9fafb!important;font-size:0.75rem;font-weight:600;color:#6b7280}
+              .fc-list-table td{padding:10px 14px!important;font-size:0.8rem}
+              .fc-list-event-title a{color:#111827!important;font-weight:500;text-decoration:none!important}
+              .fc-list-empty{padding:48px 0;text-align:center;color:#9ca3af;font-size:0.875rem}
+            `}</style>
+            <FullCalendar
+              ref={calRef}
+              plugins={[dayGridPlugin,timeGridPlugin,interactionPlugin,listPlugin]}
+              initialView="timeGridWeek"
+              headerToolbar={{left:"prev,next today",center:"title",right:"dayGridMonth,timeGridWeek,timeGridDay,listWeek"}}
+              buttonText={{today:"Hari Ini",month:"Bulan",week:"Minggu",day:"Harian",listWeek:"Agenda"}}
+              locale="id"
+              height="calc(100vh - 300px)"
+              slotMinTime="06:00:00"
+              slotMaxTime="23:00:00"
+              allDaySlot={false}
+              nowIndicator
+              stickyHeaderDates
+              selectable
+              dateClick={handleDateClick}
+              eventClick={handleEventClick}
+              events={fetchEvents}
+              eventTimeFormat={{hour:"2-digit",minute:"2-digit",meridiem:false,hour12:false}}
+              eventDisplay="block"
+              eventMinHeight={28}
+              slotLabelFormat={{hour:"2-digit",minute:"2-digit",hour12:false}}
+              noEventsText="Tidak ada agenda pada periode ini"
+              eventDidMount={info=>{
+                if(info.event.extendedProps.type!=="rental") info.el.style.cursor="default";
+              }}
+            />
           </div>
-          <p className="text-xs text-gray-400 mt-2 text-center">Klik slot kosong untuk booking baru · Klik event untuk detail</p>
+          <p className="text-xs text-gray-400 mt-2 text-center">Klik slot kosong untuk booking baru · Klik event untuk detail · Mode Agenda menampilkan semua event berurutan</p>
         </TabsContent>
 
         <TabsContent value="list" className="mt-4">
@@ -163,17 +213,42 @@ export function RentalsClient({ courts, rentals:initialRentals, branches }:Props
 
       {/* Detail Dialog */}
       <Dialog open={!!detailEvent} onOpenChange={()=>setDetailEvent(null)}>
-        <DialogContent className="max-w-sm"><DialogHeader><DialogTitle>Detail Booking</DialogTitle></DialogHeader>
-          {detailEvent&&<div className="space-y-3 text-sm">
-            <div className="flex items-center justify-between"><span className="font-mono text-xs text-gray-400">{detailEvent.bookingNumber}</span><span className={statusBadge[detailEvent.status]}>{statusLabels[detailEvent.status]}</span></div>
-            <div className="space-y-2 border border-gray-100 rounded-xl p-3 bg-gray-50/50">
-              {[["Lapangan",detailEvent.court],["Tanggal",detailEvent.date?format(new Date(detailEvent.date),"d MMM yyyy",{locale:idLocale}):"—"],["Pelanggan",detailEvent.customer],["Total",`Rp ${detailEvent.totalAmount?.toLocaleString("id-ID")}`]].map(([k,v])=>(
-                <div key={k} className="flex justify-between"><span className="text-gray-500">{k}</span><span className="font-medium text-gray-900">{v}</span></div>
-              ))}
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{detailEvent?._nonRental ? "Detail Jadwal" : "Detail Booking"}</DialogTitle>
+          </DialogHeader>
+          {detailEvent && !detailEvent._nonRental && (
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs text-gray-400">{detailEvent.bookingNumber}</span>
+                <span className={statusBadge[detailEvent.status]}>{statusLabels[detailEvent.status]}</span>
+              </div>
+              <div className="space-y-2 border border-gray-100 rounded-xl p-3 bg-gray-50/50">
+                {[["Lapangan",detailEvent.court],["Tanggal",detailEvent.date?format(new Date(detailEvent.date),"d MMM yyyy",{locale:idLocale}):"—"],["Waktu",detailEvent._start?`${format(new Date(detailEvent._start),"HH:mm")} – ${format(new Date(detailEvent._end),"HH:mm")}`:"—"],["Pelanggan",detailEvent.customer],["No. HP",detailEvent.phone||"—"],["Total",`Rp ${detailEvent.totalAmount?.toLocaleString("id-ID")}`]].map(([k,v])=>(
+                  <div key={k} className="flex justify-between gap-4"><span className="text-gray-500 shrink-0">{k}</span><span className="font-medium text-gray-900 text-right">{v}</span></div>
+                ))}
+              </div>
+              {detailEvent.status==="PENDING"&&<div className="flex gap-2"><Button className="flex-1 bg-green-500 hover:bg-green-600" onClick={()=>handleStatus(detailEvent.rentalId,"CONFIRMED")}>Konfirmasi</Button><Button variant="outline" className="flex-1 text-red-500 border-red-200" onClick={()=>handleStatus(detailEvent.rentalId,"CANCELLED")}>Batalkan</Button></div>}
+              {detailEvent.status==="CONFIRMED"&&<Button className="w-full" variant="outline" onClick={()=>handleStatus(detailEvent.rentalId,"COMPLETED")}>Tandai Selesai</Button>}
             </div>
-            {detailEvent.status==="PENDING"&&<div className="flex gap-2"><Button className="flex-1 bg-green-500 hover:bg-green-600" onClick={()=>handleStatus(detailEvent.rentalId,"CONFIRMED")}>Konfirmasi</Button><Button variant="outline" className="flex-1 text-red-500 border-red-200" onClick={()=>handleStatus(detailEvent.rentalId,"CANCELLED")}>Batalkan</Button></div>}
-            {detailEvent.status==="CONFIRMED"&&<Button className="w-full" variant="outline" onClick={()=>handleStatus(detailEvent.rentalId,"COMPLETED")}>Tandai Selesai</Button>}
-          </div>}
+          )}
+          {detailEvent?._nonRental && (
+            <div className="space-y-3 text-sm">
+              <div className="space-y-2 border border-gray-100 rounded-xl p-3 bg-gray-50/50">
+                {[
+                  ["Tipe", detailEvent.type==="class"?"Jadwal Kelas":detailEvent.type==="academy"?"Latihan Akademi":"Perawatan"],
+                  ["Nama", detailEvent.name||detailEvent.className||detailEvent._title||"—"],
+                  ["Lapangan", detailEvent.court||"—"],
+                  ["Cabang", detailEvent.branch||"—"],
+                  ["Waktu", detailEvent._start?`${format(new Date(detailEvent._start),"HH:mm")} – ${format(new Date(detailEvent._end),"HH:mm")}`:"—"],
+                  ...(detailEvent.notes?[["Catatan",detailEvent.notes]]:[]),
+                ].map(([k,v])=>(
+                  <div key={k} className="flex justify-between gap-4"><span className="text-gray-500 shrink-0">{k}</span><span className="font-medium text-gray-900 text-right">{v}</span></div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 text-center">Event ini tidak dapat diubah dari halaman ini</p>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </>
