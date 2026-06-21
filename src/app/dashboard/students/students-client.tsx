@@ -96,6 +96,25 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
 
   const activeCount = students.filter(s => s.status === "ACTIVE").length;
 
+  const filterStatusItems = [
+    { value: "ALL", label: "Semua Status" },
+    ...Object.entries(statusLabels).map(([k, v]) => ({ value: k, label: v })),
+  ];
+  const filterClassItems = [
+    { value: "ALL", label: "Semua Kelas" },
+    ...classes.map((c: any) => ({ value: c.id, label: c.name })),
+  ];
+  const filterBranchItems = [
+    { value: "ALL", label: "Semua Cabang" },
+    ...branches.map((b: any) => ({ value: b.id, label: b.name })),
+  ];
+  const genderItems = [
+    { value: "MALE", label: "Laki-laki" },
+    { value: "FEMALE", label: "Perempuan" },
+  ];
+  const branchItems = branches.map((b: any) => ({ value: b.id, label: b.name }));
+  const classItems = classes.map((c: any) => ({ value: c.id, label: c.name }));
+
   return (
     <Card className="border-gray-100 shadow-sm">
       <CardHeader className="pb-4 border-b border-gray-50">
@@ -114,21 +133,21 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input placeholder="Cari nama, nomor siswa..." className="pl-9 w-52 h-9 text-sm border-gray-200" value={search} onChange={(e) => { setSearch(e.target.value); resetPage(); }} />
             </div>
-            <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v ?? "ALL"); resetPage(); }}>
+            <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v ?? "ALL"); resetPage(); }} items={filterStatusItems}>
               <SelectTrigger className="w-34 h-9 text-sm border-gray-200"><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">Semua Status</SelectItem>
                 {Object.entries(statusLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
               </SelectContent>
             </Select>
-            <Select value={filterClass} onValueChange={(v) => { setFilterClass(v ?? "ALL"); resetPage(); }}>
+            <Select value={filterClass} onValueChange={(v) => { setFilterClass(v ?? "ALL"); resetPage(); }} items={filterClassItems}>
               <SelectTrigger className="w-32 h-9 text-sm border-gray-200"><SelectValue placeholder="Kelas" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">Semua Kelas</SelectItem>
                 {classes.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
-            <Select value={filterBranch} onValueChange={(v) => { setFilterBranch(v ?? "ALL"); resetPage(); }}>
+            <Select value={filterBranch} onValueChange={(v) => { setFilterBranch(v ?? "ALL"); resetPage(); }} items={filterBranchItems}>
               <SelectTrigger className="w-32 h-9 text-sm border-gray-200"><SelectValue placeholder="Cabang" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">Semua Cabang</SelectItem>
@@ -224,7 +243,7 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Tanggal Lahir</Label><Input type="date" value={form.birthDate} onChange={(e) => setForm({ ...form, birthDate: e.target.value })} /></div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Jenis Kelamin</Label>
-                <Select value={form.gender} onValueChange={(v) => v && setForm({ ...form, gender: v as any })}>
+                <Select value={form.gender} onValueChange={(v) => v && setForm({ ...form, gender: v as any })} items={genderItems}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent><SelectItem value="MALE">Laki-laki</SelectItem><SelectItem value="FEMALE">Perempuan</SelectItem></SelectContent>
                 </Select>
@@ -234,14 +253,14 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">No. HP Orang Tua</Label><Input value={form.parentPhone} onChange={(e) => setForm({ ...form, parentPhone: e.target.value })} /></div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Cabang *</Label>
-                <Select value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })}>
+                <Select value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })} items={branchItems}>
                   <SelectTrigger><SelectValue placeholder="Pilih cabang" /></SelectTrigger>
                   <SelectContent>{branches.map((b: any) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Kelas</Label>
-                <Select value={form.classId} onValueChange={(v) => v && setForm({ ...form, classId: v })}>
+                <Select value={form.classId} onValueChange={(v) => v && setForm({ ...form, classId: v })} items={classItems}>
                   <SelectTrigger><SelectValue placeholder="Pilih kelas" /></SelectTrigger>
                   <SelectContent>{classes.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
                 </Select>
