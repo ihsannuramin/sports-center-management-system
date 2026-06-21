@@ -96,23 +96,23 @@ export function SettingsClient({ settings: initial }: { settings: Record<string,
     <div className="space-y-5 max-w-2xl">
       {/* General groups */}
       {GROUPS.map((group) => (
-        <Card key={group.key} className="border-gray-100 shadow-sm">
-          <CardHeader className="pb-4 border-b border-gray-50">
+        <Card key={group.key} className="border-neutral shadow-sm">
+          <CardHeader className="pb-4 border-b border-neutral">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-50 rounded-xl">
-                <group.icon className="w-5 h-5 text-orange-500" />
+              <div className="p-2 bg-primary-10 rounded-xl">
+                <group.icon className="w-5 h-5 text-primary" />
               </div>
-              <h2 className="font-semibold text-gray-900">{group.label}</h2>
+              <h2 className="font-semibold text-on-surface">{group.label}</h2>
             </div>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             {group.fields.map((key) => (
               <div key={key} className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">{LABELS[key] ?? key}</Label>
+                <Label className="text-xs font-medium text-foreground">{LABELS[key] ?? key}</Label>
                 <Input
                   value={form[key] ?? ""}
                   onChange={(e) => set(key, e.target.value)}
-                  className="border-gray-200"
+                  className="border-border"
                 />
               </div>
             ))}
@@ -121,15 +121,15 @@ export function SettingsClient({ settings: initial }: { settings: Record<string,
       ))}
 
       {/* WhatsApp Integration (5.18) */}
-      <Card className="border-gray-100 shadow-sm">
-        <CardHeader className="pb-4 border-b border-gray-50">
+      <Card className="border-neutral shadow-sm">
+        <CardHeader className="pb-4 border-b border-neutral">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-50 rounded-xl">
               <MessageCircle className="w-5 h-5 text-green-500" />
             </div>
             <div>
-              <h2 className="font-semibold text-gray-900">WhatsApp Integration</h2>
-              <p className="text-xs text-gray-400 mt-0.5">Konfigurasi gateway untuk pengiriman notifikasi WhatsApp</p>
+              <h2 className="font-semibold text-on-surface">WhatsApp Integration</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">Konfigurasi gateway untuk pengiriman notifikasi WhatsApp</p>
             </div>
           </div>
         </CardHeader>
@@ -137,11 +137,11 @@ export function SettingsClient({ settings: initial }: { settings: Record<string,
           {/* Provider + Connection */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Provider</Label>
+              <Label className="text-xs font-medium text-foreground">Provider</Label>
               <select
                 value={form.wa_provider ?? ""}
                 onChange={(e) => set("wa_provider", e.target.value)}
-                className="flex h-9 w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                className="flex h-9 w-full rounded-md border border-border bg-surface px-3 py-1 text-sm text-on-surface shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="">-- Pilih Provider --</option>
                 {WA_PROVIDERS.map((p) => (
@@ -150,24 +150,24 @@ export function SettingsClient({ settings: initial }: { settings: Record<string,
               </select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Nomor Pengirim</Label>
+              <Label className="text-xs font-medium text-foreground">Nomor Pengirim</Label>
               <Input
                 value={form.wa_sender_number ?? ""}
                 onChange={(e) => set("wa_sender_number", e.target.value)}
                 placeholder="628xxxxxxxxx"
-                className="border-gray-200"
+                className="border-border"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-gray-700">API Key</Label>
+            <Label className="text-xs font-medium text-foreground">API Key</Label>
             <Input
               type="password"
               value={form.wa_api_key ?? ""}
               onChange={(e) => set("wa_api_key", e.target.value)}
               placeholder="Masukkan API Key provider"
-              className="border-gray-200"
+              className="border-border"
             />
           </div>
 
@@ -182,17 +182,17 @@ export function SettingsClient({ settings: initial }: { settings: Record<string,
           )}
 
           {/* Templates */}
-          <div className="space-y-3 pt-2 border-t border-gray-50">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Template Pesan</p>
+          <div className="space-y-3 pt-2 border-t border-neutral">
+            <p className="text-xs font-semibold text-tertiary uppercase tracking-wide">Template Pesan</p>
             {WA_TEMPLATES.map((tpl) => (
               <div key={tpl.key} className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">{tpl.label}</Label>
+                <Label className="text-xs font-medium text-foreground">{tpl.label}</Label>
                 <textarea
                   rows={2}
                   value={form[tpl.key] ?? ""}
                   onChange={(e) => set(tpl.key, e.target.value)}
                   placeholder={`Template pesan ${tpl.label}. Gunakan {nama}, {amount}, {tanggal}, dll.`}
-                  className="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent placeholder:text-gray-300"
+                  className="flex w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-on-surface shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder:text-muted-foreground/50"
                 />
               </div>
             ))}
@@ -214,7 +214,7 @@ export function SettingsClient({ settings: initial }: { settings: Record<string,
       {/* Save general */}
       <div className="flex justify-end">
         <Button
-          className="bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200"
+          className="bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20"
           onClick={handleSave}
           disabled={loading}
         >

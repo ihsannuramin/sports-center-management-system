@@ -161,7 +161,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
             <Card>
               <CardContent className="pt-4">
                 <div className="flex items-center gap-2 mb-1">
-                  <Star className="w-4 h-4 text-orange-500" />
+                  <Star className="w-4 h-4 text-primary" />
                   <p className="text-sm text-muted-foreground">Nilai Rata-rata</p>
                 </div>
                 {avgScore !== null ? (
@@ -176,7 +176,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
             <Card>
               <CardContent className="pt-4">
                 <div className="flex items-center gap-2 mb-1">
-                  <FileText className="w-4 h-4 text-orange-500" />
+                  <FileText className="w-4 h-4 text-primary" />
                   <p className="text-sm text-muted-foreground">Tagihan Belum Lunas</p>
                 </div>
                 <p className={`text-xl font-bold ${unpaidAmount > 0 ? "text-red-500" : "text-green-600"}`}>
@@ -235,7 +235,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
                     <div key={s} className="space-y-1">
                       <div className="flex justify-between text-sm">
                         <span className="font-medium">{skillLabels[s]}</span>
-                        <span className={`font-bold ${latestAssessment[s] >= 80 ? "text-green-600" : latestAssessment[s] >= 60 ? "text-orange-500" : "text-red-500"}`}>
+                        <span className={`font-bold ${latestAssessment[s] >= 80 ? "text-green-600" : latestAssessment[s] >= 60 ? "text-primary" : "text-destructive"}`}>
                           {latestAssessment[s]}
                         </span>
                       </div>
@@ -255,7 +255,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-orange-500" />
+              <FileText className="w-4 h-4 text-primary" />
               Riwayat Invoice
             </CardTitle>
           </CardHeader>

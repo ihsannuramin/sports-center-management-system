@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -35,6 +35,15 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-primary-10: var(--primary-10);
+  --color-primary-20: var(--primary-20);
+  --color-primary-60: var(--primary-60);
+  --color-primary-70: var(--primary-70);
+  --color-primary-80: var(--primary-80);
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-tertiary: var(--tertiary);
+  --color-neutral: var(--neutral);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -49,14 +58,33 @@
 }
 
 :root {
+  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --spacing-xs: 2px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 80px;
+  --spacing-gutter: 24px;
+
   --background: oklch(0.99 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.702 0.191 34.12);       /* orange-500 */
-  --primary-foreground: oklch(1 0 0);         /* white */
+  --primary: #FF710B;
+  --primary-foreground: oklch(1 0 0);
+  --primary-10: #FFF4EB;
+  --primary-20: #FFE5D3;
+  --primary-60: #FF9A4E;
+  --primary-70: #FF8730;
+  --primary-80: #E86600;
+  --surface: #FFFFFF;
+  --on-surface: #101010;
+  --tertiary: #656565;
+  --neutral: #E5E7EB;
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -66,7 +94,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.93 0 0);
   --input: oklch(0.93 0 0);
-  --ring: oklch(0.702 0.191 34.12);           /* orange-500 focus ring */
+  --ring: #FF710B;
   --chart-1: oklch(0.646 0.222 41.096);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -75,12 +103,12 @@
   --radius: 0.625rem;
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.702 0.191 34.12); /* orange */
+  --sidebar-primary: #FF710B;
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.93 0 0);
-  --sidebar-ring: oklch(0.702 0.191 34.12);
+  --sidebar-ring: #FF710B;
 }
 
 .dark {
@@ -90,8 +118,17 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.702 0.191 34.12);       /* orange-500 */
+  --primary: #FF710B;
   --primary-foreground: oklch(1 0 0);
+  --primary-10: color-mix(in oklch, var(--primary) 14%, transparent);
+  --primary-20: color-mix(in oklch, var(--primary) 22%, transparent);
+  --primary-60: #FF9A4E;
+  --primary-70: #FF8730;
+  --primary-80: #E86600;
+  --surface: oklch(0.205 0 0);
+  --on-surface: oklch(0.985 0 0);
+  --tertiary: oklch(0.708 0 0);
+  --neutral: oklch(1 0 0 / 10%);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -101,7 +138,7 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.702 0.191 34.12);
+  --ring: #FF710B;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -109,12 +146,12 @@
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.702 0.191 34.12);
+  --sidebar-primary: #FF710B;
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.702 0.191 34.12);
+  --sidebar-ring: #FF710B;
 }
 
 @layer base {
@@ -160,27 +197,27 @@
 
   /* Section cards */
   .data-card {
-    @apply bg-white rounded-xl border border-gray-100 shadow-sm;
+    @apply bg-surface rounded-md border border-neutral shadow-sm;
   }
 
   /* Status badges */
   .badge-green  { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-100; }
-  .badge-red    { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-100; }
+  .badge-red    { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-destructive/10 text-destructive border border-destructive/20; }
   .badge-yellow { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-100; }
-  .badge-gray   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200; }
+  .badge-gray   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-muted/50 text-foreground border border-border; }
   .badge-blue   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100; }
-  .badge-orange { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-50 text-orange-700 border border-orange-100; }
+  .badge-orange { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-10 text-primary border border-primary-20; }
   .badge-purple { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-100; }
   .badge-teal   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-100; }
 
   /* Table row hover */
   .table-row-hover tbody tr {
-    @apply hover:bg-gray-50/60 transition-colors duration-150;
+    @apply hover:bg-muted/60 transition-colors duration-150;
   }
 
   /* Table sticky header */
   .table-sticky-head thead tr th {
-    @apply sticky top-0 bg-gray-50/95 backdrop-blur-sm z-10;
+    @apply sticky top-0 bg-muted/95 backdrop-blur-sm z-10;
   }
 
   /* Form field group */
@@ -190,17 +227,17 @@
 
   /* Section title with separator */
   .section-label {
-    @apply text-[10px] font-bold tracking-widest text-gray-400 uppercase;
+    @apply text-[10px] font-bold tracking-widest text-tertiary uppercase;
   }
 
   /* Smooth card hover */
   .card-hover {
-    @apply transition-all duration-200 hover:shadow-md hover:border-orange-100;
+    @apply transition-all duration-200 hover:shadow-md hover:border-primary-20;
   }
 
   /* Required field asterisk */
   .required-mark {
-    @apply text-red-500 ml-0.5;
+    @apply text-destructive ml-0.5;
   }
 
   /* Empty state container */
@@ -208,12 +245,32 @@
     @apply flex flex-col items-center justify-center gap-3 py-16 text-center;
   }
   .empty-state-icon {
-    @apply w-12 h-12 text-gray-200;
+    @apply w-12 h-12 text-muted-foreground/40;
   }
   .empty-state-title {
-    @apply text-sm font-medium text-gray-500;
+    @apply text-sm font-medium text-tertiary;
   }
   .empty-state-desc {
-    @apply text-xs text-gray-400 max-w-xs;
+    @apply text-xs text-muted-foreground max-w-xs;
   }
+
+  /* Typography */
+  .headline-display { @apply font-sans text-[40px] font-bold leading-[1.05] tracking-[-0.03em]; }
+  .headline-lg { @apply font-sans text-[36px] font-bold leading-[40px] tracking-[-0.025em]; }
+  .headline-md { @apply font-sans text-[29px] font-bold leading-[35px]; }
+  .headline-sm { @apply font-sans text-[24px] font-bold leading-[29px]; }
+  .title-lg { @apply font-sans text-[20px] font-semibold leading-[24px]; }
+  .body-lg { @apply font-sans text-[16px] font-normal leading-[24px]; }
+  .body-md { @apply font-sans text-[14px] font-normal leading-[20px]; }
+  .body-sm { @apply font-sans text-[12px] font-normal leading-[18px]; }
+  .label-lg { @apply font-sans text-[14px] font-bold leading-[20px]; }
+  .label-md { @apply font-sans text-[12px] font-bold leading-[16px]; }
+  .label-sm { @apply font-sans text-[10px] font-bold leading-[12px]; }
+  .caption-md { @apply font-sans text-[10px] font-normal leading-[12px]; }
+  .nav-md { @apply font-sans text-[16px] font-normal leading-[24px]; }
+
+  /* Chips & stat pills */
+  .chip { @apply inline-flex items-center h-8 px-3 rounded-full bg-surface text-tertiary border border-border text-[10px] font-bold transition-colors; }
+  .chip-active { @apply inline-flex items-center h-8 px-3 rounded-full bg-primary text-surface text-[10px] font-bold transition-colors; }
+  .stat-pill { @apply inline-flex items-center h-8 px-3 rounded-full bg-surface text-on-surface text-[12px] font-bold border border-neutral transition-colors; }
 }
