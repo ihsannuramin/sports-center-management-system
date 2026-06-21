@@ -24,7 +24,7 @@ const TYPE_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, string> = {
   PENDING: "bg-yellow-50 text-yellow-700",
   APPROVED: "bg-green-50 text-green-700",
-  REJECTED: "bg-destructive/10 text-destructive",
+  REJECTED: "bg-red-50 text-red-700",
 };
 const PAGE_SIZE = 15;
 
@@ -66,24 +66,24 @@ export function ApprovalsClient({ requests: initial }: Props) {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-3 gap-4">
-        <Card className="border-neutral shadow-sm"><CardContent className="p-4"><p className="text-xs text-muted-foreground mb-1">Menunggu Persetujuan</p><p className="text-2xl font-bold text-yellow-600">{pendingCount}</p></CardContent></Card>
-        <Card className="border-neutral shadow-sm"><CardContent className="p-4"><p className="text-xs text-muted-foreground mb-1">Disetujui</p><p className="text-2xl font-bold text-green-600">{requests.filter(r => r.status === "APPROVED").length}</p></CardContent></Card>
-        <Card className="border-neutral shadow-sm"><CardContent className="p-4"><p className="text-xs text-muted-foreground mb-1">Ditolak</p><p className="text-2xl font-bold text-destructive">{requests.filter(r => r.status === "REJECTED").length}</p></CardContent></Card>
+        <Card className="border-gray-100 shadow-sm"><CardContent className="p-4"><p className="text-xs text-gray-400 mb-1">Menunggu Persetujuan</p><p className="text-2xl font-bold text-yellow-600">{pendingCount}</p></CardContent></Card>
+        <Card className="border-gray-100 shadow-sm"><CardContent className="p-4"><p className="text-xs text-gray-400 mb-1">Disetujui</p><p className="text-2xl font-bold text-green-600">{requests.filter(r => r.status === "APPROVED").length}</p></CardContent></Card>
+        <Card className="border-gray-100 shadow-sm"><CardContent className="p-4"><p className="text-xs text-gray-400 mb-1">Ditolak</p><p className="text-2xl font-bold text-red-500">{requests.filter(r => r.status === "REJECTED").length}</p></CardContent></Card>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-primary-10 rounded-xl"><CheckSquare className="w-5 h-5 text-primary" /></div>
-        <div><h2 className="font-semibold text-on-surface">Approval Workflow</h2><p className="text-xs text-muted-foreground">{requests.length} total request</p></div>
+        <div className="p-2 bg-orange-50 rounded-xl"><CheckSquare className="w-5 h-5 text-orange-500" /></div>
+        <div><h2 className="font-semibold text-gray-900">Approval Workflow</h2><p className="text-xs text-gray-400">{requests.length} total request</p></div>
       </div>
 
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Cari request..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="pl-9 h-9 border-border text-sm" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Input placeholder="Cari request..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="pl-9 h-9 border-gray-200 text-sm" />
         </div>
-        <div className="flex gap-1 bg-muted/80 rounded-lg p-1">
+        <div className="flex gap-1 bg-gray-100/80 rounded-lg p-1">
           {["", "PENDING", "APPROVED", "REJECTED"].map((s) => (
-            <button key={s} onClick={() => { setStatusFilter(s); setPage(1); }} className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${statusFilter === s ? "bg-surface shadow-sm text-on-surface" : "text-tertiary hover:text-foreground"}`}>
+            <button key={s} onClick={() => { setStatusFilter(s); setPage(1); }} className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${statusFilter === s ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700"}`}>
               {s || "Semua"}
             </button>
           ))}
@@ -91,27 +91,27 @@ export function ApprovalsClient({ requests: initial }: Props) {
       </div>
 
       {paginated.length === 0 ? (
-        <div className="text-center py-16"><CheckSquare className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" /><p className="text-sm text-muted-foreground">Tidak ada approval request</p></div>
+        <div className="text-center py-16"><CheckSquare className="w-10 h-10 text-gray-200 mx-auto mb-3" /><p className="text-sm text-gray-400">Tidak ada approval request</p></div>
       ) : (
         <div className="space-y-3">
           {paginated.map((req) => (
-            <Card key={req.id} className="border-neutral shadow-sm hover:shadow-md transition-all">
+            <Card key={req.id} className="border-gray-100 shadow-sm hover:shadow-md transition-all">
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-semibold text-on-surface">{TYPE_LABELS[req.type] ?? req.type}</span>
+                      <span className="text-sm font-semibold text-gray-900">{TYPE_LABELS[req.type] ?? req.type}</span>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[req.status]}`}>{req.status}</span>
                     </div>
-                    {req.reason && <p className="text-xs text-foreground mb-1">{req.reason}</p>}
-                    {req.amount && <p className="text-xs font-semibold text-primary">Rp {Number(req.amount).toLocaleString("id-ID")}</p>}
-                    <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                    {req.reason && <p className="text-xs text-gray-600 mb-1">{req.reason}</p>}
+                    {req.amount && <p className="text-xs font-semibold text-orange-500">Rp {Number(req.amount).toLocaleString("id-ID")}</p>}
+                    <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
                       {req.requester && <span>Oleh: {req.requester.name}</span>}
                       {req.approver && <span>· Diproses: {req.approver.name}</span>}
                       <span className="ml-auto">{format(new Date(req.createdAt), "dd MMM yyyy HH:mm", { locale: id })}</span>
                     </div>
                     {req.reviewNote && (
-                      <div className="mt-2 bg-muted/50 rounded-lg px-3 py-2 text-xs text-foreground">
+                      <div className="mt-2 bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-600">
                         <span className="font-medium">Catatan: </span>{req.reviewNote}
                       </div>
                     )}
@@ -121,7 +121,7 @@ export function ApprovalsClient({ requests: initial }: Props) {
                       <button onClick={() => { setNoteDialog({ id: req.id, action: "approve" }); setReviewNote(""); }} className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors text-xs font-medium">
                         <CheckCircle className="w-4 h-4" /> Setuju
                       </button>
-                      <button onClick={() => { setNoteDialog({ id: req.id, action: "reject" }); setReviewNote(""); }} className="flex items-center gap-1.5 px-3 py-1.5 bg-destructive/10 text-destructive rounded-lg hover:bg-red-100 transition-colors text-xs font-medium">
+                      <button onClick={() => { setNoteDialog({ id: req.id, action: "reject" }); setReviewNote(""); }} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors text-xs font-medium">
                         <XCircle className="w-4 h-4" /> Tolak
                       </button>
                     </div>
@@ -135,9 +135,9 @@ export function ApprovalsClient({ requests: initial }: Props) {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
-          <Button variant="outline" size="sm" className="h-8 border-border" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}>Sebelumnya</Button>
-          <span className="text-sm text-tertiary">{page} / {totalPages}</span>
-          <Button variant="outline" size="sm" className="h-8 border-border" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages}>Berikutnya</Button>
+          <Button variant="outline" size="sm" className="h-8 border-gray-200" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}>Sebelumnya</Button>
+          <span className="text-sm text-gray-500">{page} / {totalPages}</span>
+          <Button variant="outline" size="sm" className="h-8 border-gray-200" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages}>Berikutnya</Button>
         </div>
       )}
 
@@ -147,8 +147,8 @@ export function ApprovalsClient({ requests: initial }: Props) {
             <DialogTitle>{noteDialog?.action === "approve" ? "Setujui Request" : "Tolak Request"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-3 pt-1">
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Catatan Review</Label><Input value={reviewNote} onChange={(e) => setReviewNote(e.target.value)} placeholder="Catatan tambahan (opsional)" /></div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Catatan Review</Label><Input value={reviewNote} onChange={(e) => setReviewNote(e.target.value)} placeholder="Catatan tambahan (opsional)" /></div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button variant="outline" onClick={() => setNoteDialog(null)}>Batal</Button>
               <Button className={noteDialog?.action === "approve" ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} onClick={handleAction}>
                 {noteDialog?.action === "approve" ? "Setujui" : "Tolak"}

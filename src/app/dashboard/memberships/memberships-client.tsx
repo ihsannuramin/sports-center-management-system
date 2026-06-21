@@ -22,8 +22,8 @@ const TYPE_LABELS: Record<string, string> = {
 };
 const STATUS_COLORS: Record<string, string> = {
   ACTIVE: "bg-green-50 text-green-700",
-  EXPIRED: "bg-destructive/10 text-destructive",
-  CANCELLED: "bg-muted/50 text-tertiary",
+  EXPIRED: "bg-red-50 text-red-700",
+  CANCELLED: "bg-gray-50 text-gray-500",
 };
 
 export function MembershipsClient({ plans, memberships, packages, students }: Props) {
@@ -103,7 +103,7 @@ export function MembershipsClient({ plans, memberships, packages, students }: Pr
   return (
     <div className="space-y-5">
       <Tabs defaultValue="plans">
-        <TabsList className="h-9 bg-muted/80">
+        <TabsList className="h-9 bg-gray-100/80">
           <TabsTrigger value="plans" className="text-xs px-4">Paket Akademi</TabsTrigger>
           <TabsTrigger value="active" className="text-xs px-4">Membership Aktif</TabsTrigger>
           <TabsTrigger value="rental" className="text-xs px-4">Paket Rental</TabsTrigger>
@@ -112,70 +112,70 @@ export function MembershipsClient({ plans, memberships, packages, students }: Pr
         <TabsContent value="plans" className="mt-5 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary-10 rounded-xl"><CreditCard className="w-5 h-5 text-primary" /></div>
-              <div><h2 className="font-semibold text-on-surface">Paket Membership Akademi</h2><p className="text-xs text-muted-foreground">{plans.length} paket tersedia</p></div>
+              <div className="p-2 bg-orange-50 rounded-xl"><CreditCard className="w-5 h-5 text-orange-500" /></div>
+              <div><h2 className="font-semibold text-gray-900">Paket Membership Akademi</h2><p className="text-xs text-gray-400">{plans.length} paket tersedia</p></div>
             </div>
-            <Button size="sm" className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20" onClick={() => setPlanOpen(true)}><Plus className="w-4 h-4 mr-1.5" /> Buat Paket</Button>
+            <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={() => setPlanOpen(true)}><Plus className="w-4 h-4 mr-1.5" /> Buat Paket</Button>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {plans.map((plan) => (
-              <Card key={plan.id} className={`border-neutral shadow-sm ${!plan.isActive ? "opacity-60" : ""}`}>
+              <Card key={plan.id} className={`border-gray-100 shadow-sm ${!plan.isActive ? "opacity-60" : ""}`}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <p className="font-semibold text-on-surface">{plan.name}</p>
-                      <p className="text-xs text-muted-foreground">{TYPE_LABELS[plan.type] ?? plan.type}</p>
+                      <p className="font-semibold text-gray-900">{plan.name}</p>
+                      <p className="text-xs text-gray-400">{TYPE_LABELS[plan.type] ?? plan.type}</p>
                     </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${plan.isActive ? "bg-green-50 text-green-700" : "bg-muted/50 text-tertiary"}`}>{plan.isActive ? "Aktif" : "Nonaktif"}</span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${plan.isActive ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-500"}`}>{plan.isActive ? "Aktif" : "Nonaktif"}</span>
                   </div>
-                  <p className="text-xl font-bold text-primary mb-1">Rp {Number(plan.price).toLocaleString("id-ID")}</p>
-                  <p className="text-xs text-muted-foreground mb-3">{plan._count?.studentMemberships ?? 0} siswa aktif</p>
-                  <Button size="sm" variant="outline" className={`w-full h-7 text-xs ${plan.isActive ? "text-destructive border-destructive/20 hover:bg-destructive/10" : "text-green-600 border-green-100 hover:bg-green-50"}`} onClick={() => togglePlan(plan.id, plan.isActive)}>
+                  <p className="text-xl font-bold text-orange-500 mb-1">Rp {Number(plan.price).toLocaleString("id-ID")}</p>
+                  <p className="text-xs text-gray-400 mb-3">{plan._count?.studentMemberships ?? 0} siswa aktif</p>
+                  <Button size="sm" variant="outline" className={`w-full h-7 text-xs ${plan.isActive ? "text-red-500 border-red-100 hover:bg-red-50" : "text-green-600 border-green-100 hover:bg-green-50"}`} onClick={() => togglePlan(plan.id, plan.isActive)}>
                     {plan.isActive ? "Nonaktifkan" : "Aktifkan"}
                   </Button>
                 </CardContent>
               </Card>
             ))}
-            {plans.length === 0 && <div className="col-span-3 text-center py-12 text-sm text-muted-foreground">Belum ada paket membership</div>}
+            {plans.length === 0 && <div className="col-span-3 text-center py-12 text-sm text-gray-400">Belum ada paket membership</div>}
           </div>
         </TabsContent>
 
         <TabsContent value="active" className="mt-5 space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary-10 rounded-xl"><Users className="w-5 h-5 text-primary" /></div>
-              <div><h2 className="font-semibold text-on-surface">Membership Siswa</h2><p className="text-xs text-muted-foreground">{memberships.length} total membership</p></div>
+              <div className="p-2 bg-orange-50 rounded-xl"><Users className="w-5 h-5 text-orange-500" /></div>
+              <div><h2 className="font-semibold text-gray-900">Membership Siswa</h2><p className="text-xs text-gray-400">{memberships.length} total membership</p></div>
             </div>
             <div className="flex gap-2">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="Cari siswa..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 w-48 border-border text-sm" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input placeholder="Cari siswa..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 w-48 border-gray-200 text-sm" />
               </div>
-              <Button size="sm" className="h-9 bg-primary hover:bg-primary-80" onClick={() => setAssignOpen(true)}><Plus className="w-4 h-4 mr-1.5" /> Tetapkan</Button>
+              <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600" onClick={() => setAssignOpen(true)}><Plus className="w-4 h-4 mr-1.5" /> Tetapkan</Button>
             </div>
           </div>
-          <div className="rounded-xl border border-neutral overflow-hidden shadow-sm">
+          <div className="rounded-xl border border-gray-100 overflow-hidden shadow-sm">
             <table className="w-full text-sm">
-              <thead className="bg-muted/50 border-b border-neutral">
+              <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-tertiary uppercase tracking-wide">Siswa</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-tertiary uppercase tracking-wide">Paket</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-tertiary uppercase tracking-wide">Mulai</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-tertiary uppercase tracking-wide">Berakhir</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-tertiary uppercase tracking-wide">Status</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Siswa</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Paket</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Mulai</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Berakhir</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {filteredMemberships.map((m) => (
-                  <tr key={m.id} className="hover:bg-muted/50">
-                    <td className="px-4 py-3 font-medium text-on-surface">{m.student?.name}<p className="text-xs text-muted-foreground">{m.student?.studentNumber}</p></td>
-                    <td className="px-4 py-3 text-foreground text-xs">{m.plan?.name} <br /><span className="text-muted-foreground">{m.plan?.type}</span></td>
-                    <td className="px-4 py-3 text-xs text-tertiary">{new Date(m.startDate).toLocaleDateString("id-ID")}</td>
-                    <td className="px-4 py-3 text-xs text-tertiary">{new Date(m.endDate).toLocaleDateString("id-ID")}</td>
+                  <tr key={m.id} className="hover:bg-gray-50/50">
+                    <td className="px-4 py-3 font-medium text-gray-900">{m.student?.name}<p className="text-xs text-gray-400">{m.student?.studentNumber}</p></td>
+                    <td className="px-4 py-3 text-gray-600 text-xs">{m.plan?.name} <br /><span className="text-gray-400">{m.plan?.type}</span></td>
+                    <td className="px-4 py-3 text-xs text-gray-500">{new Date(m.startDate).toLocaleDateString("id-ID")}</td>
+                    <td className="px-4 py-3 text-xs text-gray-500">{new Date(m.endDate).toLocaleDateString("id-ID")}</td>
                     <td className="px-4 py-3"><span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[m.status]}`}>{m.status}</span></td>
                   </tr>
                 ))}
-                {filteredMemberships.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-sm text-muted-foreground">Belum ada membership aktif</td></tr>}
+                {filteredMemberships.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">Belum ada membership aktif</td></tr>}
               </tbody>
             </table>
           </div>
@@ -184,26 +184,26 @@ export function MembershipsClient({ plans, memberships, packages, students }: Pr
         <TabsContent value="rental" className="mt-5 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary-10 rounded-xl"><Package className="w-5 h-5 text-primary" /></div>
-              <div><h2 className="font-semibold text-on-surface">Paket Sewa Lapangan</h2><p className="text-xs text-muted-foreground">{packages.length} paket tersedia</p></div>
+              <div className="p-2 bg-orange-50 rounded-xl"><Package className="w-5 h-5 text-orange-500" /></div>
+              <div><h2 className="font-semibold text-gray-900">Paket Sewa Lapangan</h2><p className="text-xs text-gray-400">{packages.length} paket tersedia</p></div>
             </div>
-            <Button size="sm" className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20" onClick={() => setPkgOpen(true)}><Plus className="w-4 h-4 mr-1.5" /> Buat Paket</Button>
+            <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={() => setPkgOpen(true)}><Plus className="w-4 h-4 mr-1.5" /> Buat Paket</Button>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {packages.map((pkg) => (
-              <Card key={pkg.id} className={`border-neutral shadow-sm ${!pkg.isActive ? "opacity-60" : ""}`}>
+              <Card key={pkg.id} className={`border-gray-100 shadow-sm ${!pkg.isActive ? "opacity-60" : ""}`}>
                 <CardContent className="p-4">
-                  <p className="font-semibold text-on-surface">{pkg.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{pkg.hours} jam · valid {pkg.validDays} hari</p>
-                  <p className="text-xl font-bold text-primary mt-2 mb-3">Rp {Number(pkg.price).toLocaleString("id-ID")}</p>
-                  {pkg.description && <p className="text-xs text-muted-foreground mb-3">{pkg.description}</p>}
-                  <Button size="sm" variant="outline" className={`w-full h-7 text-xs ${pkg.isActive ? "text-destructive border-destructive/20 hover:bg-destructive/10" : "text-green-600 border-green-100 hover:bg-green-50"}`} onClick={() => togglePackage(pkg.id, pkg.isActive)}>
+                  <p className="font-semibold text-gray-900">{pkg.name}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{pkg.hours} jam · valid {pkg.validDays} hari</p>
+                  <p className="text-xl font-bold text-orange-500 mt-2 mb-3">Rp {Number(pkg.price).toLocaleString("id-ID")}</p>
+                  {pkg.description && <p className="text-xs text-gray-400 mb-3">{pkg.description}</p>}
+                  <Button size="sm" variant="outline" className={`w-full h-7 text-xs ${pkg.isActive ? "text-red-500 border-red-100 hover:bg-red-50" : "text-green-600 border-green-100 hover:bg-green-50"}`} onClick={() => togglePackage(pkg.id, pkg.isActive)}>
                     {pkg.isActive ? "Nonaktifkan" : "Aktifkan"}
                   </Button>
                 </CardContent>
               </Card>
             ))}
-            {packages.length === 0 && <div className="col-span-3 text-center py-12 text-sm text-muted-foreground">Belum ada paket rental</div>}
+            {packages.length === 0 && <div className="col-span-3 text-center py-12 text-sm text-gray-400">Belum ada paket rental</div>}
           </div>
         </TabsContent>
       </Tabs>
@@ -213,24 +213,24 @@ export function MembershipsClient({ plans, memberships, packages, students }: Pr
         <DialogContent>
           <DialogHeader><DialogTitle>Buat Paket Membership</DialogTitle></DialogHeader>
           <form onSubmit={handleCreatePlan} className="space-y-3 pt-1">
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Nama Paket *</Label><Input value={planForm.name} onChange={(e) => setPlanForm({ ...planForm, name: e.target.value })} required /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Nama Paket *</Label><Input value={planForm.name} onChange={(e) => setPlanForm({ ...planForm, name: e.target.value })} required /></div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Tipe *</Label>
+                <Label className="text-xs font-medium text-gray-700">Tipe *</Label>
                 <select value={planForm.type} onChange={(e) => {
                   const durations: Record<string, string> = { MONTHLY: "30", QUARTERLY: "90", SEMI_ANNUAL: "180", ANNUAL: "365" };
                   setPlanForm({ ...planForm, type: e.target.value, durationDays: durations[e.target.value] ?? planForm.durationDays });
-                }} className="w-full h-9 border border-border rounded-lg px-3 text-sm bg-surface">
+                }} className="w-full h-9 border border-gray-200 rounded-lg px-3 text-sm bg-white">
                   {MEMBERSHIP_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Durasi (hari) *</Label><Input type="number" min="1" value={planForm.durationDays} onChange={(e) => setPlanForm({ ...planForm, durationDays: e.target.value })} required /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Durasi (hari) *</Label><Input type="number" min="1" value={planForm.durationDays} onChange={(e) => setPlanForm({ ...planForm, durationDays: e.target.value })} required /></div>
             </div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Harga (Rp) *</Label><Input type="number" min="0" value={planForm.price} onChange={(e) => setPlanForm({ ...planForm, price: e.target.value })} required /></div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Deskripsi</Label><Input value={planForm.description} onChange={(e) => setPlanForm({ ...planForm, description: e.target.value })} /></div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Harga (Rp) *</Label><Input type="number" min="0" value={planForm.price} onChange={(e) => setPlanForm({ ...planForm, price: e.target.value })} required /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Deskripsi</Label><Input value={planForm.description} onChange={(e) => setPlanForm({ ...planForm, description: e.target.value })} /></div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setPlanOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
             </div>
           </form>
         </DialogContent>
@@ -242,27 +242,27 @@ export function MembershipsClient({ plans, memberships, packages, students }: Pr
           <DialogHeader><DialogTitle>Tetapkan Membership ke Siswa</DialogTitle></DialogHeader>
           <form onSubmit={handleAssign} className="space-y-3 pt-1">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-foreground">Siswa *</Label>
-              <select value={assignForm.studentId} onChange={(e) => setAssignForm({ ...assignForm, studentId: e.target.value })} required className="w-full h-9 border border-border rounded-lg px-3 text-sm bg-surface">
+              <Label className="text-xs font-medium text-gray-700">Siswa *</Label>
+              <select value={assignForm.studentId} onChange={(e) => setAssignForm({ ...assignForm, studentId: e.target.value })} required className="w-full h-9 border border-gray-200 rounded-lg px-3 text-sm bg-white">
                 <option value="">Pilih Siswa</option>
                 {students.map((s: any) => <option key={s.id} value={s.id}>{s.name} ({s.studentNumber})</option>)}
               </select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-foreground">Paket *</Label>
-              <select value={assignForm.planId} onChange={(e) => setAssignForm({ ...assignForm, planId: e.target.value })} required className="w-full h-9 border border-border rounded-lg px-3 text-sm bg-surface">
+              <Label className="text-xs font-medium text-gray-700">Paket *</Label>
+              <select value={assignForm.planId} onChange={(e) => setAssignForm({ ...assignForm, planId: e.target.value })} required className="w-full h-9 border border-gray-200 rounded-lg px-3 text-sm bg-white">
                 <option value="">Pilih Paket</option>
                 {plans.filter(p => p.isActive).map((p: any) => <option key={p.id} value={p.id}>{p.name} — Rp {Number(p.price).toLocaleString("id-ID")}</option>)}
               </select>
             </div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Tanggal Mulai *</Label><Input type="date" value={assignForm.startDate} onChange={(e) => setAssignForm({ ...assignForm, startDate: e.target.value })} required /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Tanggal Mulai *</Label><Input type="date" value={assignForm.startDate} onChange={(e) => setAssignForm({ ...assignForm, startDate: e.target.value })} required /></div>
             <div className="flex items-center gap-2">
-              <input type="checkbox" id="autoRenew" checked={assignForm.autoRenew} onChange={(e) => setAssignForm({ ...assignForm, autoRenew: e.target.checked })} className="w-4 h-4 rounded border-foreground/20" />
-              <Label htmlFor="autoRenew" className="text-xs font-medium text-foreground">Auto Renewal</Label>
+              <input type="checkbox" id="autoRenew" checked={assignForm.autoRenew} onChange={(e) => setAssignForm({ ...assignForm, autoRenew: e.target.checked })} className="w-4 h-4 rounded border-gray-300" />
+              <Label htmlFor="autoRenew" className="text-xs font-medium text-gray-700">Auto Renewal</Label>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setAssignOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={loading}>{loading ? "Menyimpan..." : "Tetapkan"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Tetapkan"}</Button>
             </div>
           </form>
         </DialogContent>
@@ -273,16 +273,16 @@ export function MembershipsClient({ plans, memberships, packages, students }: Pr
         <DialogContent>
           <DialogHeader><DialogTitle>Buat Paket Rental</DialogTitle></DialogHeader>
           <form onSubmit={handleCreatePackage} className="space-y-3 pt-1">
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Nama Paket *</Label><Input value={pkgForm.name} onChange={(e) => setPkgForm({ ...pkgForm, name: e.target.value })} placeholder="Contoh: Paket 10 Jam" required /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Nama Paket *</Label><Input value={pkgForm.name} onChange={(e) => setPkgForm({ ...pkgForm, name: e.target.value })} placeholder="Contoh: Paket 10 Jam" required /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Jumlah Jam *</Label><Input type="number" min="1" value={pkgForm.hours} onChange={(e) => setPkgForm({ ...pkgForm, hours: e.target.value })} required /></div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Valid (hari)</Label><Input type="number" min="1" value={pkgForm.validDays} onChange={(e) => setPkgForm({ ...pkgForm, validDays: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jumlah Jam *</Label><Input type="number" min="1" value={pkgForm.hours} onChange={(e) => setPkgForm({ ...pkgForm, hours: e.target.value })} required /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Valid (hari)</Label><Input type="number" min="1" value={pkgForm.validDays} onChange={(e) => setPkgForm({ ...pkgForm, validDays: e.target.value })} /></div>
             </div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Harga (Rp) *</Label><Input type="number" min="0" value={pkgForm.price} onChange={(e) => setPkgForm({ ...pkgForm, price: e.target.value })} required /></div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Deskripsi</Label><Input value={pkgForm.description} onChange={(e) => setPkgForm({ ...pkgForm, description: e.target.value })} /></div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Harga (Rp) *</Label><Input type="number" min="0" value={pkgForm.price} onChange={(e) => setPkgForm({ ...pkgForm, price: e.target.value })} required /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Deskripsi</Label><Input value={pkgForm.description} onChange={(e) => setPkgForm({ ...pkgForm, description: e.target.value })} /></div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setPkgOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
             </div>
           </form>
         </DialogContent>

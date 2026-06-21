@@ -15,7 +15,7 @@ import { id } from "date-fns/locale";
 
 const statusOptions = [
   { value: "PRESENT", label: "Hadir", color: "bg-green-100 text-green-700" },
-  { value: "ABSENT", label: "Absen", color: "bg-red-100 text-destructive" },
+  { value: "ABSENT", label: "Absen", color: "bg-red-100 text-red-700" },
   { value: "SICK", label: "Sakit", color: "bg-yellow-100 text-yellow-700" },
   { value: "PERMISSION", label: "Izin", color: "bg-blue-100 text-blue-700" },
 ];
@@ -219,31 +219,31 @@ export function AttendanceClient({ classes }: Props) {
 
   return (
     <Tabs defaultValue="input">
-      <TabsList className="bg-muted p-1 rounded-xl">
-        <TabsTrigger value="input" className="rounded-lg text-sm data-[state=active]:bg-surface data-[state=active]:shadow-sm">Input Absensi Siswa</TabsTrigger>
-        <TabsTrigger value="recap" className="rounded-lg text-sm data-[state=active]:bg-surface data-[state=active]:shadow-sm">Rekap Bulanan</TabsTrigger>
-        <TabsTrigger value="coach" className="rounded-lg text-sm data-[state=active]:bg-surface data-[state=active]:shadow-sm">Absensi Pelatih</TabsTrigger>
+      <TabsList className="bg-gray-100 p-1 rounded-xl">
+        <TabsTrigger value="input" className="rounded-lg text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm">Input Absensi Siswa</TabsTrigger>
+        <TabsTrigger value="recap" className="rounded-lg text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm">Rekap Bulanan</TabsTrigger>
+        <TabsTrigger value="coach" className="rounded-lg text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm">Absensi Pelatih</TabsTrigger>
       </TabsList>
 
       {/* ── Tab 1: Input Absensi Siswa ── */}
       <TabsContent value="input" className="space-y-4 mt-4">
-        <Card className="overflow-visible border-neutral shadow-sm">
-          <CardHeader className="pb-3 border-b border-neutral">
+        <Card className="overflow-visible border-gray-100 shadow-sm">
+          <CardHeader className="pb-3 border-b border-gray-50">
             <CardTitle className="text-base">Input Absensi Siswa</CardTitle>
           </CardHeader>
           <CardContent className="overflow-visible pt-4">
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Kelas</Label>
+                <Label className="text-xs font-medium text-gray-700">Kelas</Label>
                 <SearchableSelect value={selectedClass} onValueChange={(v) => handleClassChange(v ?? "")} placeholder="Pilih kelas">
                   {classes.map((c) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">
+                <Label className="text-xs font-medium text-gray-700">
                   Tanggal
                   {validStudentDates.length > 0 && (
-                    <span className="ml-1.5 text-primary font-normal text-[11px]">({getScheduleDayNames(classData)})</span>
+                    <span className="ml-1.5 text-orange-500 font-normal text-[11px]">({getScheduleDayNames(classData)})</span>
                   )}
                 </Label>
                 {validStudentDates.length > 0 ? (
@@ -268,7 +268,7 @@ export function AttendanceClient({ classes }: Props) {
                 )}
               </div>
               <div className="flex items-end">
-                <Button onClick={loadAttendance} disabled={!selectedClass || loading} className="bg-primary hover:bg-primary-80 w-full">
+                <Button onClick={loadAttendance} disabled={!selectedClass || loading} className="bg-orange-500 hover:bg-orange-600 w-full">
                   {loading ? "Memuat..." : "Muat Siswa"}
                 </Button>
               </div>
@@ -277,8 +277,8 @@ export function AttendanceClient({ classes }: Props) {
         </Card>
 
         {students.length > 0 && (
-          <Card className="border-neutral shadow-sm">
-            <CardHeader className="flex-row items-center justify-between pb-4 border-b border-neutral">
+          <Card className="border-gray-100 shadow-sm">
+            <CardHeader className="flex-row items-center justify-between pb-4 border-b border-gray-50">
               <div>
                 <CardTitle className="text-base">{classData?.name}</CardTitle>
                 <p className="text-sm text-muted-foreground mt-0.5">
@@ -287,8 +287,8 @@ export function AttendanceClient({ classes }: Props) {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-sm bg-green-100 text-green-700 px-2 py-1 rounded-full">Hadir: {presentCount}</span>
-                <span className="text-sm bg-red-100 text-destructive px-2 py-1 rounded-full">Absen: {absentCount}</span>
-                <Button onClick={handleSave} className="bg-primary hover:bg-primary-80" disabled={saving}>
+                <span className="text-sm bg-red-100 text-red-700 px-2 py-1 rounded-full">Absen: {absentCount}</span>
+                <Button onClick={handleSave} className="bg-orange-500 hover:bg-orange-600" disabled={saving}>
                   {saving ? "Menyimpan..." : "Simpan Absensi"}
                 </Button>
               </div>
@@ -296,19 +296,19 @@ export function AttendanceClient({ classes }: Props) {
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableHead className="pl-5 text-xs font-semibold text-tertiary uppercase tracking-wide">No</TableHead>
-                    <TableHead className="text-xs font-semibold text-tertiary uppercase tracking-wide">Nama Siswa</TableHead>
-                    <TableHead className="text-xs font-semibold text-tertiary uppercase tracking-wide">No. Siswa</TableHead>
-                    <TableHead className="text-xs font-semibold text-tertiary uppercase tracking-wide">Status</TableHead>
+                  <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
+                    <TableHead className="pl-5 text-xs font-semibold text-gray-500 uppercase tracking-wide">No</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nama Siswa</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">No. Siswa</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {students.map((s, i) => (
                     <TableRow key={s.id}>
-                      <TableCell className="pl-5 text-tertiary">{i + 1}</TableCell>
-                      <TableCell className="font-medium text-on-surface">{s.name}</TableCell>
-                      <TableCell className="font-mono text-sm text-tertiary">{s.studentNumber}</TableCell>
+                      <TableCell className="pl-5 text-gray-500">{i + 1}</TableCell>
+                      <TableCell className="font-medium text-gray-900">{s.name}</TableCell>
+                      <TableCell className="font-mono text-sm text-gray-500">{s.studentNumber}</TableCell>
                       <TableCell>
                         <div className="flex gap-2 flex-wrap">
                           {statusOptions.map((opt) => (
@@ -316,7 +316,7 @@ export function AttendanceClient({ classes }: Props) {
                               key={opt.value}
                               type="button"
                               onClick={() => setRecords({ ...records, [s.id]: opt.value })}
-                              className={`text-xs px-3 py-1 rounded-full font-medium transition-all border-2 cursor-pointer ${records[s.id] === opt.value ? `${opt.color} border-current` : "bg-muted/50 text-tertiary border-transparent hover:border-border"}`}
+                              className={`text-xs px-3 py-1 rounded-full font-medium transition-all border-2 cursor-pointer ${records[s.id] === opt.value ? `${opt.color} border-current` : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"}`}
                             >
                               {opt.label}
                             </button>
@@ -334,26 +334,26 @@ export function AttendanceClient({ classes }: Props) {
 
       {/* ── Tab 2: Rekap Bulanan ── */}
       <TabsContent value="recap" className="space-y-4 mt-4">
-        <Card className="overflow-visible border-neutral shadow-sm">
-          <CardHeader className="pb-3 border-b border-neutral">
+        <Card className="overflow-visible border-gray-100 shadow-sm">
+          <CardHeader className="pb-3 border-b border-gray-50">
             <CardTitle className="text-base">Rekap Absensi Bulanan</CardTitle>
           </CardHeader>
           <CardContent className="overflow-visible pt-4">
             <div className="grid grid-cols-4 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Kelas</Label>
+                <Label className="text-xs font-medium text-gray-700">Kelas</Label>
                 <SearchableSelect value={recapClass} onValueChange={(v) => setRecapClass(v ?? "")} placeholder="Pilih kelas">
                   {classes.map((c) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Bulan</Label>
+                <Label className="text-xs font-medium text-gray-700">Bulan</Label>
                 <SearchableSelect value={recapMonth} onValueChange={(v) => setRecapMonth(v ?? recapMonth)} placeholder="Pilih bulan">
                   {months.map((m) => <SearchableSelectItem key={m.value} value={m.value}>{m.label}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Tahun</Label>
+                <Label className="text-xs font-medium text-gray-700">Tahun</Label>
                 <input
                   type="number"
                   value={recapYear}
@@ -364,7 +364,7 @@ export function AttendanceClient({ classes }: Props) {
                 />
               </div>
               <div className="flex items-end">
-                <Button onClick={loadRecap} disabled={!recapClass || recapLoading} className="bg-primary hover:bg-primary-80 w-full">
+                <Button onClick={loadRecap} disabled={!recapClass || recapLoading} className="bg-orange-500 hover:bg-orange-600 w-full">
                   {recapLoading ? "Memuat..." : "Tampilkan Rekap"}
                 </Button>
               </div>
@@ -373,8 +373,8 @@ export function AttendanceClient({ classes }: Props) {
         </Card>
 
         {recapSummary.length > 0 && (
-          <Card className="border-neutral shadow-sm">
-            <CardHeader className="pb-4 border-b border-neutral">
+          <Card className="border-gray-100 shadow-sm">
+            <CardHeader className="pb-4 border-b border-gray-50">
               <CardTitle className="text-base">
                 Rekap — {classes.find((c) => c.id === recapClass)?.name} ({months.find((m) => m.value === recapMonth)?.label} {recapYear})
               </CardTitle>
@@ -382,14 +382,14 @@ export function AttendanceClient({ classes }: Props) {
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableHead className="pl-5 text-xs font-semibold text-tertiary uppercase tracking-wide">Nama Siswa</TableHead>
-                    <TableHead className="text-xs font-semibold text-tertiary uppercase tracking-wide">Pertemuan</TableHead>
-                    <TableHead className="text-xs font-semibold text-tertiary uppercase tracking-wide">Hadir</TableHead>
-                    <TableHead className="text-xs font-semibold text-tertiary uppercase tracking-wide">Sakit</TableHead>
-                    <TableHead className="text-xs font-semibold text-tertiary uppercase tracking-wide">Izin</TableHead>
-                    <TableHead className="text-xs font-semibold text-tertiary uppercase tracking-wide">Absen</TableHead>
-                    <TableHead className="text-xs font-semibold text-tertiary uppercase tracking-wide">% Hadir</TableHead>
+                  <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
+                    <TableHead className="pl-5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Nama Siswa</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Pertemuan</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Hadir</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Sakit</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Izin</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Absen</TableHead>
+                    <TableHead className="text-xs font-semibold text-gray-500 uppercase tracking-wide">% Hadir</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -397,14 +397,14 @@ export function AttendanceClient({ classes }: Props) {
                     const pct = r.total > 0 ? Math.round((r.present / r.total) * 100) : 0;
                     return (
                       <TableRow key={r.name}>
-                        <TableCell className="pl-5 font-medium text-on-surface">{r.name}</TableCell>
-                        <TableCell className="text-foreground">{r.total}</TableCell>
+                        <TableCell className="pl-5 font-medium text-gray-900">{r.name}</TableCell>
+                        <TableCell className="text-gray-600">{r.total}</TableCell>
                         <TableCell><span className="text-green-600 font-medium">{r.present}</span></TableCell>
                         <TableCell><span className="text-yellow-600">{r.sick}</span></TableCell>
                         <TableCell><span className="text-blue-600">{r.permission}</span></TableCell>
-                        <TableCell><span className="text-destructive">{r.absent}</span></TableCell>
+                        <TableCell><span className="text-red-500">{r.absent}</span></TableCell>
                         <TableCell>
-                          <span className={`font-bold ${pct >= 80 ? "text-green-600" : pct >= 60 ? "text-primary" : "text-destructive"}`}>
+                          <span className={`font-bold ${pct >= 80 ? "text-green-600" : pct >= 60 ? "text-orange-500" : "text-red-500"}`}>
                             {pct}%
                           </span>
                         </TableCell>
@@ -420,14 +420,14 @@ export function AttendanceClient({ classes }: Props) {
 
       {/* ── Tab 3: Absensi Pelatih ── */}
       <TabsContent value="coach" className="space-y-4 mt-4">
-        <Card className="overflow-visible border-neutral shadow-sm">
-          <CardHeader className="pb-3 border-b border-neutral">
+        <Card className="overflow-visible border-gray-100 shadow-sm">
+          <CardHeader className="pb-3 border-b border-gray-50">
             <CardTitle className="text-base">Input Absensi Pelatih</CardTitle>
           </CardHeader>
           <CardContent className="overflow-visible pt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Kelas</Label>
+                <Label className="text-xs font-medium text-gray-700">Kelas</Label>
                 <SearchableSelect value={coachClass} onValueChange={(v) => handleCoachClassChange(v ?? "")} placeholder="Pilih kelas">
                   {classes.filter((c) => c.coachId).map((c) => (
                     <SearchableSelectItem key={c.id} value={c.id}>{c.name} — {c.coach?.name}</SearchableSelectItem>
@@ -435,10 +435,10 @@ export function AttendanceClient({ classes }: Props) {
                 </SearchableSelect>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">
+                <Label className="text-xs font-medium text-gray-700">
                   Tanggal
                   {validCoachDates.length > 0 && (
-                    <span className="ml-1.5 text-primary font-normal text-[11px]">({getScheduleDayNames(coachClassData)})</span>
+                    <span className="ml-1.5 text-orange-500 font-normal text-[11px]">({getScheduleDayNames(coachClassData)})</span>
                   )}
                 </Label>
                 {validCoachDates.length > 0 ? (
@@ -466,30 +466,30 @@ export function AttendanceClient({ classes }: Props) {
 
             {coachClass && (
               <div className="mt-4 space-y-3">
-                <div className="p-4 rounded-xl border border-neutral bg-muted/50">
-                  <p className="text-sm font-medium text-on-surface">
-                    Pelatih: <span className="text-primary">{coachClassData?.coach?.name || "Tidak ada"}</span>
+                <div className="p-4 rounded-xl border border-gray-100 bg-gray-50/50">
+                  <p className="text-sm font-medium text-gray-900">
+                    Pelatih: <span className="text-orange-600">{coachClassData?.coach?.name || "Tidak ada"}</span>
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     {format(parseISO(coachDate), "EEEE, d MMMM yyyy", { locale: id })}
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-medium text-foreground">Status Kehadiran</Label>
+                  <Label className="text-xs font-medium text-gray-700">Status Kehadiran</Label>
                   <div className="flex gap-2 flex-wrap">
                     {statusOptions.map((opt) => (
                       <button
                         key={opt.value}
                         type="button"
                         onClick={() => setCoachRecord(opt.value)}
-                        className={`text-sm px-4 py-2 rounded-full font-medium transition-all border-2 cursor-pointer ${coachRecord === opt.value ? `${opt.color} border-current` : "bg-muted/50 text-tertiary border-transparent hover:border-border"}`}
+                        className={`text-sm px-4 py-2 rounded-full font-medium transition-all border-2 cursor-pointer ${coachRecord === opt.value ? `${opt.color} border-current` : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"}`}
                       >
                         {opt.label}
                       </button>
                     ))}
                   </div>
                 </div>
-                <Button type="button" onClick={handleCoachSave} className="bg-primary hover:bg-primary-80" disabled={coachSaving}>
+                <Button type="button" onClick={handleCoachSave} className="bg-orange-500 hover:bg-orange-600" disabled={coachSaving}>
                   {coachSaving ? "Menyimpan..." : "Simpan Absensi Pelatih"}
                 </Button>
               </div>

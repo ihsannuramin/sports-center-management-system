@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { getImageProps } from "next/image";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
@@ -38,35 +37,32 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-10 via-surface to-slate-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-slate-50 p-4">
       <div className="w-full max-w-sm space-y-6">
 
         {/* Branding */}
-        <div className="flex flex-col items-center mb-2">
-          {(() => {
-            const { props } = getImageProps({
-              src: "/rams-logo-without-cibubur.png",
-              alt: "Rams Sports Center",
-              width: 150,
-              height: 150,
-              priority: true,
-            });
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            return <img {...props} className="h-auto object-contain" />;
-          })()}
-          <div className="text-center">
-            <h1 className="text-lg font-bold text-on-surface tracking-tight">Sports Center</h1>
-            <p className="text-[11px] text-muted-foreground font-medium tracking-widest uppercase mt-0.5">
+        <div className="text-center space-y-3">
+          <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-orange-200">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="1.5" />
+              <path d="M12 2C12 2 8 7 8 12C8 17 12 22 12 22" stroke="white" strokeWidth="1.5" />
+              <path d="M12 2C12 2 16 7 16 12C16 17 12 22 12 22" stroke="white" strokeWidth="1.5" />
+              <path d="M2 12H22" stroke="white" strokeWidth="1.5" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-gray-900 tracking-tight">Sports Center</h1>
+            <p className="text-[11px] text-gray-400 font-medium tracking-widest uppercase mt-0.5">
               Management System
             </p>
           </div>
         </div>
 
         {/* Login Card */}
-        <Card className="shadow-xl shadow-neutral/40 border-neutral">
+        <Card className="shadow-xl shadow-gray-100/80 border-gray-100">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold text-on-surface">Masuk</CardTitle>
-            <CardDescription className="text-tertiary text-sm leading-relaxed">
+            <CardTitle className="text-lg font-semibold text-gray-900">Masuk</CardTitle>
+            <CardDescription className="text-gray-500 text-sm leading-relaxed">
               Masukkan kredensial Anda untuk mengakses sistem
             </CardDescription>
           </CardHeader>
@@ -74,8 +70,8 @@ export default function LoginPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               {/* Email */}
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-sm font-medium text-foreground">
-                  Email <span className="text-destructive">*</span>
+                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                  Email <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -86,15 +82,15 @@ export default function LoginPage() {
                   required
                   autoComplete="email"
                   autoFocus
-                  className="h-10 border-border bg-muted/50 focus:bg-surface transition-colors"
+                  className="h-10 border-gray-200 bg-gray-50/50 focus:bg-white transition-colors"
                   aria-label="Alamat email"
                 />
               </div>
 
               {/* Password */}
               <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                  Password <span className="text-destructive">*</span>
+                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                  Password <span className="text-red-500">*</span>
                 </Label>
                 <div className="relative">
                   <Input
@@ -105,7 +101,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     autoComplete="current-password"
-                    className="h-10 border-border bg-muted/50 focus:bg-surface transition-colors pr-10"
+                    className="h-10 border-gray-200 bg-gray-50/50 focus:bg-white transition-colors pr-10"
                     aria-label="Password"
                   />
                   <button
@@ -113,7 +109,7 @@ export default function LoginPage() {
                     onClick={() => setShowPassword((v) => !v)}
                     tabIndex={-1}
                     aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-0.5 rounded"
                   >
                     {showPassword
                       ? <EyeOff className="w-4 h-4" />
@@ -126,7 +122,7 @@ export default function LoginPage() {
               {/* Submit */}
               <Button
                 type="submit"
-                className="w-full h-10 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20 font-medium mt-1"
+                className="w-full h-10 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200/60 font-medium mt-1"
                 disabled={loading || !email || !password}
               >
                 {loading ? (
@@ -141,7 +137,7 @@ export default function LoginPage() {
         </Card>
 
         {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground">
+        <p className="text-center text-xs text-gray-400">
           &copy; {new Date().getFullYear()} Sports Center Management System
         </p>
       </div>

@@ -81,27 +81,27 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
         </div>
       )}
 
-      <Card className="border-neutral shadow-sm">
-        <CardHeader className="pb-4 border-b border-neutral">
+      <Card className="border-gray-100 shadow-sm">
+        <CardHeader className="pb-4 border-b border-gray-50">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-50 rounded-xl"><CreditCard className="w-5 h-5 text-blue-500" /></div>
               <div>
-                <h2 className="font-semibold text-on-surface">Riwayat Pembayaran</h2>
-                <p className="text-xs text-muted-foreground">{filtered.length} transaksi</p>
+                <h2 className="font-semibold text-gray-900">Riwayat Pembayaran</h2>
+                <p className="text-xs text-gray-400">{filtered.length} transaksi</p>
               </div>
             </div>
             <div className="flex gap-2 items-center flex-wrap">
-              <SearchableSelect value={filter} onValueChange={(v) => { setFilter(v ?? "PENDING"); setPage(1); }} className="w-44 h-9 text-sm border-border">
+              <SearchableSelect value={filter} onValueChange={(v) => { setFilter(v ?? "PENDING"); setPage(1); }} className="w-44 h-9 text-sm border-gray-200">
                 <SearchableSelectItem value="ALL">Semua</SearchableSelectItem>
                 <SearchableSelectItem value="PENDING">Menunggu Verifikasi</SearchableSelectItem>
                 <SearchableSelectItem value="VERIFIED">Terverifikasi</SearchableSelectItem>
                 <SearchableSelectItem value="REJECTED">Ditolak</SearchableSelectItem>
               </SearchableSelect>
-              <Button variant="outline" size="sm" className="h-9 border-border text-foreground" onClick={handleExport}>
+              <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600" onClick={handleExport}>
                 <Download className="w-4 h-4 mr-1.5" /> Excel
               </Button>
-              <Button size="sm" className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20" onClick={() => setCashOpen(true)}>
+              <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={() => setCashOpen(true)}>
                 <Plus className="w-4 h-4 mr-1.5" /> Input Tunai
               </Button>
             </div>
@@ -110,34 +110,34 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
         <CardContent className="p-0">
           <Table className="table-row-hover">
             <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead className="text-xs font-semibold text-tertiary pl-5">Tanggal</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Siswa / Booking</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Jumlah</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Metode</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Bukti</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Status</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Aksi</TableHead>
+              <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
+                <TableHead className="text-xs font-semibold text-gray-500 pl-5">Tanggal</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Siswa / Booking</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Jumlah</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Metode</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Bukti</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Status</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginated.length === 0 ? (
                 <TableRow><TableCell colSpan={7} className="text-center py-16">
-                  <CreditCard className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Tidak ada data pembayaran</p>
+                  <CreditCard className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                  <p className="text-sm text-gray-400">Tidak ada data pembayaran</p>
                 </TableCell></TableRow>
               ) : (
                 paginated.map((p) => (
                   <TableRow key={p.id}>
                     <TableCell className="pl-5">
-                      <span className="text-sm text-foreground">{format(new Date(p.createdAt), "d MMM yyyy")}</span>
-                      <p className="text-xs text-muted-foreground">{format(new Date(p.createdAt), "HH:mm")}</p>
+                      <span className="text-sm text-gray-600">{format(new Date(p.createdAt), "d MMM yyyy")}</span>
+                      <p className="text-xs text-gray-400">{format(new Date(p.createdAt), "HH:mm")}</p>
                     </TableCell>
                     <TableCell>
-                      <p className="text-sm font-medium text-on-surface">{p.invoice?.student?.name || p.booking?.customerName || "-"}</p>
-                      <p className="text-xs text-muted-foreground">{p.invoice?.invoiceNumber || p.booking?.bookingNumber}</p>
+                      <p className="text-sm font-medium text-gray-900">{p.invoice?.student?.name || p.booking?.customerName || "-"}</p>
+                      <p className="text-xs text-gray-400">{p.invoice?.invoiceNumber || p.booking?.bookingNumber}</p>
                     </TableCell>
-                    <TableCell><span className="text-sm font-semibold text-on-surface">Rp {Number(p.amount).toLocaleString("id-ID")}</span></TableCell>
+                    <TableCell><span className="text-sm font-semibold text-gray-900">Rp {Number(p.amount).toLocaleString("id-ID")}</span></TableCell>
                     <TableCell>
                       <span className={p.method === "CASH" ? "badge-blue" : "badge-gray"}>
                         {p.method === "TRANSFER" ? "Transfer" : "Tunai"}
@@ -148,7 +148,7 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
                         <Button size="sm" variant="ghost" className="h-7 text-xs text-blue-500 hover:text-blue-600 px-2" onClick={() => setProofUrl(p.proofUrl)}>
                           <Eye className="w-3.5 h-3.5 mr-1" /> Lihat
                         </Button>
-                      ) : <span className="text-muted-foreground/50 text-xs">—</span>}
+                      ) : <span className="text-gray-300 text-xs">—</span>}
                     </TableCell>
                     <TableCell><span className={statusBadge[p.status]}>{statusLabels[p.status]}</span></TableCell>
                     <TableCell>
@@ -157,7 +157,7 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
                           <Button size="sm" onClick={() => handleVerify(p.id)} className="bg-green-500 hover:bg-green-600 h-8 text-xs px-2.5 cursor-pointer">
                             <CheckCircle className="w-3.5 h-3.5 mr-1" /> Verifikasi
                           </Button>
-                          <Button size="sm" variant="outline" onClick={() => handleReject(p.id)} title="Tolak" className="text-destructive border-destructive/20 hover:bg-destructive/10 h-8 w-8 p-0 cursor-pointer">
+                          <Button size="sm" variant="outline" onClick={() => handleReject(p.id)} title="Tolak" className="text-red-500 border-red-200 hover:bg-red-50 h-8 w-8 p-0 cursor-pointer">
                             <XCircle className="w-4 h-4" />
                           </Button>
                         </div>
@@ -182,11 +182,11 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Input Pembayaran Tunai</DialogTitle>
-            <p className="text-sm text-tertiary mt-1">Langsung diverifikasi otomatis</p>
+            <p className="text-sm text-gray-500 mt-1">Langsung diverifikasi otomatis</p>
           </DialogHeader>
           <form onSubmit={handleCashSubmit} className="space-y-3 pt-1">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-foreground">Invoice *</Label>
+              <Label className="text-xs font-medium text-gray-700">Invoice *</Label>
               <SearchableSelect value={cashForm.invoiceId} onValueChange={(v) => {
                 if (!v) return;
                 const inv = unpaidInvoices.find((i: any) => i.id === v);
@@ -197,11 +197,11 @@ export function PaymentsClient({ payments: initial, invoices }: Props) {
                 ))}
               </SearchableSelect>
             </div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Jumlah (Rp) *</Label><Input type="number" value={cashForm.amount || ""} onChange={(e) => setCashForm({ ...cashForm, amount: Number(e.target.value) })} required min={1} /></div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Catatan</Label><Input value={cashForm.notes} onChange={(e) => setCashForm({ ...cashForm, notes: e.target.value })} placeholder="Opsional" /></div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jumlah (Rp) *</Label><Input type="number" value={cashForm.amount || ""} onChange={(e) => setCashForm({ ...cashForm, amount: Number(e.target.value) })} required min={1} /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Catatan</Label><Input value={cashForm.notes} onChange={(e) => setCashForm({ ...cashForm, notes: e.target.value })} placeholder="Opsional" /></div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setCashOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={cashLoading}>{cashLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Menyimpan...</> : "Catat Pembayaran"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={cashLoading}>{cashLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Menyimpan...</> : "Catat Pembayaran"}</Button>
             </div>
           </form>
         </DialogContent>

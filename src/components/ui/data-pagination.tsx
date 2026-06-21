@@ -24,9 +24,9 @@ export function DataPagination({
   const end = Math.min(page * pageSize, total);
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-neutral bg-muted/40">
+    <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100 bg-gray-50/40">
       {/* Left: page size + count */}
-      <div className="flex items-center gap-2 text-xs text-tertiary">
+      <div className="flex items-center gap-2 text-xs text-gray-500">
         <span className="hidden sm:inline">Tampilkan</span>
         <Select
           value={String(pageSize)}
@@ -37,7 +37,7 @@ export function DataPagination({
             }
           }}
         >
-          <SelectTrigger className="h-7 w-14 text-xs border-border">
+          <SelectTrigger className="h-7 w-14 text-xs border-gray-200">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -48,12 +48,12 @@ export function DataPagination({
         </Select>
         <span className="hidden sm:inline">baris</span>
         {total > 0 && (
-          <span className="ml-1 text-muted-foreground tabular-nums">
-            {start}–{end} dari <span className="font-medium text-foreground">{total}</span>
+          <span className="ml-1 text-gray-400 tabular-nums">
+            {start}–{end} dari <span className="font-medium text-gray-600">{total}</span>
           </span>
         )}
         {total === 0 && (
-          <span className="ml-1 text-muted-foreground">Tidak ada data</span>
+          <span className="ml-1 text-gray-400">Tidak ada data</span>
         )}
       </div>
 
@@ -62,20 +62,20 @@ export function DataPagination({
         <Button
           variant="outline"
           size="icon"
-          className="h-7 w-7 border-border text-tertiary hover:text-on-surface"
+          className="h-7 w-7 border-gray-200 text-gray-500 hover:text-gray-900"
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
           aria-label="Halaman sebelumnya"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
         </Button>
-        <span className="min-w-[4rem] text-center text-xs text-tertiary tabular-nums select-none">
+        <span className="min-w-[4rem] text-center text-xs text-gray-500 tabular-nums select-none">
           {page} / {totalPages}
         </span>
         <Button
           variant="outline"
           size="icon"
-          className="h-7 w-7 border-border text-tertiary hover:text-on-surface"
+          className="h-7 w-7 border-gray-200 text-gray-500 hover:text-gray-900"
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
           aria-label="Halaman berikutnya"
