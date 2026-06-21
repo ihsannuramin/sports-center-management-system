@@ -138,37 +138,37 @@ export function WaitlistsClient({ classWaitlists: initClass, rentalWaitlists: in
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2 bg-gray-100 p-1 rounded-xl w-fit">
+      <div className="flex gap-2 bg-muted p-1 rounded-xl w-fit">
         <button
           onClick={() => setTab("class")}
-          className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${tab === "class" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+          className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${tab === "class" ? "bg-surface shadow text-on-surface" : "text-tertiary hover:text-foreground"}`}
         >
           Waitlist Kelas
         </button>
         <button
           onClick={() => setTab("rental")}
-          className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${tab === "rental" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+          className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${tab === "rental" ? "bg-surface shadow text-on-surface" : "text-tertiary hover:text-foreground"}`}
         >
           Waitlist Rental
         </button>
       </div>
 
       {tab === "class" && (
-        <Card className="border-gray-100 shadow-sm">
-          <CardHeader className="pb-4 border-b border-gray-50">
+        <Card className="border-neutral shadow-sm">
+          <CardHeader className="pb-4 border-b border-neutral">
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-50 rounded-xl"><Users className="w-5 h-5 text-blue-500" /></div>
                 <div>
-                  <h2 className="font-semibold text-gray-900">Waitlist Kelas Akademi</h2>
-                  <p className="text-xs text-gray-400">{classWaitlists.length} pendaftar</p>
+                  <h2 className="font-semibold text-on-surface">Waitlist Kelas Akademi</h2>
+                  <p className="text-xs text-muted-foreground">{classWaitlists.length} pendaftar</p>
                 </div>
               </div>
               <div className="flex gap-2 items-center">
-                <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600" onClick={exportClass}>
+                <Button variant="outline" size="sm" className="h-9 border-border text-foreground" onClick={exportClass}>
                   <Download className="w-4 h-4 mr-1.5" /> Excel
                 </Button>
-                <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={() => setClassOpen(true)}>
+                <Button size="sm" className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20" onClick={() => setClassOpen(true)}>
                   <Plus className="w-4 h-4 mr-1.5" /> Tambah
                 </Button>
               </div>
@@ -177,45 +177,45 @@ export function WaitlistsClient({ classWaitlists: initClass, rentalWaitlists: in
           <CardContent className="p-0">
             <Table className="table-row-hover">
               <TableHeader>
-                <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
-                  <TableHead className="text-xs font-semibold text-gray-500 pl-5 w-16">No.</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">Nama</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">No. HP</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">Kelas</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">Status</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">Tanggal Daftar</TableHead>
+                <TableRow className="bg-muted/50 hover:bg-muted/50">
+                  <TableHead className="text-xs font-semibold text-tertiary pl-5 w-16">No.</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">Nama</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">No. HP</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">Kelas</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">Status</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">Tanggal Daftar</TableHead>
                   <TableHead className="w-24"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedClass.length === 0 ? (
                   <TableRow><TableCell colSpan={7} className="text-center py-16">
-                    <Users className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                    <p className="text-sm text-gray-400">Belum ada waitlist kelas</p>
+                    <Users className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Belum ada waitlist kelas</p>
                   </TableCell></TableRow>
                 ) : (
                   paginatedClass.map((w) => (
                     <TableRow key={w.id}>
                       <TableCell className="pl-5">
-                        <span className="text-sm font-mono font-medium text-gray-700">#{w.position}</span>
+                        <span className="text-sm font-mono font-medium text-foreground">#{w.position}</span>
                       </TableCell>
                       <TableCell>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{w.name}</p>
-                          {w.email && <p className="text-xs text-gray-400">{w.email}</p>}
+                          <p className="text-sm font-medium text-on-surface">{w.name}</p>
+                          {w.email && <p className="text-xs text-muted-foreground">{w.email}</p>}
                         </div>
                       </TableCell>
-                      <TableCell><span className="text-sm text-gray-600">{w.phone}</span></TableCell>
-                      <TableCell><span className="text-sm text-gray-700">{w.class?.name || "-"}</span></TableCell>
+                      <TableCell><span className="text-sm text-foreground">{w.phone}</span></TableCell>
+                      <TableCell><span className="text-sm text-foreground">{w.class?.name || "-"}</span></TableCell>
                       <TableCell><span className={statusBadge[w.status]}>{statusLabel[w.status] || w.status}</span></TableCell>
-                      <TableCell><span className="text-sm text-gray-500">{format(new Date(w.createdAt), "dd/MM/yyyy")}</span></TableCell>
+                      <TableCell><span className="text-sm text-tertiary">{format(new Date(w.createdAt), "dd/MM/yyyy")}</span></TableCell>
                       <TableCell className="pr-3">
                         {w.status === "WAITING" && (
                           <div className="flex gap-1">
                             <Button variant="ghost" size="icon" className="h-8 w-8 text-green-500 hover:text-green-700 hover:bg-green-50" title="Promosikan" onClick={() => handlePromote(w.id, "class")}>
                               <ArrowUpCircle className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50" title="Batalkan" onClick={() => handleCancel(w.id, "class")}>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" title="Batalkan" onClick={() => handleCancel(w.id, "class")}>
                               <XCircle className="w-4 h-4" />
                             </Button>
                           </div>
@@ -232,21 +232,21 @@ export function WaitlistsClient({ classWaitlists: initClass, rentalWaitlists: in
       )}
 
       {tab === "rental" && (
-        <Card className="border-gray-100 shadow-sm">
-          <CardHeader className="pb-4 border-b border-gray-50">
+        <Card className="border-neutral shadow-sm">
+          <CardHeader className="pb-4 border-b border-neutral">
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-purple-50 rounded-xl"><CalendarClock className="w-5 h-5 text-purple-500" /></div>
                 <div>
-                  <h2 className="font-semibold text-gray-900">Waitlist Rental Lapangan</h2>
-                  <p className="text-xs text-gray-400">{rentalWaitlists.length} pendaftar</p>
+                  <h2 className="font-semibold text-on-surface">Waitlist Rental Lapangan</h2>
+                  <p className="text-xs text-muted-foreground">{rentalWaitlists.length} pendaftar</p>
                 </div>
               </div>
               <div className="flex gap-2 items-center">
-                <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600" onClick={exportRental}>
+                <Button variant="outline" size="sm" className="h-9 border-border text-foreground" onClick={exportRental}>
                   <Download className="w-4 h-4 mr-1.5" /> Excel
                 </Button>
-                <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={() => setRentalOpen(true)}>
+                <Button size="sm" className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20" onClick={() => setRentalOpen(true)}>
                   <Plus className="w-4 h-4 mr-1.5" /> Tambah
                 </Button>
               </div>
@@ -255,35 +255,35 @@ export function WaitlistsClient({ classWaitlists: initClass, rentalWaitlists: in
           <CardContent className="p-0">
             <Table className="table-row-hover">
               <TableHeader>
-                <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
-                  <TableHead className="text-xs font-semibold text-gray-500 pl-5 w-16">No.</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">Nama</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">No. HP</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">Lapangan</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">Tanggal & Waktu</TableHead>
-                  <TableHead className="text-xs font-semibold text-gray-500">Status</TableHead>
+                <TableRow className="bg-muted/50 hover:bg-muted/50">
+                  <TableHead className="text-xs font-semibold text-tertiary pl-5 w-16">No.</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">Nama</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">No. HP</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">Lapangan</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">Tanggal & Waktu</TableHead>
+                  <TableHead className="text-xs font-semibold text-tertiary">Status</TableHead>
                   <TableHead className="w-24"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedRental.length === 0 ? (
                   <TableRow><TableCell colSpan={7} className="text-center py-16">
-                    <CalendarClock className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                    <p className="text-sm text-gray-400">Belum ada waitlist rental</p>
+                    <CalendarClock className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Belum ada waitlist rental</p>
                   </TableCell></TableRow>
                 ) : (
                   paginatedRental.map((w) => (
                     <TableRow key={w.id}>
                       <TableCell className="pl-5">
-                        <span className="text-sm font-mono font-medium text-gray-700">#{w.position}</span>
+                        <span className="text-sm font-mono font-medium text-foreground">#{w.position}</span>
                       </TableCell>
-                      <TableCell><span className="text-sm font-medium text-gray-900">{w.name}</span></TableCell>
-                      <TableCell><span className="text-sm text-gray-600">{w.phone}</span></TableCell>
-                      <TableCell><span className="text-sm text-gray-700">{w.court?.name || "-"}</span></TableCell>
+                      <TableCell><span className="text-sm font-medium text-on-surface">{w.name}</span></TableCell>
+                      <TableCell><span className="text-sm text-foreground">{w.phone}</span></TableCell>
+                      <TableCell><span className="text-sm text-foreground">{w.court?.name || "-"}</span></TableCell>
                       <TableCell>
                         <div>
-                          <p className="text-sm text-gray-700">{format(new Date(w.date), "dd/MM/yyyy")}</p>
-                          <p className="text-xs text-gray-400">{format(new Date(w.startTime), "HH:mm")} – {format(new Date(w.endTime), "HH:mm")}</p>
+                          <p className="text-sm text-foreground">{format(new Date(w.date), "dd/MM/yyyy")}</p>
+                          <p className="text-xs text-muted-foreground">{format(new Date(w.startTime), "HH:mm")} – {format(new Date(w.endTime), "HH:mm")}</p>
                         </div>
                       </TableCell>
                       <TableCell><span className={statusBadge[w.status]}>{statusLabel[w.status] || w.status}</span></TableCell>
@@ -293,7 +293,7 @@ export function WaitlistsClient({ classWaitlists: initClass, rentalWaitlists: in
                             <Button variant="ghost" size="icon" className="h-8 w-8 text-green-500 hover:text-green-700 hover:bg-green-50" title="Promosikan" onClick={() => handlePromote(w.id, "rental")}>
                               <ArrowUpCircle className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50" title="Batalkan" onClick={() => handleCancel(w.id, "rental")}>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" title="Batalkan" onClick={() => handleCancel(w.id, "rental")}>
                               <XCircle className="w-4 h-4" />
                             </Button>
                           </div>
@@ -315,26 +315,26 @@ export function WaitlistsClient({ classWaitlists: initClass, rentalWaitlists: in
           <DialogHeader><DialogTitle>Tambah Waitlist Kelas</DialogTitle></DialogHeader>
           <form onSubmit={handleAddClass} className="space-y-3 pt-1">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Kelas *</Label>
+              <Label className="text-xs font-medium text-foreground">Kelas *</Label>
               <SearchableSelect value={classForm.classId} onValueChange={(v) => v && setClassForm({ ...classForm, classId: v })} placeholder="Pilih kelas">
                 {classes.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
               </SearchableSelect>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Nama *</Label>
+              <Label className="text-xs font-medium text-foreground">Nama *</Label>
               <Input value={classForm.name} onChange={(e) => setClassForm({ ...classForm, name: e.target.value })} required />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">No. HP *</Label>
+              <Label className="text-xs font-medium text-foreground">No. HP *</Label>
               <Input value={classForm.phone} onChange={(e) => setClassForm({ ...classForm, phone: e.target.value })} required />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Email</Label>
+              <Label className="text-xs font-medium text-foreground">Email</Label>
               <Input type="email" value={classForm.email} onChange={(e) => setClassForm({ ...classForm, email: e.target.value })} />
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
               <Button type="button" variant="outline" onClick={() => setClassOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
+              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
             </div>
           </form>
         </DialogContent>
@@ -346,36 +346,36 @@ export function WaitlistsClient({ classWaitlists: initClass, rentalWaitlists: in
           <DialogHeader><DialogTitle>Tambah Waitlist Rental</DialogTitle></DialogHeader>
           <form onSubmit={handleAddRental} className="space-y-3 pt-1">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Lapangan *</Label>
+              <Label className="text-xs font-medium text-foreground">Lapangan *</Label>
               <SearchableSelect value={rentalForm.courtId} onValueChange={(v) => v && setRentalForm({ ...rentalForm, courtId: v })} placeholder="Pilih lapangan">
                 {courts.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
               </SearchableSelect>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Nama *</Label>
+              <Label className="text-xs font-medium text-foreground">Nama *</Label>
               <Input value={rentalForm.name} onChange={(e) => setRentalForm({ ...rentalForm, name: e.target.value })} required />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">No. HP *</Label>
+              <Label className="text-xs font-medium text-foreground">No. HP *</Label>
               <Input value={rentalForm.phone} onChange={(e) => setRentalForm({ ...rentalForm, phone: e.target.value })} required />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Tanggal *</Label>
+              <Label className="text-xs font-medium text-foreground">Tanggal *</Label>
               <Input type="date" value={rentalForm.date} onChange={(e) => setRentalForm({ ...rentalForm, date: e.target.value })} required />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Jam Mulai *</Label>
+                <Label className="text-xs font-medium text-foreground">Jam Mulai *</Label>
                 <Input type="time" value={rentalForm.startTime} onChange={(e) => setRentalForm({ ...rentalForm, startTime: e.target.value })} required />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Jam Selesai *</Label>
+                <Label className="text-xs font-medium text-foreground">Jam Selesai *</Label>
                 <Input type="time" value={rentalForm.endTime} onChange={(e) => setRentalForm({ ...rentalForm, endTime: e.target.value })} required />
               </div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
               <Button type="button" variant="outline" onClick={() => setRentalOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
+              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
             </div>
           </form>
         </DialogContent>

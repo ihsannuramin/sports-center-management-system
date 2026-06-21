@@ -89,16 +89,16 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
     <div className="space-y-5">
       {/* Summary */}
       <div className="grid grid-cols-3 gap-4">
-        <Card className="border-gray-100 shadow-sm">
+        <Card className="border-neutral shadow-sm">
           <CardContent className="p-4">
-            <p className="text-xs text-gray-500 font-medium mb-1">Total Invoice</p>
-            <p className="text-2xl font-bold text-gray-900">{filtered.length}</p>
+            <p className="text-xs text-tertiary font-medium mb-1">Total Invoice</p>
+            <p className="text-2xl font-bold text-on-surface">{filtered.length}</p>
           </CardContent>
         </Card>
-        <Card className="border-red-100 bg-red-50/30 shadow-sm">
+        <Card className="border-destructive/20 bg-destructive/30 shadow-sm">
           <CardContent className="p-4">
-            <p className="text-xs text-red-500 font-medium mb-1">Belum Dibayar</p>
-            <p className="text-xl font-bold text-red-600">Rp {totalUnpaid.toLocaleString("id-ID")}</p>
+            <p className="text-xs text-destructive font-medium mb-1">Belum Dibayar</p>
+            <p className="text-xl font-bold text-destructive">Rp {totalUnpaid.toLocaleString("id-ID")}</p>
           </CardContent>
         </Card>
         <Card className="border-green-100 bg-green-50/30 shadow-sm">
@@ -109,32 +109,32 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
         </Card>
       </div>
 
-      <Card className="border-gray-100 shadow-sm">
-        <CardHeader className="pb-4 border-b border-gray-50">
+      <Card className="border-neutral shadow-sm">
+        <CardHeader className="pb-4 border-b border-neutral">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-50 rounded-xl"><FileText className="w-5 h-5 text-orange-500" /></div>
+              <div className="p-2 bg-primary-10 rounded-xl"><FileText className="w-5 h-5 text-primary" /></div>
               <div>
-                <h2 className="font-semibold text-gray-900">Daftar Invoice</h2>
-                <p className="text-xs text-gray-400">{filtered.length} invoice</p>
+                <h2 className="font-semibold text-on-surface">Daftar Invoice</h2>
+                <p className="text-xs text-muted-foreground">{filtered.length} invoice</p>
               </div>
             </div>
             <div className="flex gap-2 flex-wrap items-center">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input placeholder="Cari invoice..." className="pl-9 w-48 h-9 text-sm border-gray-200" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input placeholder="Cari invoice..." className="pl-9 w-48 h-9 text-sm border-border" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
               </div>
-              <SearchableSelect value={statusFilter} onValueChange={(v) => { setStatusFilter(v ?? "ALL"); setPage(1); }} className="w-38 h-9 text-sm border-gray-200">
+              <SearchableSelect value={statusFilter} onValueChange={(v) => { setStatusFilter(v ?? "ALL"); setPage(1); }} className="w-38 h-9 text-sm border-border">
                 <SearchableSelectItem value="ALL">Semua Status</SearchableSelectItem>
                 {Object.entries(statusLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
               </SearchableSelect>
-              <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600" onClick={handleExport}>
+              <Button variant="outline" size="sm" className="h-9 border-border text-foreground" onClick={handleExport}>
                 <Download className="w-4 h-4 mr-1.5" /> Excel
               </Button>
-              <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600" onClick={() => setBulkOpen(true)}>
+              <Button variant="outline" size="sm" className="h-9 border-border text-foreground" onClick={() => setBulkOpen(true)}>
                 <Layers className="w-4 h-4 mr-1.5" /> Massal
               </Button>
-              <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={() => setOpen(true)}>
+              <Button size="sm" className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20" onClick={() => setOpen(true)}>
                 <Plus className="w-4 h-4 mr-1.5" /> Buat Invoice
               </Button>
             </div>
@@ -143,30 +143,30 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
         <CardContent className="p-0">
           <Table className="table-row-hover">
             <TableHeader>
-              <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
-                <TableHead className="text-xs font-semibold text-gray-500 pl-5">No. Invoice</TableHead>
-                <TableHead className="text-xs font-semibold text-gray-500">Siswa</TableHead>
-                <TableHead className="text-xs font-semibold text-gray-500">Jenis</TableHead>
-                <TableHead className="text-xs font-semibold text-gray-500">Jumlah</TableHead>
-                <TableHead className="text-xs font-semibold text-gray-500">Jatuh Tempo</TableHead>
-                <TableHead className="text-xs font-semibold text-gray-500">Status</TableHead>
-                <TableHead className="w-28 text-xs font-semibold text-gray-500">Aksi</TableHead>
+              <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead className="text-xs font-semibold text-tertiary pl-5">No. Invoice</TableHead>
+                <TableHead className="text-xs font-semibold text-tertiary">Siswa</TableHead>
+                <TableHead className="text-xs font-semibold text-tertiary">Jenis</TableHead>
+                <TableHead className="text-xs font-semibold text-tertiary">Jumlah</TableHead>
+                <TableHead className="text-xs font-semibold text-tertiary">Jatuh Tempo</TableHead>
+                <TableHead className="text-xs font-semibold text-tertiary">Status</TableHead>
+                <TableHead className="w-28 text-xs font-semibold text-tertiary">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginated.length === 0 ? (
                 <TableRow><TableCell colSpan={7} className="text-center py-16">
-                  <FileText className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                  <p className="text-sm text-gray-400">Tidak ada invoice</p>
+                  <FileText className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">Tidak ada invoice</p>
                 </TableCell></TableRow>
               ) : (
                 paginated.map((inv) => (
                   <TableRow key={inv.id}>
-                    <TableCell className="pl-5"><span className="font-mono text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-md">{inv.invoiceNumber}</span></TableCell>
-                    <TableCell><span className="text-sm font-medium text-gray-900">{inv.student?.name}</span></TableCell>
+                    <TableCell className="pl-5"><span className="font-mono text-xs text-tertiary bg-muted/50 px-2 py-1 rounded-md">{inv.invoiceNumber}</span></TableCell>
+                    <TableCell><span className="text-sm font-medium text-on-surface">{inv.student?.name}</span></TableCell>
                     <TableCell><span className={typeBadge[inv.type]}>{typeLabels[inv.type] || inv.type}</span></TableCell>
-                    <TableCell><span className="text-sm font-semibold text-gray-900">Rp {Number(inv.amount).toLocaleString("id-ID")}</span></TableCell>
-                    <TableCell><span className="text-sm text-gray-600">{format(new Date(inv.dueDate), "d MMM yyyy")}</span></TableCell>
+                    <TableCell><span className="text-sm font-semibold text-on-surface">Rp {Number(inv.amount).toLocaleString("id-ID")}</span></TableCell>
+                    <TableCell><span className="text-sm text-foreground">{format(new Date(inv.dueDate), "d MMM yyyy")}</span></TableCell>
                     <TableCell><span className={statusBadge[inv.status]}>{statusLabels[inv.status]}</span></TableCell>
                     <TableCell>
                       {inv.status === "UNPAID" && (
@@ -191,25 +191,25 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
           <DialogHeader><DialogTitle>Buat Invoice Baru</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-3 pt-1">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Siswa *</Label>
+              <Label className="text-xs font-medium text-foreground">Siswa *</Label>
               <SearchableSelect value={form.studentId} onValueChange={(v) => v && setForm({ ...form, studentId: v })} placeholder="Pilih siswa">
                 {students.map((s: any) => <SearchableSelectItem key={s.id} value={s.id}>{s.name} ({s.studentNumber})</SearchableSelectItem>)}
               </SearchableSelect>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Jenis *</Label>
+                <Label className="text-xs font-medium text-foreground">Jenis *</Label>
                 <SearchableSelect value={form.type} onValueChange={(v) => v && setForm({ ...form, type: v as any })} placeholder="Pilih jenis">
                   {Object.entries(typeLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jumlah (Rp) *</Label><Input type="number" value={form.amount || ""} onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })} required /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Jumlah (Rp) *</Label><Input type="number" value={form.amount || ""} onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })} required /></div>
             </div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jatuh Tempo *</Label><Input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} required /></div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Keterangan</Label><Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Jatuh Tempo *</Label><Input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} required /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Keterangan</Label><Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Menyimpan...</> : "Buat Invoice"}</Button>
+              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={loading}>{loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Menyimpan...</> : "Buat Invoice"}</Button>
             </div>
           </form>
         </DialogContent>
@@ -220,22 +220,22 @@ export function InvoicesClient({ invoices: initial, students, branches }: Props)
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Tagihan Bulanan Massal</DialogTitle>
-            <p className="text-sm text-gray-500 mt-1">Buat invoice untuk semua siswa aktif sekaligus</p>
+            <p className="text-sm text-tertiary mt-1">Buat invoice untuk semua siswa aktif sekaligus</p>
           </DialogHeader>
           <form onSubmit={handleBulkSubmit} className="space-y-3 pt-1">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Cabang</Label>
+              <Label className="text-xs font-medium text-foreground">Cabang</Label>
               <SearchableSelect value={bulkForm.branchId} onValueChange={(v) => v && setBulkForm({ ...bulkForm, branchId: v === "ALL" ? "" : v })} placeholder="Semua cabang">
                 <SearchableSelectItem value="ALL">Semua Cabang</SearchableSelectItem>
                 {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
               </SearchableSelect>
             </div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jumlah (Rp) *</Label><Input type="number" value={bulkForm.amount || ""} onChange={(e) => setBulkForm({ ...bulkForm, amount: Number(e.target.value) })} required min={1} /></div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jatuh Tempo *</Label><Input type="date" value={bulkForm.dueDate} onChange={(e) => setBulkForm({ ...bulkForm, dueDate: e.target.value })} required /></div>
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Keterangan</Label><Input value={bulkForm.description} onChange={(e) => setBulkForm({ ...bulkForm, description: e.target.value })} placeholder="e.g. Tagihan Bulanan Juni 2026" /></div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Jumlah (Rp) *</Label><Input type="number" value={bulkForm.amount || ""} onChange={(e) => setBulkForm({ ...bulkForm, amount: Number(e.target.value) })} required min={1} /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Jatuh Tempo *</Label><Input type="date" value={bulkForm.dueDate} onChange={(e) => setBulkForm({ ...bulkForm, dueDate: e.target.value })} required /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Keterangan</Label><Input value={bulkForm.description} onChange={(e) => setBulkForm({ ...bulkForm, description: e.target.value })} placeholder="e.g. Tagihan Bulanan Juni 2026" /></div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
               <Button type="button" variant="outline" onClick={() => setBulkOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={bulkLoading}>{bulkLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Membuat...</> : "Buat Tagihan"}</Button>
+              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={bulkLoading}>{bulkLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Membuat...</> : "Buat Tagihan"}</Button>
             </div>
           </form>
         </DialogContent>

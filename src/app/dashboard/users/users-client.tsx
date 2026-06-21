@@ -43,7 +43,7 @@ const emptyEdit = { name: "", phone: "", roleId: "", branchId: "", password: "" 
 const roleBadgeColor: Record<string, string> = {
   SUPER_ADMIN: "bg-purple-100 text-purple-700",
   ADMIN: "bg-blue-100 text-blue-700",
-  OPERATOR: "bg-orange-100 text-orange-700",
+  OPERATOR: "bg-primary-20 text-primary",
   COACH: "bg-green-100 text-green-700",
 };
 
@@ -233,38 +233,38 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
   return (
     <div className="space-y-5">
       <Tabs defaultValue="users">
-        <TabsList className="h-9 bg-gray-100/80">
+        <TabsList className="h-9 bg-muted/80">
           <TabsTrigger value="users" className="text-xs px-4">Pengguna</TabsTrigger>
           <TabsTrigger value="roles" className="text-xs px-4">Role & Hak Akses</TabsTrigger>
         </TabsList>
 
         {/* ── Users Tab ─────────────────────────────────────────────────────── */}
         <TabsContent value="users" className="mt-5">
-          <Card className="border-gray-100 shadow-sm">
-            <CardHeader className="pb-4 border-b border-gray-50">
+          <Card className="border-neutral shadow-sm">
+            <CardHeader className="pb-4 border-b border-neutral">
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-orange-50 rounded-xl">
-                    <Users className="w-5 h-5 text-orange-500" />
+                  <div className="p-2 bg-primary-10 rounded-xl">
+                    <Users className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-gray-900">Daftar Pengguna</h2>
-                    <p className="text-xs text-gray-400">{users.length} pengguna terdaftar</p>
+                    <h2 className="font-semibold text-on-surface">Daftar Pengguna</h2>
+                    <p className="text-xs text-muted-foreground">{users.length} pengguna terdaftar</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                     <Input
                       placeholder="Cari pengguna..."
                       value={search}
                       onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                      className="pl-9 h-9 w-56 border-gray-200 text-sm"
+                      className="pl-9 h-9 w-56 border-border text-sm"
                     />
                   </div>
                   <Button
                     size="sm"
-                    className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200"
+                    className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20"
                     onClick={openCreate}
                   >
                     <Plus className="w-4 h-4 mr-1.5" /> Tambah Pengguna
@@ -275,11 +275,11 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
             <CardContent className="p-0">
               <Table className="table-row-hover">
                 <TableHeader>
-                  <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
-                    <TableHead className="text-xs font-semibold text-gray-500 pl-5">Pengguna</TableHead>
-                    <TableHead className="text-xs font-semibold text-gray-500">Role</TableHead>
-                    <TableHead className="text-xs font-semibold text-gray-500">Cabang</TableHead>
-                    <TableHead className="text-xs font-semibold text-gray-500">Status</TableHead>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableHead className="text-xs font-semibold text-tertiary pl-5">Pengguna</TableHead>
+                    <TableHead className="text-xs font-semibold text-tertiary">Role</TableHead>
+                    <TableHead className="text-xs font-semibold text-tertiary">Cabang</TableHead>
+                    <TableHead className="text-xs font-semibold text-tertiary">Status</TableHead>
                     <TableHead className="w-12"></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -287,11 +287,11 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                   {paginated.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={5} className="text-center py-16">
-                        <Users className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                        <p className="text-sm text-gray-400">Belum ada pengguna</p>
+                        <Users className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground">Belum ada pengguna</p>
                         <Button
                           size="sm"
-                          className="mt-3 bg-orange-500 hover:bg-orange-600"
+                          className="mt-3 bg-primary hover:bg-primary-80"
                           onClick={openCreate}
                         >
                           <Plus className="w-3.5 h-3.5 mr-1.5" /> Tambah Pengguna
@@ -307,32 +307,32 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                               {initials(user.name)}
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-gray-900 flex items-center gap-1.5">
+                              <p className="text-sm font-medium text-on-surface flex items-center gap-1.5">
                                 {user.name}
                                 {user.role?.name === "SUPER_ADMIN" && (
                                   <Crown className="w-3 h-3 text-purple-500" />
                                 )}
                               </p>
-                              <p className="text-xs text-gray-400">{user.email}</p>
+                              <p className="text-xs text-muted-foreground">{user.email}</p>
                             </div>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleBadgeColor[user.role?.name] ?? "bg-gray-100 text-gray-600"}`}>
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleBadgeColor[user.role?.name] ?? "bg-muted text-foreground"}`}>
                             {user.role?.name ?? "-"}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm text-gray-600">{user.branch?.name ?? "-"}</span>
+                          <span className="text-sm text-foreground">{user.branch?.name ?? "-"}</span>
                         </TableCell>
                         <TableCell>
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${user.isActive ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${user.isActive ? "bg-green-50 text-green-700" : "bg-muted text-tertiary"}`}>
                             {user.isActive ? "Aktif" : "Nonaktif"}
                           </span>
                         </TableCell>
                         <TableCell className="pr-3">
                           <DropdownMenu>
-                            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-700" aria-label="Aksi" />}>
+                            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" aria-label="Aksi" />}>
                               {togglingId === user.id
                                 ? <Loader2 className="w-4 h-4 animate-spin" />
                                 : <MoreHorizontal className="w-4 h-4" />}
@@ -355,7 +355,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                               </DropdownMenuItem>
                               {currentUserRole === "SUPER_ADMIN" && (
                                 <DropdownMenuItem
-                                  className="cursor-pointer gap-2 text-red-500 focus:text-red-500"
+                                  className="cursor-pointer gap-2 text-destructive focus:text-destructive"
                                   onClick={() => setDeleteTarget(user)}
                                 >
                                   <Trash2 className="w-3.5 h-3.5" /> Hapus
@@ -383,40 +383,40 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
         {/* ── Roles Tab ─────────────────────────────────────────────────────── */}
         <TabsContent value="roles" className="mt-5 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-orange-50 rounded-xl">
-              <Shield className="w-5 h-5 text-orange-500" />
+            <div className="p-2 bg-primary-10 rounded-xl">
+              <Shield className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="font-semibold text-gray-900">Role & Hak Akses</h2>
-              <p className="text-xs text-gray-400">{roles.length} role terdaftar</p>
+              <h2 className="font-semibold text-on-surface">Role & Hak Akses</h2>
+              <p className="text-xs text-muted-foreground">{roles.length} role terdaftar</p>
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {roles.map((role: any) => (
-              <Card key={role.id} className="border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <Card key={role.id} className="border-neutral shadow-sm hover:shadow-md transition-all">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-semibold text-gray-900 flex items-center gap-1.5">
+                      <p className="font-semibold text-on-surface flex items-center gap-1.5">
                         {role.name}
                         {role.name === "SUPER_ADMIN" && <Crown className="w-3.5 h-3.5 text-purple-500" />}
                       </p>
-                      <p className="text-xs text-gray-400 mt-0.5">{role._count?.users ?? 0} pengguna</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{role._count?.users ?? 0} pengguna</p>
                     </div>
-                    <div className="p-2 bg-orange-50 rounded-lg">
-                      <Shield className="w-4 h-4 text-orange-500" />
+                    <div className="p-2 bg-primary-10 rounded-lg">
+                      <Shield className="w-4 h-4 text-primary" />
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <p className="text-xs text-gray-500 mb-3">
+                  <p className="text-xs text-tertiary mb-3">
                     {role.rolePermissions?.length ?? 0} hak akses aktif
                   </p>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="w-full h-8 text-xs border-gray-200"
+                    className="w-full h-8 text-xs border-border"
                     onClick={() => openPermissions(role)}
                   >
                     <Key className="w-3.5 h-3.5 mr-1.5" /> Kelola Hak Akses
@@ -437,7 +437,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
           <form onSubmit={handleCreate} className="space-y-3 pt-1">
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2 space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Nama Lengkap *</Label>
+                <Label className="text-xs font-medium text-foreground">Nama Lengkap *</Label>
                 <Input
                   value={createForm.name}
                   onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
@@ -446,7 +446,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 />
               </div>
               <div className="col-span-2 space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Email *</Label>
+                <Label className="text-xs font-medium text-foreground">Email *</Label>
                 <Input
                   type="email"
                   value={createForm.email}
@@ -456,7 +456,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 />
               </div>
               <div className="col-span-2 space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Password *</Label>
+                <Label className="text-xs font-medium text-foreground">Password *</Label>
                 <Input
                   type="password"
                   value={createForm.password}
@@ -467,7 +467,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">No. HP</Label>
+                <Label className="text-xs font-medium text-foreground">No. HP</Label>
                 <Input
                   value={createForm.phone}
                   onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
@@ -475,7 +475,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Role *</Label>
+                <Label className="text-xs font-medium text-foreground">Role *</Label>
                 <SearchableSelect
                   value={createForm.roleId}
                   onValueChange={(v) => v && setCreateForm({ ...createForm, roleId: v })}
@@ -487,7 +487,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 </SearchableSelect>
               </div>
               <div className="col-span-2 space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Cabang</Label>
+                <Label className="text-xs font-medium text-foreground">Cabang</Label>
                 <SearchableSelect
                   value={createForm.branchId}
                   onValueChange={(v) => v && setCreateForm({ ...createForm, branchId: v })}
@@ -500,7 +500,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 </SearchableSelect>
               </div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
               <Button
                 type="button"
                 variant="outline"
@@ -511,7 +511,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
               </Button>
               <Button
                 type="submit"
-                className="bg-orange-500 hover:bg-orange-600 min-w-24"
+                className="bg-primary hover:bg-primary-80 min-w-24"
                 disabled={createLoading}
               >
                 {createLoading
@@ -532,7 +532,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
           <form onSubmit={handleEdit} className="space-y-3 pt-1">
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2 space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Nama Lengkap *</Label>
+                <Label className="text-xs font-medium text-foreground">Nama Lengkap *</Label>
                 <Input
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
@@ -540,7 +540,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 />
               </div>
               <div className="col-span-2 space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Password Baru (opsional)</Label>
+                <Label className="text-xs font-medium text-foreground">Password Baru (opsional)</Label>
                 <Input
                   type="password"
                   value={editForm.password}
@@ -550,7 +550,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">No. HP</Label>
+                <Label className="text-xs font-medium text-foreground">No. HP</Label>
                 <Input
                   value={editForm.phone}
                   onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
@@ -558,7 +558,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Role *</Label>
+                <Label className="text-xs font-medium text-foreground">Role *</Label>
                 <SearchableSelect
                   value={editForm.roleId}
                   onValueChange={(v) => v && setEditForm({ ...editForm, roleId: v })}
@@ -570,7 +570,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 </SearchableSelect>
               </div>
               <div className="col-span-2 space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Cabang</Label>
+                <Label className="text-xs font-medium text-foreground">Cabang</Label>
                 <SearchableSelect
                   value={editForm.branchId}
                   onValueChange={(v) => setEditForm({ ...editForm, branchId: v ?? "" })}
@@ -583,7 +583,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 </SearchableSelect>
               </div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
               <Button
                 type="button"
                 variant="outline"
@@ -594,7 +594,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
               </Button>
               <Button
                 type="submit"
-                className="bg-orange-500 hover:bg-orange-600 min-w-24"
+                className="bg-primary hover:bg-primary-80 min-w-24"
                 disabled={editLoading}
               >
                 {editLoading
@@ -610,15 +610,15 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
       <Dialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-red-600">Hapus Pengguna</DialogTitle>
+            <DialogTitle className="text-destructive">Hapus Pengguna</DialogTitle>
           </DialogHeader>
           <div className="py-2 space-y-3">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-foreground">
               Tindakan ini akan menonaktifkan akun{" "}
-              <span className="font-semibold text-gray-900">{deleteTarget?.name}</span>{" "}
+              <span className="font-semibold text-on-surface">{deleteTarget?.name}</span>{" "}
               dan mencabut aksesnya. Tindakan ini tidak dapat langsung dibatalkan.
             </p>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
               <Button
                 variant="outline"
                 onClick={() => setDeleteTarget(null)}
@@ -647,7 +647,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
           <DialogHeader>
             <DialogTitle>
               Hak Akses —{" "}
-              <span className={`text-sm px-2 py-0.5 rounded-full font-medium ${roleBadgeColor[permRole?.name] ?? "bg-gray-100 text-gray-600"}`}>
+              <span className={`text-sm px-2 py-0.5 rounded-full font-medium ${roleBadgeColor[permRole?.name] ?? "bg-muted text-foreground"}`}>
                 {permRole?.name}
               </span>
             </DialogTitle>
@@ -655,18 +655,18 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
           <div className="mt-3 space-y-4">
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
-                <thead className="bg-gray-50">
+                <thead className="bg-muted/50">
                   <tr>
-                    <th className="text-left px-3 py-2 font-semibold text-gray-500 uppercase tracking-wide">Modul</th>
+                    <th className="text-left px-3 py-2 font-semibold text-tertiary uppercase tracking-wide">Modul</th>
                     {ACTIONS.map((a) => (
-                      <th key={a} className="text-center px-2 py-2 font-semibold text-gray-500 uppercase tracking-wide capitalize">{a}</th>
+                      <th key={a} className="text-center px-2 py-2 font-semibold text-tertiary uppercase tracking-wide capitalize">{a}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {MODULES.map((mod) => (
-                    <tr key={mod} className="hover:bg-gray-50/50">
-                      <td className="px-3 py-2 font-medium text-gray-700 capitalize">{mod}</td>
+                    <tr key={mod} className="hover:bg-muted/50">
+                      <td className="px-3 py-2 font-medium text-foreground capitalize">{mod}</td>
                       {ACTIONS.map((action) => {
                         const key = `${mod}:${action}`;
                         return (
@@ -675,7 +675,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                               type="checkbox"
                               checked={checkedPerms.includes(key)}
                               onChange={() => togglePerm(key)}
-                              className="w-4 h-4 rounded border-gray-300 text-orange-500"
+                              className="w-4 h-4 rounded border-foreground/20 text-primary"
                             />
                           </td>
                         );
@@ -685,7 +685,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 </tbody>
               </table>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
               <Button
                 variant="outline"
                 onClick={() => setPermOpen(false)}
@@ -694,7 +694,7 @@ export function UsersClient({ users: initial, roles: initialRoles, branches, cur
                 Batal
               </Button>
               <Button
-                className="bg-orange-500 hover:bg-orange-600 min-w-36"
+                className="bg-primary hover:bg-primary-80 min-w-36"
                 onClick={savePermissions}
                 disabled={permLoading}
               >
