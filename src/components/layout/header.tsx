@@ -48,7 +48,7 @@ export function Header({ title }: { title: string }) {
   const roleLabel = roleLabels[userRole] || userRole || "";
 
   return (
-    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-3 bg-white/95 backdrop-blur-md border-b border-gray-50 px-4">
+    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-3 bg-white/95 backdrop-blur-md border-b border-gray-300 px-4">
       {/* Sidebar toggle */}
       <SidebarTrigger
         className="-ml-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
