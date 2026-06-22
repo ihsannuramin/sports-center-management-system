@@ -13,14 +13,14 @@ function StatPill({ value, label, icon: Icon, className, ...props }: StatPillPro
     <span
       data-slot="stat-pill"
       className={cn(
-        "inline-flex items-center h-8 px-3 rounded-full bg-surface text-on-surface text-[12px] font-bold border border-neutral transition-colors gap-1.5",
+        "inline-flex items-center h-8 px-3 rounded-full bg-white text-gray-900 text-[12px] font-bold border border-gray-50 transition-colors gap-1.5",
         className
       )}
       {...props}
     >
       {Icon && <Icon className="size-3.5" aria-hidden="true" />}
       <span>{value}</span>
-      {label && <span className="text-[10px] font-normal text-tertiary">{label}</span>}
+      {label && <span className="text-[10px] font-normal text-gray-500">{label}</span>}
     </span>
   )
 }

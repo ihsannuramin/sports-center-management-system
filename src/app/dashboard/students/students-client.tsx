@@ -97,39 +97,39 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
   const activeCount = students.filter(s => s.status === "ACTIVE").length;
 
   return (
-    <Card className="border-neutral shadow-sm">
-      <CardHeader className="pb-4 border-b border-neutral">
+    <Card className="border-gray-50 shadow-sm">
+      <CardHeader className="pb-4 border-b border-gray-50">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-50 rounded-xl">
               <Users className="w-5 h-5 text-blue-500" />
             </div>
             <div>
-              <h2 className="font-semibold text-on-surface">Daftar Siswa</h2>
-              <p className="text-xs text-muted-foreground">{activeCount} aktif · {filtered.length} ditampilkan</p>
+              <h2 className="font-semibold text-gray-900">Daftar Siswa</h2>
+              <p className="text-xs text-gray-400">{activeCount} aktif · {filtered.length} ditampilkan</p>
             </div>
           </div>
           <div className="flex gap-2 flex-wrap items-center">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input placeholder="Cari nama, nomor siswa..." className="pl-9 w-52 h-9 text-sm border-border" value={search} onChange={(e) => { setSearch(e.target.value); resetPage(); }} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input placeholder="Cari nama, nomor siswa..." className="pl-9 w-52 h-9 text-sm border-gray-200" value={search} onChange={(e) => { setSearch(e.target.value); resetPage(); }} />
             </div>
-            <SearchableSelect value={filterStatus} onValueChange={(v) => { setFilterStatus(v ?? "ALL"); resetPage(); }} className="w-34 h-9 text-sm border-border">
+            <SearchableSelect value={filterStatus} onValueChange={(v) => { setFilterStatus(v ?? "ALL"); resetPage(); }} className="w-34 h-9 text-sm border-gray-200">
               <SearchableSelectItem value="ALL">Semua Status</SearchableSelectItem>
               {Object.entries(statusLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
             </SearchableSelect>
-            <SearchableSelect value={filterClass} onValueChange={(v) => { setFilterClass(v ?? "ALL"); resetPage(); }} className="w-32 h-9 text-sm border-border">
+            <SearchableSelect value={filterClass} onValueChange={(v) => { setFilterClass(v ?? "ALL"); resetPage(); }} className="w-32 h-9 text-sm border-gray-200">
               <SearchableSelectItem value="ALL">Semua Kelas</SearchableSelectItem>
               {classes.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
             </SearchableSelect>
-            <SearchableSelect value={filterBranch} onValueChange={(v) => { setFilterBranch(v ?? "ALL"); resetPage(); }} className="w-32 h-9 text-sm border-border">
+            <SearchableSelect value={filterBranch} onValueChange={(v) => { setFilterBranch(v ?? "ALL"); resetPage(); }} className="w-32 h-9 text-sm border-gray-200">
               <SearchableSelectItem value="ALL">Semua Cabang</SearchableSelectItem>
               {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
             </SearchableSelect>
-            <Button variant="outline" size="sm" onClick={handleExport} className="h-9 border-border text-foreground hover:text-on-surface">
+            <Button variant="outline" size="sm" onClick={handleExport} className="h-9 border-gray-200 text-gray-700 hover:text-gray-900">
               <Download className="w-4 h-4 mr-1.5" /> Excel
             </Button>
-            <Button size="sm" className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20" onClick={openCreate}>
+            <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={openCreate}>
               <Plus className="w-4 h-4 mr-1.5" /> Tambah Siswa
             </Button>
           </div>
@@ -138,13 +138,13 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
       <CardContent className="p-0">
         <Table className="table-row-hover">
           <TableHeader>
-            <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableHead className="text-xs font-semibold text-tertiary pl-5">No. Siswa</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Nama</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Kelas</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Orang Tua</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Cabang</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Status</TableHead>
+            <TableRow className="bg-gray-50 hover:bg-gray-50">
+              <TableHead className="text-xs font-semibold text-gray-500 pl-5">No. Siswa</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Nama</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Kelas</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Orang Tua</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Cabang</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Status</TableHead>
               <TableHead className="w-10"></TableHead>
             </TableRow>
           </TableHeader>
@@ -153,12 +153,12 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-16">
                   <div className="flex flex-col items-center gap-2">
-                    <Users className="w-8 h-8 text-muted-foreground/30" />
-                    <p className="text-sm text-muted-foreground">
+                    <Users className="w-8 h-8 text-gray-200" />
+                    <p className="text-sm text-gray-400">
                       {search || filterStatus !== "ALL" || filterClass !== "ALL" || filterBranch !== "ALL" ? "Tidak ada hasil yang cocok" : "Belum ada siswa terdaftar"}
                     </p>
                     {!search && filterStatus === "ALL" && filterClass === "ALL" && filterBranch === "ALL" && (
-                      <Button size="sm" className="mt-1 bg-primary hover:bg-primary-80" onClick={openCreate}>
+                      <Button size="sm" className="mt-1 bg-orange-500 hover:bg-orange-600" onClick={openCreate}>
                         <Plus className="w-3.5 h-3.5 mr-1" /> Tambah Siswa Pertama
                       </Button>
                     )}
@@ -169,28 +169,28 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
               paginated.map((s) => (
                 <TableRow key={s.id} className="cursor-default">
                   <TableCell className="pl-5">
-                    <span className="font-mono text-xs text-tertiary bg-muted/50 px-2 py-1 rounded-md">{s.studentNumber}</span>
+                    <span className="font-mono text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-md">{s.studentNumber}</span>
                   </TableCell>
                   <TableCell>
-                    <p className="font-medium text-on-surface text-sm">{s.name}</p>
+                    <p className="font-medium text-gray-900 text-sm">{s.name}</p>
                   </TableCell>
-                  <TableCell><span className="text-sm text-foreground">{s.class?.name || <span className="text-muted-foreground/50">—</span>}</span></TableCell>
-                  <TableCell><span className="text-sm text-foreground">{s.parentName || <span className="text-muted-foreground/50">—</span>}</span></TableCell>
-                  <TableCell><span className="text-sm text-foreground">{s.branch?.name || <span className="text-muted-foreground/50">—</span>}</span></TableCell>
+                  <TableCell><span className="text-sm text-gray-700">{s.class?.name || <span className="text-gray-300">—</span>}</span></TableCell>
+                  <TableCell><span className="text-sm text-gray-700">{s.parentName || <span className="text-gray-300">—</span>}</span></TableCell>
+                  <TableCell><span className="text-sm text-gray-700">{s.branch?.name || <span className="text-gray-300">—</span>}</span></TableCell>
                   <TableCell>
                     <span className={statusBadge[s.status]}>{statusLabels[s.status]}</span>
                   </TableCell>
                   <TableCell className="pr-3">
                     <DropdownMenu>
-                      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" aria-label="Aksi" />}>
+                      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-700" aria-label="Aksi" />}>
                         <MoreHorizontal className="w-4 h-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => router.push(`/dashboard/students/${s.id}`)} className="cursor-pointer">
-                          <ExternalLink className="w-3.5 h-3.5 mr-2 text-muted-foreground" /> Detail
+                          <ExternalLink className="w-3.5 h-3.5 mr-2 text-gray-400" /> Detail
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => openEdit(s)} className="cursor-pointer">Edit</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleSuspend(s.id, s.status)} className={`cursor-pointer ${s.status === "ACTIVE" ? "text-destructive" : "text-green-600"}`}>
+                        <DropdownMenuItem onClick={() => handleSuspend(s.id, s.status)} className={`cursor-pointer ${s.status === "ACTIVE" ? "text-red-500" : "text-green-600"}`}>
                           {s.status === "ACTIVE" ? "Tangguhkan" : "Aktifkan"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -211,35 +211,35 @@ export function StudentsClient({ students: initialStudents, branches, classes }:
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 pt-1">
             <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-foreground">Nama Lengkap *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Tanggal Lahir</Label><Input type="date" value={form.birthDate} onChange={(e) => setForm({ ...form, birthDate: e.target.value })} /></div>
+              <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">Nama Lengkap *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Tanggal Lahir</Label><Input type="date" value={form.birthDate} onChange={(e) => setForm({ ...form, birthDate: e.target.value })} /></div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Jenis Kelamin</Label>
+                <Label className="text-xs font-medium text-gray-700">Jenis Kelamin</Label>
                 <SearchableSelect value={form.gender} onValueChange={(v) => v && setForm({ ...form, gender: v as any })} placeholder="Pilih jenis kelamin">
                   <SearchableSelectItem value="MALE">Laki-laki</SearchableSelectItem>
                   <SearchableSelectItem value="FEMALE">Perempuan</SearchableSelectItem>
                 </SearchableSelect>
               </div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">No. HP</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Nama Orang Tua</Label><Input value={form.parentName} onChange={(e) => setForm({ ...form, parentName: e.target.value })} /></div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">No. HP Orang Tua</Label><Input value={form.parentPhone} onChange={(e) => setForm({ ...form, parentPhone: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">No. HP</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Nama Orang Tua</Label><Input value={form.parentName} onChange={(e) => setForm({ ...form, parentName: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">No. HP Orang Tua</Label><Input value={form.parentPhone} onChange={(e) => setForm({ ...form, parentPhone: e.target.value })} /></div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Cabang *</Label>
+                <Label className="text-xs font-medium text-gray-700">Cabang *</Label>
                 <SearchableSelect value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })} placeholder="Pilih cabang">
                   {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Kelas</Label>
+                <Label className="text-xs font-medium text-gray-700">Kelas</Label>
                 <SearchableSelect value={form.classId} onValueChange={(v) => v && setForm({ ...form, classId: v })} placeholder="Pilih kelas">
                   {classes.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
-              <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-foreground">Alamat</Label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
+              <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">Alamat</Label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-50">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={loading}>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>
                 {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Menyimpan...</> : "Simpan"}
               </Button>
             </div>

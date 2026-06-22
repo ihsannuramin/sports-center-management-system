@@ -37,7 +37,7 @@ export function CalendarView() {
 
   return (
     <>
-      <div className="bg-surface rounded-lg border p-1">
+      <div className="bg-white rounded-lg border p-1">
         <div className="flex gap-3 mb-3 px-3 pt-2 flex-wrap text-xs">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-green-600 inline-block" />
@@ -101,10 +101,10 @@ export function CalendarView() {
           {selectedEvent && (
             <div className="space-y-2 text-sm">
               <div className="font-medium text-base">{selectedEvent.court}</div>
-              <div className="text-xs px-2 py-0.5 rounded-full font-medium inline-block bg-muted text-foreground">
+              <div className="text-xs px-2 py-0.5 rounded-full font-medium inline-block bg-gray-100 text-gray-700">
                 {typeLabels[selectedEvent.type] || selectedEvent.type}
               </div>
-              <div className="space-y-1 text-muted-foreground">
+              <div className="space-y-1 text-gray-400">
                 <p>{formatDate(selectedEvent.start)}</p>
                 <p>{formatTime(selectedEvent.start)} — {formatTime(selectedEvent.end)}</p>
               </div>
@@ -122,7 +122,7 @@ export function CalendarView() {
                 </div>
               )}
               {selectedEvent.notes && (
-                <p className="border-t pt-2 text-muted-foreground">{selectedEvent.notes}</p>
+                <p className="border-t pt-2 text-gray-400">{selectedEvent.notes}</p>
               )}
             </div>
           )}

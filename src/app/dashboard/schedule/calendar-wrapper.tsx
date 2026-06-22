@@ -7,7 +7,7 @@ const CalendarView = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-96 flex items-center justify-center text-muted-foreground">
+      <div className="h-96 flex items-center justify-center text-gray-400">
         Memuat kalender...
       </div>
     ),

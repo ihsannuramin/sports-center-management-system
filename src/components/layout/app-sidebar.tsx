@@ -105,11 +105,11 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar className="border-r border-neutral">
+    <Sidebar className="border-r border-gray-50">
       {/* Header */}
-      <SidebarHeader className="px-4 py-4 border-b border-neutral">
+      <SidebarHeader className="px-4 py-4 border-b border-gray-50">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-br from-primary to-primary-80 rounded-xl flex items-center justify-center shadow-md shadow-primary/20 flex-shrink-0">
+          <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md shadow-orange-200 flex-shrink-0">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="1.5" />
               <path d="M12 2C12 2 8 7 8 12C8 17 12 22 12 22" stroke="white" strokeWidth="1.5" />
@@ -118,8 +118,8 @@ export function AppSidebar() {
             </svg>
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sm text-on-surface leading-tight tracking-tight">Sports Center</p>
-            <p className="text-[10px] text-tertiary font-semibold tracking-widest uppercase mt-0.5">
+            <p className="font-bold text-sm text-gray-900 leading-tight tracking-tight">Sports Center</p>
+            <p className="text-[10px] text-gray-500 font-semibold tracking-widest uppercase mt-0.5">
               Management
             </p>
           </div>
@@ -131,7 +131,7 @@ export function AppSidebar() {
         {menuItems.map((group, gi) => (
           <SidebarGroup key={group.group} className={gi === 0 ? "" : "mt-1"}>
             {group.group !== "Utama" && (
-              <SidebarGroupLabel className="text-[10px] font-bold tracking-widest text-tertiary/80 uppercase px-3 mb-0.5 mt-2 select-none">
+              <SidebarGroupLabel className="text-[10px] font-bold tracking-widest text-gray-500/80 uppercase px-3 mb-0.5 mt-2 select-none">
                 {group.group}
               </SidebarGroupLabel>
             )}
@@ -147,17 +147,17 @@ export function AppSidebar() {
                         className={[
                           "relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150 w-full",
                           active
-                            ? "bg-primary-10 text-primary before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[18px] before:w-0.5 before:rounded-r-full before:bg-primary"
-                            : "text-tertiary hover:bg-muted/50 hover:text-on-surface",
+                            ? "bg-orange-50 text-orange-500 before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[18px] before:w-0.5 before:rounded-r-full before:bg-orange-500"
+                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-900",
                         ].join(" ")}
                       >
                         <item.icon
-                          className={`w-[15px] h-[15px] flex-shrink-0 ${active ? "text-primary" : "text-tertiary"}`}
+                          className={`w-[15px] h-[15px] flex-shrink-0 ${active ? "text-orange-500" : "text-gray-500"}`}
                           aria-hidden="true"
                         />
                         <span className="flex-1 truncate">{item.label}</span>
                         {active && (
-                          <ChevronRight className="w-3 h-3 text-primary/70 ml-auto flex-shrink-0" />
+                          <ChevronRight className="w-3 h-3 text-orange-500/70 ml-auto flex-shrink-0" />
                         )}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -170,13 +170,13 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* Footer */}
-      <SidebarFooter className="px-3 py-3 border-t border-neutral">
+      <SidebarFooter className="px-3 py-3 border-t border-gray-50">
         <button
           onClick={handleLogout}
           aria-label="Keluar dari sistem"
-          className="flex items-center gap-2.5 text-sm text-tertiary hover:text-destructive transition-all duration-150 w-full px-3 py-2 rounded-lg hover:bg-destructive/10 group"
+          className="flex items-center gap-2.5 text-sm text-gray-500 hover:text-red-500 transition-all duration-150 w-full px-3 py-2 rounded-lg hover:bg-red-50 group"
         >
-          <LogOut className="w-[15px] h-[15px] flex-shrink-0 group-hover:text-destructive transition-colors" />
+          <LogOut className="w-[15px] h-[15px] flex-shrink-0 group-hover:text-red-500 transition-colors" />
           <span className="font-medium">Keluar</span>
         </button>
       </SidebarFooter>

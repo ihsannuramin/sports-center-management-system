@@ -8,8 +8,8 @@ const chipVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-surface text-tertiary border border-border",
-        active: "bg-primary text-surface border border-transparent",
+        default: "bg-white text-gray-500 border border-gray-200",
+        active: "bg-orange-500 text-surface border border-transparent",
       },
     },
     defaultVariants: {

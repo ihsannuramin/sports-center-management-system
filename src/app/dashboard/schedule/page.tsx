@@ -6,7 +6,7 @@ export default function SchedulePage() {
     <>
       <Header title="Jadwal Lapangan" />
       <div className="flex flex-1 flex-col gap-5 p-5">
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-gray-400">
           Tampilan jadwal sewa lapangan dan latihan akademi. Klik event untuk melihat detail.
         </div>
         <CalendarWrapper />

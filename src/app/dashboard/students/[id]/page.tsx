@@ -103,41 +103,41 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
                     {statusLabels[student.status]}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground font-mono">{student.studentNumber}</p>
+                <p className="text-sm text-gray-400 font-mono">{student.studentNumber}</p>
               </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="flex items-center gap-2 text-gray-400">
                   <BookOpen className="w-4 h-4" />
                   <span>{student.class?.name || "Belum ada kelas"}</span>
                 </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="flex items-center gap-2 text-gray-400">
                   <User className="w-4 h-4" />
                   <span>Pelatih: {student.class?.coach?.name || "-"}</span>
                 </div>
                 {student.parentName && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="flex items-center gap-2 text-gray-400">
                     <User className="w-4 h-4" />
                     <span>Orang Tua: {student.parentName}</span>
                   </div>
                 )}
                 {student.parentPhone && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="flex items-center gap-2 text-gray-400">
                     <Phone className="w-4 h-4" />
                     <span>{student.parentPhone}</span>
                   </div>
                 )}
                 {student.address && (
-                  <div className="flex items-center gap-2 text-muted-foreground col-span-2">
+                  <div className="flex items-center gap-2 text-gray-400 col-span-2">
                     <MapPin className="w-4 h-4" />
                     <span>{student.address}</span>
                   </div>
                 )}
-                <div className="text-muted-foreground">
+                <div className="text-gray-400">
                   Terdaftar: {format(new Date(student.joinDate), "d MMMM yyyy", { locale: idLocale })}
                 </div>
-                <div className="text-muted-foreground">
+                <div className="text-gray-400">
                   Cabang: {student.branch?.name}
                 </div>
               </div>
@@ -150,34 +150,34 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
               <CardContent className="pt-4">
                 <div className="flex items-center gap-2 mb-1">
                   <ClipboardCheck className="w-4 h-4 text-orange-500" />
-                  <p className="text-sm text-muted-foreground">Kehadiran (30 terakhir)</p>
+                  <p className="text-sm text-gray-400">Kehadiran (30 terakhir)</p>
                 </div>
                 <p className={`text-2xl font-bold ${attendancePct >= 80 ? "text-green-600" : attendancePct >= 60 ? "text-orange-500" : "text-red-500"}`}>
                   {attendancePct}%
                 </p>
-                <p className="text-xs text-muted-foreground">{presentCount}/{totalAttendance} pertemuan</p>
+                <p className="text-xs text-gray-400">{presentCount}/{totalAttendance} pertemuan</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-4">
                 <div className="flex items-center gap-2 mb-1">
-                  <Star className="w-4 h-4 text-primary" />
-                  <p className="text-sm text-muted-foreground">Nilai Rata-rata</p>
+                  <Star className="w-4 h-4 text-orange-500" />
+                  <p className="text-sm text-gray-400">Nilai Rata-rata</p>
                 </div>
                 {avgScore !== null ? (
                   <p className={`text-2xl font-bold ${avgScore >= 80 ? "text-green-600" : avgScore >= 60 ? "text-orange-500" : "text-red-500"}`}>
                     {avgScore}
                   </p>
                 ) : (
-                  <p className="text-sm text-muted-foreground">Belum dinilai</p>
+                  <p className="text-sm text-gray-400">Belum dinilai</p>
                 )}
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-4">
                 <div className="flex items-center gap-2 mb-1">
-                  <FileText className="w-4 h-4 text-primary" />
-                  <p className="text-sm text-muted-foreground">Tagihan Belum Lunas</p>
+                  <FileText className="w-4 h-4 text-orange-500" />
+                  <p className="text-sm text-gray-400">Tagihan Belum Lunas</p>
                 </div>
                 <p className={`text-xl font-bold ${unpaidAmount > 0 ? "text-red-500" : "text-green-600"}`}>
                   {unpaidAmount > 0 ? `Rp ${unpaidAmount.toLocaleString("id-ID")}` : "Lunas"}
@@ -198,14 +198,14 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
             </CardHeader>
             <CardContent>
               {student.attendances.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">Belum ada data kehadiran</p>
+                <p className="text-sm text-gray-400 text-center py-4">Belum ada data kehadiran</p>
               ) : (
                 <div className="space-y-1 max-h-64 overflow-y-auto">
                   {student.attendances.map((a) => (
                     <div key={a.id} className="flex items-center justify-between text-sm py-1 border-b last:border-0">
-                      <span className="text-muted-foreground">{format(new Date(a.date), "d MMM yyyy")}</span>
+                      <span className="text-gray-400">{format(new Date(a.date), "d MMM yyyy")}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">{a.class?.name}</span>
+                        <span className="text-xs text-gray-400">{a.class?.name}</span>
                         <span className={`font-medium ${attendanceColors[a.status]}`}>
                           {attendanceLabels[a.status]}
                         </span>
@@ -223,19 +223,19 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
               <CardTitle className="flex items-center gap-2">
                 <Star className="w-4 h-4 text-orange-500" />
                 Penilaian Performa
-                {latestAssessment && <span className="text-xs font-normal text-muted-foreground">({latestAssessment.period})</span>}
+                {latestAssessment && <span className="text-xs font-normal text-gray-400">({latestAssessment.period})</span>}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {!latestAssessment ? (
-                <p className="text-sm text-muted-foreground text-center py-4">Belum ada penilaian</p>
+                <p className="text-sm text-gray-400 text-center py-4">Belum ada penilaian</p>
               ) : (
                 <div className="space-y-3">
                   {skills.map((s) => (
                     <div key={s} className="space-y-1">
                       <div className="flex justify-between text-sm">
                         <span className="font-medium">{skillLabels[s]}</span>
-                        <span className={`font-bold ${latestAssessment[s] >= 80 ? "text-green-600" : latestAssessment[s] >= 60 ? "text-primary" : "text-destructive"}`}>
+                        <span className={`font-bold ${latestAssessment[s] >= 80 ? "text-green-600" : latestAssessment[s] >= 60 ? "text-orange-500" : "text-red-500"}`}>
                           {latestAssessment[s]}
                         </span>
                       </div>
@@ -243,7 +243,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
                     </div>
                   ))}
                   {latestAssessment.notes && (
-                    <p className="text-xs text-muted-foreground border-t pt-2">{latestAssessment.notes}</p>
+                    <p className="text-xs text-gray-400 border-t pt-2">{latestAssessment.notes}</p>
                   )}
                 </div>
               )}
@@ -255,13 +255,13 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-primary" />
+              <FileText className="w-4 h-4 text-orange-500" />
               Riwayat Invoice
             </CardTitle>
           </CardHeader>
           <CardContent>
             {student.invoices.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">Belum ada invoice</p>
+              <p className="text-sm text-gray-400 text-center py-4">Belum ada invoice</p>
             ) : (
               <Table>
                 <TableHeader>

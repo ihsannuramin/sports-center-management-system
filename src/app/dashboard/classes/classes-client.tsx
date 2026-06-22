@@ -184,21 +184,21 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
   }
 
   return (
-    <Card className="border-neutral shadow-sm">
-      <CardHeader className="pb-4 border-b border-neutral">
+    <Card className="border-gray-50 shadow-sm">
+      <CardHeader className="pb-4 border-b border-gray-50">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-purple-50 rounded-xl"><BookOpen className="w-5 h-5 text-purple-500" /></div>
             <div>
-              <h2 className="font-semibold text-on-surface">Daftar Kelas</h2>
-              <p className="text-xs text-muted-foreground">{classes.length} kelas terdaftar</p>
+              <h2 className="font-semibold text-gray-900">Daftar Kelas</h2>
+              <p className="text-xs text-gray-400">{classes.length} kelas terdaftar</p>
             </div>
           </div>
           <div className="flex gap-2 items-center">
-            <Button variant="outline" size="sm" className="h-9 border-border text-foreground" onClick={handleExport}>
+            <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-700" onClick={handleExport}>
               <Download className="w-4 h-4 mr-1.5" /> Excel
             </Button>
-            <Button size="sm" className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20" onClick={openCreate}>
+            <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={openCreate}>
               <Plus className="w-4 h-4 mr-1.5" /> Tambah Kelas
             </Button>
           </div>
@@ -207,13 +207,13 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
       <CardContent className="p-0">
         <Table className="table-row-hover">
           <TableHeader>
-            <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableHead className="text-xs font-semibold text-tertiary pl-5">Nama Kelas</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Usia</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Jadwal & Lapangan</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Pelatih</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Siswa</TableHead>
-              <TableHead className="text-xs font-semibold text-tertiary">Cabang</TableHead>
+            <TableRow className="bg-gray-50 hover:bg-gray-50">
+              <TableHead className="text-xs font-semibold text-gray-500 pl-5">Nama Kelas</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Usia</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Jadwal & Lapangan</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Pelatih</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Siswa</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Cabang</TableHead>
               <TableHead className="w-10"></TableHead>
             </TableRow>
           </TableHeader>
@@ -221,8 +221,8 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
             {paginated.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-16">
-                  <BookOpen className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Belum ada kelas</p>
+                  <BookOpen className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                  <p className="text-sm text-gray-400">Belum ada kelas</p>
                 </TableCell>
               </TableRow>
             ) : (
@@ -232,56 +232,56 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
                 return (
                   <TableRow key={c.id}>
                     <TableCell className="pl-5">
-                      <p className="font-medium text-sm text-on-surface">{c.name}</p>
+                      <p className="font-medium text-sm text-gray-900">{c.name}</p>
                     </TableCell>
                     <TableCell>
                       <span className="badge-blue">{ageGroupLabels[c.ageGroup] || c.ageGroup}</span>
                     </TableCell>
                     <TableCell>
                       {!sched ? (
-                        <span className="text-muted-foreground/50">—</span>
+                        <span className="text-gray-300">—</span>
                       ) : sched.isJson ? (
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-1.5">
-                            <Clock className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                            <span className="text-xs font-medium text-foreground">{sched.days}</span>
-                            <span className="text-xs text-tertiary">{sched.time}</span>
+                            <Clock className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                            <span className="text-xs font-medium text-gray-700">{sched.days}</span>
+                            <span className="text-xs text-gray-500">{sched.time}</span>
                           </div>
                           {sched.courtName && (
                             <div className="flex items-center gap-1.5">
-                              <MapPin className="w-3 h-3 text-primary flex-shrink-0" />
-                              <span className="text-xs text-primary">{sched.courtName}</span>
+                              <MapPin className="w-3 h-3 text-orange-500 flex-shrink-0" />
+                              <span className="text-xs text-orange-500">{sched.courtName}</span>
                             </div>
                           )}
                         </div>
                       ) : (
-                        <span className="text-sm text-foreground">{sched.text}</span>
+                        <span className="text-sm text-gray-700">{sched.text}</span>
                       )}
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-foreground">{c.coach?.name || <span className="text-muted-foreground/50">—</span>}</span>
+                      <span className="text-sm text-gray-700">{c.coach?.name || <span className="text-gray-300">—</span>}</span>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <span className={`text-sm font-semibold ${isFull ? "text-destructive" : "text-on-surface"}`}>
+                        <span className={`text-sm font-semibold ${isFull ? "text-red-500" : "text-gray-900"}`}>
                           {c._count.students}
                         </span>
-                        <span className="text-xs text-muted-foreground">/ {c.maxStudents}</span>
+                        <span className="text-xs text-gray-400">/ {c.maxStudents}</span>
                         {isFull && <span className="badge-red">Penuh</span>}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-foreground">{c.branch?.name}</span>
+                      <span className="text-sm text-gray-700">{c.branch?.name}</span>
                     </TableCell>
                     <TableCell className="pr-3">
                       <DropdownMenu>
-                        <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" aria-label="Aksi" />}>
+                        <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-700" aria-label="Aksi" />}>
                           <MoreHorizontal className="w-4 h-4" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => openEdit(c)} className="cursor-pointer gap-2"><Pencil className="w-3.5 h-3.5" /> Edit</DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer gap-2" onClick={() => handleDelete(c.id)}><Trash2 className="w-3.5 h-3.5" /> Hapus</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-500 focus:text-red-500 cursor-pointer gap-2" onClick={() => handleDelete(c.id)}><Trash2 className="w-3.5 h-3.5" /> Hapus</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -309,21 +309,21 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
             {/* Basic info */}
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2 space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Nama Kelas *</Label>
+                <Label className="text-xs font-medium text-gray-700">Nama Kelas *</Label>
                 <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Kelompok Umur *</Label>
+                <Label className="text-xs font-medium text-gray-700">Kelompok Umur *</Label>
                 <SearchableSelect value={form.ageGroup} onValueChange={(v) => v && setForm({ ...form, ageGroup: v as any })} placeholder="Pilih kelompok umur">
                   {Object.entries(ageGroupLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Maks. Siswa</Label>
+                <Label className="text-xs font-medium text-gray-700">Maks. Siswa</Label>
                 <Input type="number" value={form.maxStudents} onChange={(e) => setForm({ ...form, maxStudents: Number(e.target.value) })} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Cabang *</Label>
+                <Label className="text-xs font-medium text-gray-700">Cabang *</Label>
                 <SearchableSelect
                   value={form.branchId}
                   onValueChange={(v) => v && setForm({ ...form, branchId: v, scheduleCourtId: "" })}
@@ -333,7 +333,7 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
                 </SearchableSelect>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Pelatih</Label>
+                <Label className="text-xs font-medium text-gray-700">Pelatih</Label>
                 <SearchableSelect value={form.coachId} onValueChange={(v) => v && setForm({ ...form, coachId: v })} placeholder="Pilih pelatih">
                   {coaches.map((c: any) => <SearchableSelectItem key={c.id} value={c.id}>{c.name}</SearchableSelectItem>)}
                 </SearchableSelect>
@@ -341,14 +341,14 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
             </div>
 
             {/* Schedule section */}
-            <div className="border border-neutral rounded-xl p-4 space-y-3 bg-muted/50">
-              <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-primary" /> Jadwal Latihan
+            <div className="border border-gray-50 rounded-xl p-4 space-y-3 bg-gray-50">
+              <p className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-orange-500" /> Jadwal Latihan
               </p>
 
               {/* Day picker */}
               <div className="space-y-1.5">
-                <p className="text-xs text-tertiary">Hari Latihan</p>
+                <p className="text-xs text-gray-500">Hari Latihan</p>
                 <div className="flex gap-1.5 flex-wrap">
                   {DAYS.map((day) => (
                     <button
@@ -357,8 +357,8 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
                       onClick={() => toggleDay(day.value)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                         form.scheduleDays.includes(day.value)
-                          ? "bg-primary text-white shadow-sm"
-                          : "bg-surface text-foreground border border-border hover:border-primary"
+                          ? "bg-orange-500 text-white shadow-sm"
+                          : "bg-white text-gray-700 border border-gray-200 hover:border-orange-400"
                       }`}
                     >
                       {day.short}
@@ -370,21 +370,21 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
               {/* Time range */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <p className="text-xs text-tertiary">Jam Mulai</p>
+                  <p className="text-xs text-gray-500">Jam Mulai</p>
                   <SearchableSelect
                     value={form.scheduleStart}
                     onValueChange={(v) => v && setForm({ ...form, scheduleStart: v })}
-                    className="bg-surface"
+                    className="bg-white"
                   >
                     {HOURS.map((h) => <SearchableSelectItem key={h} value={h}>{h}</SearchableSelectItem>)}
                   </SearchableSelect>
                 </div>
                 <div className="space-y-1.5">
-                  <p className="text-xs text-tertiary">Jam Selesai</p>
+                  <p className="text-xs text-gray-500">Jam Selesai</p>
                   <SearchableSelect
                     value={form.scheduleEnd}
                     onValueChange={(v) => v && setForm({ ...form, scheduleEnd: v })}
-                    className="bg-surface"
+                    className="bg-white"
                   >
                     {HOURS.filter((h) => h > form.scheduleStart).map((h) => (
                       <SearchableSelectItem key={h} value={h}>{h}</SearchableSelectItem>
@@ -395,15 +395,15 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
 
               {/* Court */}
               <div className="space-y-1.5">
-                <p className="text-xs text-tertiary">
+                <p className="text-xs text-gray-500">
                   Lapangan yang Digunakan
-                  <span className="text-primary ml-1">— slot ini akan diblokir dari penyewaan</span>
+                  <span className="text-orange-500 ml-1">— slot ini akan diblokir dari penyewaan</span>
                 </p>
                 <SearchableSelect
                   value={form.scheduleCourtId}
                   onValueChange={(v) => setForm({ ...form, scheduleCourtId: v ?? "" })}
                   disabled={!form.branchId}
-                  className="bg-surface"
+                  className="bg-white"
                   placeholder={!form.branchId ? "Pilih cabang dulu" : "Tidak ada / semua lapangan"}
                 >
                   <SearchableSelectItem value="">Tidak ada / semua lapangan</SearchableSelectItem>
@@ -414,16 +414,16 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
               </div>
 
               {form.scheduleDays.length > 0 && form.scheduleCourtId && (
-                <div className="text-xs text-primary bg-primary-10 border border-primary-20 rounded-lg px-3 py-2">
+                <div className="text-xs text-orange-500 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2">
                   Lapangan akan diblokir: {form.scheduleDays.sort().map((d) => DAYS.find((x) => x.value === d)?.label).join(", ")}{" "}
                   {form.scheduleStart}–{form.scheduleEnd}
                 </div>
               )}
             </div>
 
-            <div className="flex justify-end gap-2 pt-1 border-t border-neutral">
+            <div className="flex justify-end gap-2 pt-1 border-t border-gray-50">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={loading}>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>
                 {loading ? "Menyimpan..." : "Simpan"}
               </Button>
             </div>

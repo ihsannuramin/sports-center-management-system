@@ -27,15 +27,15 @@ const revenueData = [
 const CustomTooltipRevenue = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-surface border border-neutral rounded-xl shadow-lg p-3 text-sm min-w-[160px]">
-      <p className="font-semibold text-foreground mb-2 text-xs">{label}</p>
+    <div className="bg-white border border-gray-50 rounded-xl shadow-lg p-3 text-sm min-w-[160px]">
+      <p className="font-semibold text-gray-700 mb-2 text-xs">{label}</p>
       {payload.map((p: any) => (
         <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-            <span className="text-xs text-tertiary">{p.name}</span>
+            <span className="text-xs text-gray-500">{p.name}</span>
           </div>
-          <span className="text-xs font-semibold text-on-surface tabular-nums">
+          <span className="text-xs font-semibold text-gray-900 tabular-nums">
             Rp {Number(p.value).toLocaleString("id-ID")}
           </span>
         </div>
@@ -47,15 +47,15 @@ const CustomTooltipRevenue = ({ active, payload, label }: any) => {
 const CustomTooltipAttendance = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-surface border border-neutral rounded-xl shadow-lg p-3 text-sm min-w-[120px]">
-      <p className="font-semibold text-foreground mb-2 text-xs">{label}</p>
+    <div className="bg-white border border-gray-50 rounded-xl shadow-lg p-3 text-sm min-w-[120px]">
+      <p className="font-semibold text-gray-700 mb-2 text-xs">{label}</p>
       {payload.map((p: any) => (
         <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-            <span className="text-xs text-tertiary">{p.name}</span>
+            <span className="text-xs text-gray-500">{p.name}</span>
           </div>
-          <span className="text-xs font-semibold text-on-surface tabular-nums">{p.value}</span>
+          <span className="text-xs font-semibold text-gray-900 tabular-nums">{p.value}</span>
         </div>
       ))}
     </div>
@@ -66,10 +66,10 @@ export function DashboardCharts() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {/* Attendance chart */}
-      <Card className="border-neutral">
+      <Card className="border-gray-50">
         <CardHeader className="pb-3 pt-4 px-5">
-          <p className="text-sm font-semibold text-on-surface">Absensi Minggu Ini</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Kehadiran harian siswa (data contoh)</p>
+          <p className="text-sm font-semibold text-gray-900">Absensi Minggu Ini</p>
+          <p className="text-xs text-gray-400 mt-0.5">Kehadiran harian siswa (data contoh)</p>
         </CardHeader>
         <CardContent className="px-3 pb-4">
           <ResponsiveContainer width="100%" height={220}>
@@ -93,7 +93,7 @@ export function DashboardCharts() {
               />
               <Legend
                 wrapperStyle={{ fontSize: "11px", paddingTop: "12px" }}
-                formatter={(value) => <span className="text-tertiary">{value}</span>}
+                formatter={(value) => <span className="text-gray-500">{value}</span>}
               />
               <Bar dataKey="hadir" fill="#f97316" name="Hadir" radius={[4, 4, 0, 0]} />
               <Bar dataKey="absen" fill="#fcd34d" name="Absen" radius={[4, 4, 0, 0]} />
@@ -103,10 +103,10 @@ export function DashboardCharts() {
       </Card>
 
       {/* Revenue chart */}
-      <Card className="border-neutral">
+      <Card className="border-gray-50">
         <CardHeader className="pb-3 pt-4 px-5">
-          <p className="text-sm font-semibold text-on-surface">Pendapatan 6 Bulan Terakhir</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Akademi vs sewa lapangan (data contoh)</p>
+          <p className="text-sm font-semibold text-gray-900">Pendapatan 6 Bulan Terakhir</p>
+          <p className="text-xs text-gray-400 mt-0.5">Akademi vs sewa lapangan (data contoh)</p>
         </CardHeader>
         <CardContent className="px-3 pb-4">
           <ResponsiveContainer width="100%" height={220}>
@@ -128,7 +128,7 @@ export function DashboardCharts() {
               <Tooltip content={<CustomTooltipRevenue />} />
               <Legend
                 wrapperStyle={{ fontSize: "11px", paddingTop: "12px" }}
-                formatter={(value) => <span className="text-tertiary">{value}</span>}
+                formatter={(value) => <span className="text-gray-500">{value}</span>}
               />
               <Line
                 type="monotone"

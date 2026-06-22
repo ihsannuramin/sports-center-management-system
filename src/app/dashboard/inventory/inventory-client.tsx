@@ -83,21 +83,21 @@ export function InventoryClient({ inventory: initial, branches }: Props) {
         </div>
       )}
 
-      <Card className="border-neutral shadow-sm">
-        <CardHeader className="pb-4 border-b border-neutral">
+      <Card className="border-gray-50 shadow-sm">
+        <CardHeader className="pb-4 border-b border-gray-50">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-amber-50 rounded-xl"><Package className="w-5 h-5 text-amber-500" /></div>
               <div>
-                <h2 className="font-semibold text-on-surface">Inventaris</h2>
-                <p className="text-xs text-muted-foreground">{inventory.length} item · {lowStock.length} stok rendah</p>
+                <h2 className="font-semibold text-gray-900">Inventaris</h2>
+                <p className="text-xs text-gray-400">{inventory.length} item · {lowStock.length} stok rendah</p>
               </div>
             </div>
             <div className="flex gap-2 items-center">
-              <Button variant="outline" size="sm" className="h-9 border-border text-foreground" onClick={handleExport}>
+              <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-700" onClick={handleExport}>
                 <Download className="w-4 h-4 mr-1.5" /> Excel
               </Button>
-              <Button size="sm" className="h-9 bg-primary hover:bg-primary-80 shadow-sm shadow-primary/20" onClick={openCreate}>
+              <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={openCreate}>
                 <Plus className="w-4 h-4 mr-1.5" /> Tambah Item
               </Button>
             </div>
@@ -106,21 +106,21 @@ export function InventoryClient({ inventory: initial, branches }: Props) {
         <CardContent className="p-0">
           <Table className="table-row-hover">
             <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead className="text-xs font-semibold text-tertiary pl-5">Nama</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Kategori</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Stok</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Min. Stok</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Satuan</TableHead>
-                <TableHead className="text-xs font-semibold text-tertiary">Cabang</TableHead>
+              <TableRow className="bg-gray-50 hover:bg-gray-50">
+                <TableHead className="text-xs font-semibold text-gray-500 pl-5">Nama</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Kategori</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Stok</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Min. Stok</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Satuan</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500">Cabang</TableHead>
                 <TableHead className="w-10"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginated.length === 0 ? (
                 <TableRow><TableCell colSpan={7} className="text-center py-16">
-                  <Package className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Belum ada inventaris</p>
+                  <Package className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                  <p className="text-sm text-gray-400">Belum ada inventaris</p>
                 </TableCell></TableRow>
               ) : (
                 paginated.map((item) => {
@@ -129,26 +129,26 @@ export function InventoryClient({ inventory: initial, branches }: Props) {
                     <TableRow key={item.id}>
                       <TableCell className="pl-5">
                         <div className="flex items-center gap-2">
-                          <p className="font-medium text-sm text-on-surface">{item.name}</p>
+                          <p className="font-medium text-sm text-gray-900">{item.name}</p>
                           {isLow && <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />}
                         </div>
                       </TableCell>
                       <TableCell><span className={categoryBadge[item.category]}>{categoryLabels[item.category] || item.category}</span></TableCell>
                       <TableCell>
-                        <span className={`text-sm font-bold ${isLow ? "text-destructive" : "text-on-surface"}`}>{item.quantity}</span>
+                        <span className={`text-sm font-bold ${isLow ? "text-red-500" : "text-gray-900"}`}>{item.quantity}</span>
                       </TableCell>
-                      <TableCell><span className="text-sm text-tertiary">{item.minStock}</span></TableCell>
-                      <TableCell><span className="text-sm text-foreground">{item.unit}</span></TableCell>
-                      <TableCell><span className="text-sm text-foreground">{item.branch?.name}</span></TableCell>
+                      <TableCell><span className="text-sm text-gray-500">{item.minStock}</span></TableCell>
+                      <TableCell><span className="text-sm text-gray-700">{item.unit}</span></TableCell>
+                      <TableCell><span className="text-sm text-gray-700">{item.branch?.name}</span></TableCell>
                       <TableCell className="pr-3">
                         <DropdownMenu>
-                          <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" aria-label="Aksi" />}>
+                          <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-700" aria-label="Aksi" />}>
                             <MoreHorizontal className="w-4 h-4" />
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => openEdit(item)} className="cursor-pointer gap-2"><Pencil className="w-3.5 h-3.5" /> Edit</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer gap-2" onClick={() => handleDelete(item.id)}><Trash2 className="w-3.5 h-3.5" /> Hapus</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-500 focus:text-red-500 cursor-pointer gap-2" onClick={() => handleDelete(item.id)}><Trash2 className="w-3.5 h-3.5" /> Hapus</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
@@ -167,26 +167,26 @@ export function InventoryClient({ inventory: initial, branches }: Props) {
           <DialogHeader><DialogTitle>{editing ? "Edit Item" : "Tambah Item Inventaris"}</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-3 pt-1">
             <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-foreground">Nama Item *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
+              <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">Nama Item *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Kategori *</Label>
+                <Label className="text-xs font-medium text-gray-700">Kategori *</Label>
                 <SearchableSelect value={form.category} onValueChange={(v) => v && setForm({ ...form, category: v as any })} placeholder="Pilih kategori">
                   {Object.entries(categoryLabels).map(([k, v]) => <SearchableSelectItem key={k} value={k}>{v}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Satuan</Label><Input value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} /></div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Stok *</Label><Input type="number" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: Number(e.target.value) })} required /></div>
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-foreground">Min. Stok</Label><Input type="number" value={form.minStock} onChange={(e) => setForm({ ...form, minStock: Number(e.target.value) })} /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Satuan</Label><Input value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Stok *</Label><Input type="number" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: Number(e.target.value) })} required /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Min. Stok</Label><Input type="number" value={form.minStock} onChange={(e) => setForm({ ...form, minStock: Number(e.target.value) })} /></div>
               <div className="col-span-2 space-y-1.5">
-                <Label className="text-xs font-medium text-foreground">Cabang *</Label>
+                <Label className="text-xs font-medium text-gray-700">Cabang *</Label>
                 <SearchableSelect value={form.branchId} onValueChange={(v) => v && setForm({ ...form, branchId: v })} placeholder="Pilih cabang">
                   {branches.map((b: any) => <SearchableSelectItem key={b.id} value={b.id}>{b.name}</SearchableSelectItem>)}
                 </SearchableSelect>
               </div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-neutral">
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-50">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-80" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Simpan"}</Button>
             </div>
           </form>
         </DialogContent>

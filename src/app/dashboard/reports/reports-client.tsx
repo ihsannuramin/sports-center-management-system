@@ -33,58 +33,58 @@ export function ReportsClient({ revenue, pl, collectionRate, branches, year }: P
     <div className="space-y-5">
       {/* P&L Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card className="border-neutral shadow-sm">
+        <Card className="border-gray-50 shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className="p-1.5 bg-green-50 rounded-lg"><TrendingUp className="w-4 h-4 text-green-500" /></div>
-              <p className="text-xs text-muted-foreground">Total Pendapatan {year}</p>
+              <p className="text-xs text-gray-400">Total Pendapatan {year}</p>
             </div>
             <p className="text-xl font-bold text-green-600">{fmt(pl.revenue)}</p>
           </CardContent>
         </Card>
-        <Card className="border-neutral shadow-sm">
+        <Card className="border-gray-50 shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 bg-destructive/10 rounded-lg"><TrendingDown className="w-4 h-4 text-destructive" /></div>
-              <p className="text-xs text-muted-foreground">Total Pengeluaran</p>
+              <div className="p-1.5 bg-red-50 rounded-lg"><TrendingDown className="w-4 h-4 text-red-500" /></div>
+              <p className="text-xs text-gray-400">Total Pengeluaran</p>
             </div>
-            <p className="text-xl font-bold text-destructive">{fmt(pl.expenses)}</p>
+            <p className="text-xl font-bold text-red-500">{fmt(pl.expenses)}</p>
           </CardContent>
         </Card>
-        <Card className="border-neutral shadow-sm">
+        <Card className="border-gray-50 shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className="p-1.5 bg-blue-50 rounded-lg"><DollarSign className="w-4 h-4 text-blue-500" /></div>
-              <p className="text-xs text-muted-foreground">Laba Bersih</p>
+              <p className="text-xs text-gray-400">Laba Bersih</p>
             </div>
-            <p className={`text-xl font-bold ${pl.profit >= 0 ? "text-blue-600" : "text-destructive"}`}>{fmt(pl.profit)}</p>
+            <p className={`text-xl font-bold ${pl.profit >= 0 ? "text-blue-600" : "text-red-500"}`}>{fmt(pl.profit)}</p>
           </CardContent>
         </Card>
-        <Card className="border-neutral shadow-sm">
+        <Card className="border-gray-50 shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 bg-primary-10 rounded-lg"><Percent className="w-4 h-4 text-primary" /></div>
-              <p className="text-xs text-muted-foreground">Collection Rate</p>
+              <div className="p-1.5 bg-orange-50 rounded-lg"><Percent className="w-4 h-4 text-orange-500" /></div>
+              <p className="text-xs text-gray-400">Collection Rate</p>
             </div>
-            <p className="text-xl font-bold text-primary">{collectionRate.rate.toFixed(1)}%</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{collectionRate.paid}/{collectionRate.total} invoice</p>
+            <p className="text-xl font-bold text-orange-500">{collectionRate.rate.toFixed(1)}%</p>
+            <p className="text-xs text-gray-400 mt-0.5">{collectionRate.paid}/{collectionRate.total} invoice</p>
           </CardContent>
         </Card>
       </div>
 
       <Tabs defaultValue="revenue">
-        <TabsList className="h-9 bg-muted/80">
+        <TabsList className="h-9 bg-gray-100/80">
           <TabsTrigger value="revenue" className="text-xs px-4">Pendapatan</TabsTrigger>
           <TabsTrigger value="branches" className="text-xs px-4">Perbandingan Cabang</TabsTrigger>
           <TabsTrigger value="pl" className="text-xs px-4">Laba Rugi</TabsTrigger>
         </TabsList>
 
         <TabsContent value="revenue" className="mt-4">
-          <Card className="border-neutral shadow-sm">
+          <Card className="border-gray-50 shadow-sm">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Pendapatan Bulanan {year}</CardTitle>
-                <Button variant="outline" size="sm" className="h-8 text-xs border-border" onClick={exportRevenue}><Download className="w-3.5 h-3.5 mr-1.5" /> Export</Button>
+                <Button variant="outline" size="sm" className="h-8 text-xs border-gray-200" onClick={exportRevenue}><Download className="w-3.5 h-3.5 mr-1.5" /> Export</Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -104,11 +104,11 @@ export function ReportsClient({ revenue, pl, collectionRate, branches, year }: P
         </TabsContent>
 
         <TabsContent value="branches" className="mt-4">
-          <Card className="border-neutral shadow-sm">
+          <Card className="border-gray-50 shadow-sm">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Perbandingan Cabang (Bulan Ini)</CardTitle>
-                <Button variant="outline" size="sm" className="h-8 text-xs border-border" onClick={() => {
+                <Button variant="outline" size="sm" className="h-8 text-xs border-gray-200" onClick={() => {
                   exportToExcel(branches, "Branch-Comparison", "Cabang");
                   toast.success("Data diekspor");
                 }}><Download className="w-3.5 h-3.5 mr-1.5" /> Export</Button>
@@ -116,21 +116,21 @@ export function ReportsClient({ revenue, pl, collectionRate, branches, year }: P
             </CardHeader>
             <CardContent>
               {branches.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">Belum ada data cabang</p>
+                <p className="text-sm text-gray-400 text-center py-8">Belum ada data cabang</p>
               ) : (
                 <div className="space-y-3">
                   {branches.map((b) => (
-                    <div key={b.branch} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
+                    <div key={b.branch} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-primary-10 rounded-lg"><Building2 className="w-4 h-4 text-primary" /></div>
+                        <div className="p-2 bg-orange-50 rounded-lg"><Building2 className="w-4 h-4 text-orange-500" /></div>
                         <div>
-                          <p className="font-medium text-on-surface text-sm">{b.branch}</p>
-                          <p className="text-xs text-muted-foreground">{b.students} siswa · {b.coaches} pelatih · {b.courts} lapangan</p>
+                          <p className="font-medium text-gray-900 text-sm">{b.branch}</p>
+                          <p className="text-xs text-gray-400">{b.students} siswa · {b.coaches} pelatih · {b.courts} lapangan</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-on-surface text-sm">{fmt(b.revenue)}</p>
-                        <p className="text-xs text-muted-foreground">bulan ini</p>
+                        <p className="font-semibold text-gray-900 text-sm">{fmt(b.revenue)}</p>
+                        <p className="text-xs text-gray-400">bulan ini</p>
                       </div>
                     </div>
                   ))}
@@ -141,30 +141,30 @@ export function ReportsClient({ revenue, pl, collectionRate, branches, year }: P
         </TabsContent>
 
         <TabsContent value="pl" className="mt-4">
-          <Card className="border-neutral shadow-sm">
+          <Card className="border-gray-50 shadow-sm">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Laporan Laba Rugi {year}</CardTitle>
-                <Button variant="outline" size="sm" className="h-8 text-xs border-border" onClick={exportPL}><Download className="w-3.5 h-3.5 mr-1.5" /> Export</Button>
+                <Button variant="outline" size="sm" className="h-8 text-xs border-gray-200" onClick={exportPL}><Download className="w-3.5 h-3.5 mr-1.5" /> Export</Button>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex justify-between items-center py-3 border-b border-neutral">
-                  <span className="text-sm font-medium text-foreground">Total Pendapatan</span>
+                <div className="flex justify-between items-center py-3 border-b border-gray-50">
+                  <span className="text-sm font-medium text-gray-700">Total Pendapatan</span>
                   <span className="text-sm font-bold text-green-600">{fmt(pl.revenue)}</span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-neutral">
-                  <span className="text-sm font-medium text-foreground">Total Pengeluaran</span>
-                  <span className="text-sm font-bold text-destructive">{fmt(pl.expenses)}</span>
+                <div className="flex justify-between items-center py-3 border-b border-gray-50">
+                  <span className="text-sm font-medium text-gray-700">Total Pengeluaran</span>
+                  <span className="text-sm font-bold text-red-500">{fmt(pl.expenses)}</span>
                 </div>
-                <div className="flex justify-between items-center py-4 bg-muted/50 rounded-xl px-4">
-                  <span className="text-sm font-semibold text-on-surface">Laba Bersih</span>
-                  <span className={`text-lg font-bold ${pl.profit >= 0 ? "text-blue-600" : "text-destructive"}`}>{fmt(pl.profit)}</span>
+                <div className="flex justify-between items-center py-4 bg-gray-50 rounded-xl px-4">
+                  <span className="text-sm font-semibold text-gray-900">Laba Bersih</span>
+                  <span className={`text-lg font-bold ${pl.profit >= 0 ? "text-blue-600" : "text-red-500"}`}>{fmt(pl.profit)}</span>
                 </div>
                 <div className="flex justify-between items-center py-3">
-                  <span className="text-sm font-medium text-foreground">Profit Margin</span>
-                  <span className="text-sm font-bold text-primary">{pl.margin.toFixed(1)}%</span>
+                  <span className="text-sm font-medium text-gray-700">Profit Margin</span>
+                  <span className="text-sm font-bold text-orange-500">{pl.margin.toFixed(1)}%</span>
                 </div>
               </div>
             </CardContent>

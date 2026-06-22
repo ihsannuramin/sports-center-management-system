@@ -99,12 +99,12 @@ export function SearchableSelect({
           className
         )}
       >
-        <span className={cn("flex-1 text-left truncate", !selectedItem && "text-muted-foreground")}>
+        <span className={cn("flex-1 text-left truncate", !selectedItem && "text-gray-400")}>
           {selectedItem ? selectedItem.label : placeholder}
         </span>
         <ChevronDownIcon
           className={cn(
-            "size-4 text-muted-foreground shrink-0 transition-transform duration-150",
+            "size-4 text-gray-400 shrink-0 transition-transform duration-150",
             open && "rotate-180"
           )}
         />
@@ -112,19 +112,19 @@ export function SearchableSelect({
 
       {open && (
         <div className="absolute z-50 left-0 top-full mt-1 min-w-full rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 overflow-hidden">
-          <div className="flex items-center gap-1.5 px-2 py-1.5 border-b border-border/60">
-            <SearchIcon className="size-3.5 text-muted-foreground shrink-0" />
+          <div className="flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-200/60">
+            <SearchIcon className="size-3.5 text-gray-400 shrink-0" />
             <input
               autoFocus
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari..."
-              className="flex-1 text-sm bg-transparent outline-none placeholder:text-muted-foreground min-w-0"
+              className="flex-1 text-sm bg-transparent outline-none placeholder:text-gray-400 min-w-0"
             />
           </div>
           <div className="max-h-56 overflow-y-auto p-1">
             {filtered.length === 0 ? (
-              <p className="py-2 text-center text-sm text-muted-foreground">Tidak ada hasil</p>
+              <p className="py-2 text-center text-sm text-gray-400">Tidak ada hasil</p>
             ) : (
               filtered.map((item) => (
                 <button
