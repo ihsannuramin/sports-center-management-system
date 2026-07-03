@@ -244,8 +244,9 @@ model Assessment {
   shooting   Int      @default(0)
   defense    Int      @default(0)
   stamina    Int      @default(0)
-  attitude   Int      @default(0)
-  notes      String?
+  attitude     Int      @default(0)
+  customSkills Json?    @default("[]")
+  notes        String?
   assessedAt DateTime @default(now())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

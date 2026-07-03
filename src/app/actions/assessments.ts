@@ -4,6 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+const CustomSkillSchema = z.object({
+  name: z.string().min(1).max(50),
+  score: z.number().int().min(20).max(100),
+});
+
 const AssessmentSchema = z.object({
   studentId: z.string().min(1),
   period: z.string().min(1),
@@ -13,6 +18,7 @@ const AssessmentSchema = z.object({
   defense: z.number().int().min(0).max(100),
   stamina: z.number().int().min(0).max(100),
   attitude: z.number().int().min(0).max(100),
+  customSkills: z.array(CustomSkillSchema).optional().default([]),
   notes: z.string().optional(),
 });
 
