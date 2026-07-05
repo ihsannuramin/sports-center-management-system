@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { exportToExcel } from "@/lib/export";
 
 interface Props { coaches: any[]; branches: any[]; }
-const emptyForm = { name: "", phone: "", email: "", specialty: "", branchId: "", userId: "", sessionRate: "", incentives: [] as { name: string; amount: string }[] };
+const emptyForm = { name: "", phone: "", email: "", specialty: "", branchId: "", userId: "", sessionRate: "", licenses: [] as string[], incentives: [] as { name: string; amount: string }[] };
 
 export function CoachesClient({ coaches: initial, branches }: Props) {
   const router = useRouter();
@@ -40,6 +40,7 @@ export function CoachesClient({ coaches: initial, branches }: Props) {
       name: c.name, phone: c.phone || "", email: c.email || "", specialty: c.specialty || "",
       branchId: c.branchId, userId: c.userId,
       sessionRate: c.sessionRate != null ? String(c.sessionRate) : "",
+      licenses: c.licenses || [],
       incentives: (c.incentives || []).map((i: any) => ({ name: i.name, amount: String(i.amount) })),
     });
     setOpen(true);
@@ -55,6 +56,16 @@ export function CoachesClient({ coaches: initial, branches }: Props) {
     setForm({ ...form, incentives: form.incentives.filter((_, i) => i !== index) });
   }
 
+  function addLicenseRow() {
+    setForm({ ...form, licenses: [...form.licenses, ""] });
+  }
+  function updateLicenseRow(index: number, value: string) {
+    setForm({ ...form, licenses: form.licenses.map((it, i) => (i === index ? value : it)) });
+  }
+  function removeLicenseRow(index: number) {
+    setForm({ ...form, licenses: form.licenses.filter((_, i) => i !== index) });
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setLoading(true);
     try {
@@ -62,6 +73,7 @@ export function CoachesClient({ coaches: initial, branches }: Props) {
       const payload = {
         ...form,
         sessionRate: form.sessionRate ? parseFloat(form.sessionRate) : undefined,
+        licenses: form.licenses.map((s) => s.trim()).filter(Boolean),
         incentives: form.incentives
           .filter((i) => i.name.trim())
           .map((i) => ({ name: i.name, amount: parseFloat(i.amount) || 0 })),
@@ -201,6 +213,29 @@ export function CoachesClient({ coaches: initial, branches }: Props) {
               </div>
               <div className="col-span-2 space-y-1.5"><Label className="text-xs font-medium text-gray-700">User ID (Supabase) *</Label><Input value={form.userId} onChange={(e) => setForm({ ...form, userId: e.target.value })} required /></div>
               <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Rate per Sesi (Rp)</Label><Input type="number" min="0" value={form.sessionRate} onChange={(e) => setForm({ ...form, sessionRate: e.target.value })} placeholder="0" /></div>
+            </div>
+
+            <div className="space-y-2 pt-2 border-t border-gray-100">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-medium text-gray-700">Lisensi</Label>
+                <Button type="button" variant="outline" size="sm" className="h-7 text-xs border-gray-200" onClick={addLicenseRow}>
+                  <Plus className="w-3 h-3 mr-1" /> Tambah Lisensi
+                </Button>
+              </div>
+              {form.licenses.length === 0 ? (
+                <p className="text-xs text-gray-400">Belum ada lisensi.</p>
+              ) : (
+                <div className="space-y-2">
+                  {form.licenses.map((lic, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <Input placeholder="Nama lisensi" value={lic} onChange={(e) => updateLicenseRow(idx, e.target.value)} className="flex-1" />
+                      <Button type="button" variant="ghost" size="icon" className="h-9 w-9 text-gray-300 hover:text-red-500" onClick={() => removeLicenseRow(idx)}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="space-y-2 pt-2 border-t border-gray-100">

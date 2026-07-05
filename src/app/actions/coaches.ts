@@ -13,6 +13,7 @@ const CoachSchema = z.object({
   branchId: z.string().min(1),
   userId: z.string().min(1),
   sessionRate: z.number().nonnegative().optional(),
+  licenses: z.array(z.string().min(1)).optional(),
   incentives: z
     .array(z.object({ name: z.string().min(1), amount: z.number().nonnegative() }))
     .optional(),
