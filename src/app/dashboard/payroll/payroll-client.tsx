@@ -283,9 +283,9 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
       </Dialog>
 
       <Dialog open={genOpen} onOpenChange={setGenOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[92vw] max-w-3xl">
           <DialogHeader><DialogTitle>Generate Payroll dari Periode</DialogTitle></DialogHeader>
-          <div className="space-y-3 pt-1">
+          <div className="space-y-3 pt-1 min-w-0">
             <div className="flex items-end gap-2">
               <div className="space-y-1.5 flex-1">
                 <Label className="text-xs font-medium text-gray-700">Periode *</Label>
@@ -315,13 +315,24 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
                       </thead>
                       <tbody className="divide-y divide-gray-50">
                         {genRows.map((r) => (
-                          <tr key={r.coachId}>
+                          <tr key={r.coachId} className="align-top">
                             <td className="px-3 py-2 font-medium text-gray-900 whitespace-nowrap">{r.coachName}</td>
                             <td className="px-3 py-2 text-right text-gray-600 whitespace-nowrap">{r.sessionCount}</td>
                             <td className="px-3 py-2 text-right text-gray-600 whitespace-nowrap">
                               {r.sessionRate ? `Rp ${r.sessionRate.toLocaleString("id-ID")}` : <span className="text-yellow-600">belum diisi</span>}
                             </td>
-                            <td className="px-3 py-2 text-right text-gray-600 whitespace-nowrap">Rp {r.incentiveAmount.toLocaleString("id-ID")}</td>
+                            <td className="px-3 py-2 text-right text-gray-600 whitespace-nowrap">
+                              <span className="font-medium text-gray-800">Rp {r.incentiveAmount.toLocaleString("id-ID")}</span>
+                              {r.incentiveDetail?.length > 0 && (
+                                <div className="mt-1 space-y-0.5">
+                                  {r.incentiveDetail.map((i: any, idx: number) => (
+                                    <div key={idx} className="text-[11px] text-gray-400 leading-tight">
+                                      {i.name}: Rp {i.amount.toLocaleString("id-ID")}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </td>
                             <td className="px-3 py-2 text-right font-semibold text-gray-900 whitespace-nowrap">Rp {r.total.toLocaleString("id-ID")}</td>
                             <td className="px-3 py-2 text-xs text-right whitespace-nowrap">
                               {r.alreadyExists && <span className="text-gray-400">sudah ada</span>}
