@@ -188,7 +188,7 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
               <tr>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Pelatih</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Periode</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Tipe</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Breakdown</th>
                 <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Total</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Aksi</th>
@@ -199,7 +199,32 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
                 <tr key={p.id} className="hover:bg-gray-50/50">
                   <td className="px-4 py-3 font-medium text-gray-900">{p.coach?.name}</td>
                   <td className="px-4 py-3 text-gray-600">{p.period}</td>
-                  <td className="px-4 py-3"><span className="text-xs bg-gray-50 text-gray-600 px-2 py-0.5 rounded-full">{p.payrollType}</span></td>
+                  <td className="px-4 py-3">
+                    {(() => {
+                      const sessions = p.sessions ?? 0;
+                      const rate = Number(p.rateAmount) || 0;
+                      const base = p.baseAmount != null ? Number(p.baseAmount) : rate * sessions;
+                      const incAmount = p.incentiveAmount != null ? Number(p.incentiveAmount) : 0;
+                      const incDetail = Array.isArray(p.incentiveDetail) ? p.incentiveDetail : [];
+                      return (
+                        <div className="text-xs text-gray-500 space-y-0.5 leading-snug">
+                          <div>
+                            <span className="text-gray-400">Rate/sesi:</span> Rp {rate.toLocaleString("id-ID")} × {sessions} sesi
+                            <span className="text-gray-700 font-medium"> = Rp {base.toLocaleString("id-ID")}</span>
+                          </div>
+                          {incDetail.length > 0 ? (
+                            incDetail.map((i: any, idx: number) => (
+                              <div key={idx}><span className="text-gray-400">Insentif</span> {i.name}: Rp {Number(i.amount).toLocaleString("id-ID")}</div>
+                            ))
+                          ) : incAmount > 0 ? (
+                            <div><span className="text-gray-400">Insentif:</span> Rp {incAmount.toLocaleString("id-ID")}</div>
+                          ) : (
+                            <div className="text-gray-300">Tanpa insentif</div>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </td>
                   <td className="px-4 py-3 text-right font-semibold text-gray-900">Rp {Number(p.totalAmount).toLocaleString("id-ID")}</td>
                   <td className="px-4 py-3"><span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[p.status]}`}>{p.status}</span></td>
                   <td className="px-4 py-3">
