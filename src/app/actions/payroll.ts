@@ -65,26 +65,26 @@ function periodRange(period: string) {
   return { start, end };
 }
 
-async function buildPayrollPreview(period: string) {
+async function buildPayrollPreview(period: string, coachId?: string) {
   const { start, end } = periodRange(period);
 
   const [coaches, sessionCounts, existing] = await Promise.all([
     prisma.coach.findMany({
-      where: { isActive: true },
+      where: { isActive: true, ...(coachId ? { id: coachId } : {}) },
       include: { incentives: { where: { isActive: true } } },
     }),
     prisma.attendance.groupBy({
       by: ["coachId"],
-      where: { coachId: { not: null }, status: "PRESENT", date: { gte: start, lte: end } },
+      where: { coachId: coachId ? coachId : { not: null }, status: "PRESENT", date: { gte: start, lte: end } },
       _count: true,
     }),
-    prisma.coachPayroll.findMany({ where: { period }, select: { coachId: true } }),
+    prisma.coachPayroll.findMany({ where: { period, ...(coachId ? { coachId } : {}) }, select: { coachId: true } }),
   ]);
 
   const sessionByCoach = new Map(sessionCounts.map((s) => [s.coachId as string, s._count]));
   const existingCoachIds = new Set(existing.map((e) => e.coachId));
 
-  return coaches
+  const rows = coaches
     .map((coach) => {
       const sessionCount = sessionByCoach.get(coach.id) ?? 0;
       const sessionRate = coach.sessionRate ? Number(coach.sessionRate) : 0;
@@ -102,12 +102,43 @@ async function buildPayrollPreview(period: string) {
         total: base + incentiveAmount,
         alreadyExists: existingCoachIds.has(coach.id),
       };
-    })
-    .filter((row) => row.sessionCount > 0 || row.incentiveAmount > 0);
+    });
+
+  // Single-coach: jangan difilter, row tetap kembali walau 0 sesi (buat UI/warning).
+  if (coachId) return rows;
+  return rows.filter((row) => row.sessionCount > 0 || row.incentiveAmount > 0);
 }
 
 export async function previewPayrollForPeriod(period: string) {
   return buildPayrollPreview(period);
+}
+
+export async function previewPayrollForCoach(coachId: string, period: string) {
+  const rows = await buildPayrollPreview(period, coachId);
+  return rows[0] ?? null;
+}
+
+export async function createPayrollFromAttendance(data: { coachId: string; period: string; notes?: string }) {
+  const row = (await buildPayrollPreview(data.period, data.coachId))[0];
+  if (!row) throw new Error("Pelatih tidak ditemukan atau tidak aktif");
+  if (row.alreadyExists) throw new Error("Payroll pelatih untuk periode ini sudah ada");
+  if (row.sessionRate === 0 && row.sessionCount > 0) throw new Error("Rate per sesi pelatih belum diisi");
+
+  await prisma.coachPayroll.create({
+    data: {
+      coachId: row.coachId,
+      period: data.period,
+      payrollType: "PER_SESSION",
+      sessions: row.sessionCount,
+      rateAmount: row.sessionRate,
+      baseAmount: row.base,
+      incentiveAmount: row.incentiveAmount,
+      incentiveDetail: row.incentiveDetail,
+      totalAmount: row.total,
+      notes: data.notes,
+    },
+  });
+  revalidatePath("/dashboard/payroll");
 }
 
 export async function generatePayrollForPeriod(period: string) {

@@ -1,25 +1,24 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DollarSign, Plus, Search, Download, CheckCircle, CreditCard, Trash2, Calculator } from "lucide-react";
-import { createPayroll, approvePayroll, markPayrollPaid, deletePayroll, previewPayrollForPeriod, generatePayrollForPeriod } from "@/app/actions/payroll";
+import { previewPayrollForCoach, createPayrollFromAttendance, approvePayroll, markPayrollPaid, deletePayroll, previewPayrollForPeriod, generatePayrollForPeriod } from "@/app/actions/payroll";
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
 
 interface Props { payrolls: any[]; coaches: any[]; }
 
-const PAYROLL_TYPES = ["PER_SESSION", "PER_HOUR", "FIXED_MONTHLY"];
 const STATUS_COLORS: Record<string, string> = {
   PENDING: "bg-yellow-50 text-yellow-700",
   APPROVED: "bg-blue-50 text-blue-700",
   PAID: "bg-green-50 text-green-700",
 };
-const emptyForm = { coachId: "", period: "", payrollType: "PER_SESSION", sessions: "", hours: "", rateAmount: "", notes: "" };
+const emptyForm = { coachId: "", period: "", notes: "" };
 const PAGE_SIZE = 15;
 
 export function PayrollClient({ payrolls: initial, coaches }: Props) {
@@ -29,6 +28,9 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+
+  const [buatPreview, setBuatPreview] = useState<any | null>(null);
+  const [buatLoading, setBuatLoading] = useState(false);
 
   const [genOpen, setGenOpen] = useState(false);
   const [genPeriod, setGenPeriod] = useState("");
@@ -46,16 +48,29 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
   const totalPending = payrolls.filter(p => p.status === "PENDING").reduce((sum, p) => sum + Number(p.totalAmount), 0);
   const totalPaid = payrolls.filter(p => p.status === "PAID").reduce((sum, p) => sum + Number(p.totalAmount), 0);
 
+  useEffect(() => {
+    if (!open || !form.coachId || !form.period) { setBuatPreview(null); return; }
+    let cancelled = false;
+    setBuatLoading(true);
+    previewPayrollForCoach(form.coachId, form.period)
+      .then((row) => { if (!cancelled) setBuatPreview(row); })
+      .catch(() => { if (!cancelled) setBuatPreview(null); })
+      .finally(() => { if (!cancelled) setBuatLoading(false); });
+    return () => { cancelled = true; };
+  }, [open, form.coachId, form.period]);
+
+  const rateMissing = !!buatPreview && buatPreview.sessionRate === 0 && buatPreview.sessionCount > 0;
+  const nothingToPay = !!buatPreview && buatPreview.total === 0;
+  const canSubmit = !!buatPreview && !buatLoading && !buatPreview.alreadyExists && !rateMissing && !nothingToPay;
+
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault(); setLoading(true);
+    e.preventDefault();
+    if (!canSubmit) return;
+    setLoading(true);
     try {
-      await createPayroll({
+      await createPayrollFromAttendance({
         coachId: form.coachId,
         period: form.period,
-        payrollType: form.payrollType as any,
-        sessions: form.sessions ? parseInt(form.sessions) : undefined,
-        hours: form.hours ? parseFloat(form.hours) : undefined,
-        rateAmount: parseFloat(form.rateAmount),
         notes: form.notes || undefined,
       });
       toast.success("Payroll dibuat");
@@ -215,35 +230,53 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Buat Payroll Baru</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Buat Payroll</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-3 pt-1">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-700">Pelatih *</Label>
-              <select value={form.coachId} onChange={(e) => setForm({ ...form, coachId: e.target.value })} required className="w-full h-9 border border-gray-200 rounded-lg px-3 text-sm bg-white">
-                <option value="">Pilih Pelatih</option>
-                {coaches.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Periode *</Label><Input type="month" value={form.period} onChange={(e) => setForm({ ...form, period: e.target.value })} required /></div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-gray-700">Tipe Payroll *</Label>
-                <select value={form.payrollType} onChange={(e) => setForm({ ...form, payrollType: e.target.value })} className="w-full h-9 border border-gray-200 rounded-lg px-3 text-sm bg-white">
-                  {PAYROLL_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                <Label className="text-xs font-medium text-gray-700">Pelatih *</Label>
+                <select value={form.coachId} onChange={(e) => setForm({ ...form, coachId: e.target.value })} required className="w-full h-9 border border-gray-200 rounded-lg px-3 text-sm bg-white">
+                  <option value="">Pilih Pelatih</option>
+                  {coaches.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
+              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Periode *</Label><Input type="month" value={form.period} onChange={(e) => setForm({ ...form, period: e.target.value })} required /></div>
             </div>
-            {form.payrollType === "PER_SESSION" && (
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jumlah Sesi</Label><Input type="number" min="0" value={form.sessions} onChange={(e) => setForm({ ...form, sessions: e.target.value })} /></div>
+
+            {form.coachId && form.period && (
+              buatLoading ? (
+                <p className="text-sm text-gray-400 text-center py-6">Menghitung dari absensi...</p>
+              ) : buatPreview ? (
+                <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-3 space-y-2">
+                  <div className="flex justify-between text-sm"><span className="text-gray-500">Sesi Hadir</span><span className="font-medium text-gray-900">{buatPreview.sessionCount} sesi</span></div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Rate / sesi</span>
+                    <span className="font-medium text-gray-900">{buatPreview.sessionRate ? `Rp ${buatPreview.sessionRate.toLocaleString("id-ID")}` : <span className="text-yellow-600">belum diisi</span>}</span>
+                  </div>
+                  <div className="flex justify-between text-sm"><span className="text-gray-500">Base (sesi × rate)</span><span className="font-medium text-gray-900">Rp {buatPreview.base.toLocaleString("id-ID")}</span></div>
+                  {buatPreview.incentiveDetail.length > 0 && (
+                    <div className="pt-1 border-t border-gray-100 space-y-1">
+                      {buatPreview.incentiveDetail.map((i: any, idx: number) => (
+                        <div key={idx} className="flex justify-between text-xs text-gray-500"><span>Insentif: {i.name}</span><span>Rp {i.amount.toLocaleString("id-ID")}</span></div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm pt-1.5 border-t border-gray-100"><span className="text-gray-500">Insentif</span><span className="font-medium text-gray-900">Rp {buatPreview.incentiveAmount.toLocaleString("id-ID")}</span></div>
+                  <div className="flex justify-between text-base pt-1.5 border-t border-gray-200"><span className="font-semibold text-gray-700">Total</span><span className="font-bold text-orange-600">Rp {buatPreview.total.toLocaleString("id-ID")}</span></div>
+
+                  {buatPreview.alreadyExists && <p className="text-xs text-red-500 pt-1">Payroll pelatih ini untuk periode ini sudah ada.</p>}
+                  {rateMissing && <p className="text-xs text-yellow-600 pt-1">Rate / sesi belum diisi di data pelatih. Lengkapi dulu sebelum submit.</p>}
+                  {nothingToPay && !rateMissing && <p className="text-xs text-gray-400 pt-1">Tidak ada sesi hadir maupun insentif untuk periode ini.</p>}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400 text-center py-6">Data tidak tersedia.</p>
+              )
             )}
-            {form.payrollType === "PER_HOUR" && (
-              <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Jumlah Jam</Label><Input type="number" min="0" step="0.5" value={form.hours} onChange={(e) => setForm({ ...form, hours: e.target.value })} /></div>
-            )}
-            <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Rate (Rp) *</Label><Input type="number" min="0" value={form.rateAmount} onChange={(e) => setForm({ ...form, rateAmount: e.target.value })} required /></div>
+
             <div className="space-y-1.5"><Label className="text-xs font-medium text-gray-700">Catatan</Label><Input value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Buat Payroll"}</Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading || !canSubmit}>{loading ? "Menyimpan..." : "Buat Payroll"}</Button>
             </div>
           </form>
         </DialogContent>
@@ -268,34 +301,36 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
                 <p className="text-sm text-gray-400 text-center py-8">Tidak ada sesi hadir atau insentif untuk periode ini.</p>
               ) : (
                 <div className="rounded-xl border border-gray-100 overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead className="bg-gray-50 border-b border-gray-100">
-                      <tr>
-                        <th className="text-left px-3 py-2 text-xs font-semibold text-gray-500">Pelatih</th>
-                        <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500">Sesi Hadir</th>
-                        <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500">Rate</th>
-                        <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500">Insentif</th>
-                        <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500">Total</th>
-                        <th className="text-left px-3 py-2 text-xs font-semibold text-gray-500"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-50">
-                      {genRows.map((r) => (
-                        <tr key={r.coachId}>
-                          <td className="px-3 py-2 font-medium text-gray-900">{r.coachName}</td>
-                          <td className="px-3 py-2 text-right text-gray-600">{r.sessionCount}</td>
-                          <td className="px-3 py-2 text-right text-gray-600">
-                            {r.sessionRate ? `Rp ${r.sessionRate.toLocaleString("id-ID")}` : <span className="text-yellow-600">belum diisi</span>}
-                          </td>
-                          <td className="px-3 py-2 text-right text-gray-600">Rp {r.incentiveAmount.toLocaleString("id-ID")}</td>
-                          <td className="px-3 py-2 text-right font-semibold text-gray-900">Rp {r.total.toLocaleString("id-ID")}</td>
-                          <td className="px-3 py-2 text-xs">
-                            {r.alreadyExists && <span className="text-gray-400">sudah ada</span>}
-                          </td>
+                  <div className="overflow-x-auto max-h-[45vh] overflow-y-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50 border-b border-gray-100 sticky top-0 z-10">
+                        <tr>
+                          <th className="text-left px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Pelatih</th>
+                          <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Sesi Hadir</th>
+                          <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Rate</th>
+                          <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Insentif</th>
+                          <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Total</th>
+                          <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap"></th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {genRows.map((r) => (
+                          <tr key={r.coachId}>
+                            <td className="px-3 py-2 font-medium text-gray-900 whitespace-nowrap">{r.coachName}</td>
+                            <td className="px-3 py-2 text-right text-gray-600 whitespace-nowrap">{r.sessionCount}</td>
+                            <td className="px-3 py-2 text-right text-gray-600 whitespace-nowrap">
+                              {r.sessionRate ? `Rp ${r.sessionRate.toLocaleString("id-ID")}` : <span className="text-yellow-600">belum diisi</span>}
+                            </td>
+                            <td className="px-3 py-2 text-right text-gray-600 whitespace-nowrap">Rp {r.incentiveAmount.toLocaleString("id-ID")}</td>
+                            <td className="px-3 py-2 text-right font-semibold text-gray-900 whitespace-nowrap">Rp {r.total.toLocaleString("id-ID")}</td>
+                            <td className="px-3 py-2 text-xs text-right whitespace-nowrap">
+                              {r.alreadyExists && <span className="text-gray-400">sudah ada</span>}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )
             )}
