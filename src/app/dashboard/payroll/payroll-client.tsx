@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DollarSign, Plus, Search, Download, CheckCircle, CreditCard, Trash2 } from "lucide-react";
-import { createPayroll, approvePayroll, markPayrollPaid, deletePayroll } from "@/app/actions/payroll";
+import { DollarSign, Plus, Search, Download, CheckCircle, CreditCard, Trash2, Calculator } from "lucide-react";
+import { createPayroll, approvePayroll, markPayrollPaid, deletePayroll, previewPayrollForPeriod, generatePayrollForPeriod } from "@/app/actions/payroll";
 import { exportToExcel } from "@/lib/export";
 import { toast } from "sonner";
 
@@ -29,6 +29,11 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+
+  const [genOpen, setGenOpen] = useState(false);
+  const [genPeriod, setGenPeriod] = useState("");
+  const [genLoading, setGenLoading] = useState(false);
+  const [genRows, setGenRows] = useState<any[] | null>(null);
 
   const filtered = payrolls.filter((p) => {
     const q = search.toLowerCase();
@@ -78,6 +83,31 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
     window.location.reload();
   }
 
+  function openGenerate() {
+    setGenPeriod(""); setGenRows(null); setGenOpen(true);
+  }
+
+  async function handlePreview() {
+    if (!genPeriod) return;
+    setGenLoading(true);
+    try {
+      const rows = await previewPayrollForPeriod(genPeriod);
+      setGenRows(rows);
+    } catch (err: any) { toast.error(err.message || "Gagal menghitung"); }
+    setGenLoading(false);
+  }
+
+  async function handleGenerate() {
+    if (!genPeriod) return;
+    setGenLoading(true);
+    try {
+      const res = await generatePayrollForPeriod(genPeriod);
+      toast.success(`${res.created} payroll dibuat${res.skipped ? `, ${res.skipped} dilewati (sudah ada)` : ""}`);
+      setGenOpen(false); window.location.reload();
+    } catch (err: any) { toast.error(err.message || "Gagal generate payroll"); }
+    setGenLoading(false);
+  }
+
   function handleExport() {
     const data = payrolls.map((p) => ({
       "Pelatih": p.coach?.name, "Periode": p.period, "Tipe": p.payrollType,
@@ -121,6 +151,7 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
         </div>
         <div className="flex gap-2 items-center">
           <Button variant="outline" size="sm" className="h-9 border-gray-200" onClick={handleExport}><Download className="w-4 h-4 mr-1.5" /> Excel</Button>
+          <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600" onClick={openGenerate}><Calculator className="w-4 h-4 mr-1.5" /> Generate dari Periode</Button>
           <Button size="sm" className="h-9 bg-orange-500 hover:bg-orange-600 shadow-sm shadow-orange-200" onClick={() => { setForm(emptyForm); setOpen(true); }}><Plus className="w-4 h-4 mr-1.5" /> Buat Payroll</Button>
         </div>
       </div>
@@ -215,6 +246,72 @@ export function PayrollClient({ payrolls: initial, coaches }: Props) {
               <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>{loading ? "Menyimpan..." : "Buat Payroll"}</Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={genOpen} onOpenChange={setGenOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader><DialogTitle>Generate Payroll dari Periode</DialogTitle></DialogHeader>
+          <div className="space-y-3 pt-1">
+            <div className="flex items-end gap-2">
+              <div className="space-y-1.5 flex-1">
+                <Label className="text-xs font-medium text-gray-700">Periode *</Label>
+                <Input type="month" value={genPeriod} onChange={(e) => { setGenPeriod(e.target.value); setGenRows(null); }} />
+              </div>
+              <Button type="button" variant="outline" className="border-gray-200" onClick={handlePreview} disabled={!genPeriod || genLoading}>
+                {genLoading ? "Menghitung..." : "Hitung"}
+              </Button>
+            </div>
+
+            {genRows !== null && (
+              genRows.length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-8">Tidak ada sesi hadir atau insentif untuk periode ini.</p>
+              ) : (
+                <div className="rounded-xl border border-gray-100 overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-50 border-b border-gray-100">
+                      <tr>
+                        <th className="text-left px-3 py-2 text-xs font-semibold text-gray-500">Pelatih</th>
+                        <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500">Sesi Hadir</th>
+                        <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500">Rate</th>
+                        <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500">Insentif</th>
+                        <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500">Total</th>
+                        <th className="text-left px-3 py-2 text-xs font-semibold text-gray-500"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {genRows.map((r) => (
+                        <tr key={r.coachId}>
+                          <td className="px-3 py-2 font-medium text-gray-900">{r.coachName}</td>
+                          <td className="px-3 py-2 text-right text-gray-600">{r.sessionCount}</td>
+                          <td className="px-3 py-2 text-right text-gray-600">
+                            {r.sessionRate ? `Rp ${r.sessionRate.toLocaleString("id-ID")}` : <span className="text-yellow-600">belum diisi</span>}
+                          </td>
+                          <td className="px-3 py-2 text-right text-gray-600">Rp {r.incentiveAmount.toLocaleString("id-ID")}</td>
+                          <td className="px-3 py-2 text-right font-semibold text-gray-900">Rp {r.total.toLocaleString("id-ID")}</td>
+                          <td className="px-3 py-2 text-xs">
+                            {r.alreadyExists && <span className="text-gray-400">sudah ada</span>}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )
+            )}
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+              <Button type="button" variant="outline" onClick={() => setGenOpen(false)}>Batal</Button>
+              <Button
+                type="button"
+                className="bg-orange-500 hover:bg-orange-600"
+                disabled={!genRows || genRows.every((r) => r.alreadyExists) || genLoading}
+                onClick={handleGenerate}
+              >
+                {genLoading ? "Memproses..." : "Generate"}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

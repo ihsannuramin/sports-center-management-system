@@ -147,10 +147,10 @@ export default async function DashboardPage() {
   });
 
   const statCards = [
-    { title: "Siswa Aktif", value: stats.activeStudents, icon: Users, iconBg: "bg-blue-50", iconColor: "text-blue-500", border: "border-blue-100", href: "/dashboard/students" },
-    { title: "Pelatih Aktif", value: stats.activeCoaches, icon: UserCheck, iconBg: "bg-green-50", iconColor: "text-green-500", border: "border-green-100", href: "/dashboard/coaches" },
-    { title: "Absensi Hari Ini", value: stats.todayAttendance, icon: ClipboardCheck, iconBg: "bg-orange-50", iconColor: "text-orange-500", border: "border-orange-100", href: "/dashboard/attendance" },
-    { title: "Booking Hari Ini", value: stats.todayBookings, icon: Calendar, iconBg: "bg-purple-50", iconColor: "text-purple-500", border: "border-purple-100", href: "/dashboard/rentals" },
+    { title: "Siswa Aktif", value: stats.activeStudents, icon: Users, iconBg: "bg-blue-50", iconColor: "text-blue-500", border: "border-blue-300", href: "/dashboard/students" },
+    { title: "Pelatih Aktif", value: stats.activeCoaches, icon: UserCheck, iconBg: "bg-green-50", iconColor: "text-green-500", border: "border-green-300", href: "/dashboard/coaches" },
+    { title: "Absensi Hari Ini", value: stats.todayAttendance, icon: ClipboardCheck, iconBg: "bg-orange-50", iconColor: "text-orange-500", border: "border-orange-300", href: "/dashboard/attendance" },
+    { title: "Booking Hari Ini", value: stats.todayBookings, icon: Calendar, iconBg: "bg-purple-50", iconColor: "text-purple-500", border: "border-purple-300", href: "/dashboard/rentals" },
   ];
 
   const biKpis = [
