@@ -1,6 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { serializeDecimals } from "@/lib/serialize";
+import { getAttendingStudentIds } from "@/lib/period";
 
 export async function getRevenueReport(branchId?: string, year?: number) {
   const y = year ?? new Date().getFullYear();
@@ -104,10 +105,7 @@ export async function getCollectionRate(branchId?: string, year?: number) {
 
 export async function getSppProjectionReport(year?: number) {
   const y = year ?? new Date().getFullYear();
-  const classes = await prisma.class.findMany({
-    where: { isActive: true },
-    include: { students: { where: { status: "ACTIVE" }, select: { id: true } } },
-  });
+  const classes = await prisma.class.findMany({ where: { isActive: true, sppAmount: { not: null } } });
 
   const results = [];
   for (let month = 0; month < 12; month++) {
@@ -119,9 +117,15 @@ export async function getSppProjectionReport(year?: number) {
       (sum, b) => sum + b.details.reduce((s, d) => s + Number(d.amount), 0),
       0
     );
-    proyeksi += classes
-      .filter((c) => !batchedClassIds.has(c.id) && c.sppAmount != null)
-      .reduce((sum, c) => sum + Number(c.sppAmount) * c.students.length, 0);
+
+    const unbatchedClasses = classes.filter((c) => !batchedClassIds.has(c.id));
+    const attendingCounts = await Promise.all(
+      unbatchedClasses.map((c) => getAttendingStudentIds(c.id, period).then((ids) => ids.size))
+    );
+    proyeksi += unbatchedClasses.reduce(
+      (sum, c, i) => sum + Number(c.sppAmount) * attendingCounts[i],
+      0
+    );
 
     const aktual = batches.reduce(
       (sum, b) => sum + b.details.filter((d) => d.status === "PAID").reduce((s, d) => s + Number(d.amount), 0),
@@ -139,19 +143,21 @@ export async function getSppProjectionReport(year?: number) {
 }
 
 export async function getSppProjectionByClass(period: string) {
-  const classes = await prisma.class.findMany({
-    where: { isActive: true },
-    include: { students: { where: { status: "ACTIVE" }, select: { id: true } } },
-  });
+  const classes = await prisma.class.findMany({ where: { isActive: true } });
   const batches = await prisma.sppBatch.findMany({ where: { period }, include: { details: true } });
   const byClass = new Map(batches.map((b) => [b.classId, b]));
 
-  return classes.map((cls) => {
+  const attendingCounts = await Promise.all(
+    classes.map((cls) => (byClass.has(cls.id) ? Promise.resolve(0) : getAttendingStudentIds(cls.id, period).then((ids) => ids.size)))
+  );
+
+  return classes.map((cls, i) => {
     const batch = byClass.get(cls.id);
+    const attendingCount = attendingCounts[i];
     const proyeksi = batch
       ? batch.details.reduce((s, d) => s + Number(d.amount), 0)
       : cls.sppAmount
-      ? Number(cls.sppAmount) * cls.students.length
+      ? Number(cls.sppAmount) * attendingCount
       : 0;
     const aktual = batch
       ? batch.details.filter((d) => d.status === "PAID").reduce((s, d) => s + Number(d.amount), 0)
@@ -159,7 +165,7 @@ export async function getSppProjectionByClass(period: string) {
     return {
       classId: cls.id,
       className: cls.name,
-      activeStudents: cls.students.length,
+      activeStudents: batch ? batch.details.length : attendingCount,
       sppAmount: cls.sppAmount != null ? Number(cls.sppAmount) : null,
       proyeksi,
       aktual,

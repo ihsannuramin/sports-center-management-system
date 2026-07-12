@@ -49,7 +49,7 @@ export function ReportsClient({ revenue, pl, collectionRate, branches, sppProjec
   function exportSpp() {
     if (!sppRows) return;
     exportToExcel(sppRows.map((r) => ({
-      "Kelas": r.className, "Siswa Aktif": r.activeStudents, "Biaya SPP": r.sppAmount ?? "-",
+      "Kelas": r.className, "Siswa Hadir": r.activeStudents, "Biaya SPP": r.sppAmount ?? "-",
       "Proyeksi": r.proyeksi, "Aktual": r.aktual, "% Tertagih": r.collectedPct ?? "-",
     })), "Proyeksi-SPP", "SPP");
     toast.success("Data diekspor");
@@ -272,7 +272,7 @@ export function ReportsClient({ revenue, pl, collectionRate, branches, sppProjec
                         <thead className="bg-gray-50 border-b border-gray-100">
                           <tr>
                             <th className="text-left px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Kelas</th>
-                            <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Siswa Aktif</th>
+                            <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Siswa Hadir</th>
                             <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Biaya SPP</th>
                             <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Proyeksi</th>
                             <th className="text-right px-3 py-2 text-xs font-semibold text-gray-500 whitespace-nowrap">Aktual</th>

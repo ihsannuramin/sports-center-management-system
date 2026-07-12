@@ -294,7 +294,7 @@ export function SppClient({ batches, classes }: Props) {
 
             {genPreview !== null && (
               genPreview.rows.length === 0 ? (
-                <p className="text-sm text-gray-400 text-center py-8">Tidak ada siswa aktif di kelas ini.</p>
+                <p className="text-sm text-gray-400 text-center py-8">Tidak ada siswa yang hadir (PRESENT) di kelas ini untuk periode ini.</p>
               ) : (
                 <div className="rounded-xl border border-gray-100 overflow-hidden">
                   <div className="overflow-x-auto max-h-[45vh] overflow-y-auto">

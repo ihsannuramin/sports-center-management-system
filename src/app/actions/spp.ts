@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getAttendingStudentIds } from "@/lib/period";
 
 export async function getSppBatches() {
   const batches = await prisma.sppBatch.findMany({
@@ -67,13 +68,17 @@ export async function previewSppGeneration(classId: string, period: string) {
   const cls = await prisma.class.findUnique({ where: { id: classId } });
   if (!cls) throw new Error("Kelas tidak ditemukan");
 
-  const students = await prisma.student.findMany({
+  const activeStudents = await prisma.student.findMany({
     where: { classId, status: "ACTIVE" },
     select: { id: true, name: true, studentNumber: true },
     orderBy: { name: "asc" },
   });
 
   const sppAmount = cls.sppAmount != null ? Number(cls.sppAmount) : null;
+  if (activeStudents.length === 0) return { sppAmount, rows: [] };
+
+  const attendingIds = await getAttendingStudentIds(classId, period);
+  const students = activeStudents.filter((s) => attendingIds.has(s.id));
   if (students.length === 0) return { sppAmount, rows: [] };
 
   const billedElsewhere = await prisma.sppBatchDetail.findMany({
@@ -98,12 +103,23 @@ export async function generateSppBatch(classId: string, period: string) {
   if (!cls) throw new Error("Kelas tidak ditemukan");
   if (cls.sppAmount == null) throw new Error("Biaya SPP kelas ini belum diisi. Lengkapi dulu di Data Kelas.");
 
-  const students = await prisma.student.findMany({
+  const activeStudents = await prisma.student.findMany({
     where: { classId, status: "ACTIVE" },
     select: { id: true },
   });
-  if (students.length === 0) {
+  if (activeStudents.length === 0) {
     return { success: false, error: "Tidak ada siswa aktif di kelas ini", created: 0, skipped: 0 };
+  }
+
+  const attendingIds = await getAttendingStudentIds(classId, period);
+  const students = activeStudents.filter((s) => attendingIds.has(s.id));
+  if (students.length === 0) {
+    return {
+      success: false,
+      error: "Tidak ada siswa yang hadir minimal 1x di kelas ini untuk periode ini",
+      created: 0,
+      skipped: 0,
+    };
   }
 
   const billedElsewhere = await prisma.sppBatchDetail.findMany({
