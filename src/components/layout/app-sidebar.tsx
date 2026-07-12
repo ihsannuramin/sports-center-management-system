@@ -8,7 +8,7 @@ import {
   Package, LogOut, GitBranch, ChevronRight,
   Bell, ShieldCheck, Activity, Settings, Wallet, BarChart3,
   Wrench, Box, FolderOpen, Tags, UserPlus, Target, FlaskConical,
-  Clock, CreditCard as MembershipIcon, Percent, Users2, Baby,
+  Clock, CreditCard as MembershipIcon, Percent, Users2, Baby, Receipt,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup,
@@ -47,6 +47,7 @@ const menuItems = [
     group: "Keuangan",
     items: [
       { href: "/dashboard/invoices", label: "Invoice", icon: FileText },
+      { href: "/dashboard/spp", label: "Input SPP Siswa", icon: Receipt },
       { href: "/dashboard/payments", label: "Pembayaran", icon: CreditCard },
       { href: "/dashboard/expenses", label: "Pengeluaran", icon: Wallet },
       { href: "/dashboard/payroll", label: "Payroll Pelatih", icon: Users2 },

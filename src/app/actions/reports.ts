@@ -102,6 +102,72 @@ export async function getCollectionRate(branchId?: string, year?: number) {
   return { paid, total, rate: total > 0 ? (paid / total) * 100 : 0 };
 }
 
+export async function getSppProjectionReport(year?: number) {
+  const y = year ?? new Date().getFullYear();
+  const classes = await prisma.class.findMany({
+    where: { isActive: true },
+    include: { students: { where: { status: "ACTIVE" }, select: { id: true } } },
+  });
+
+  const results = [];
+  for (let month = 0; month < 12; month++) {
+    const period = `${y}-${String(month + 1).padStart(2, "0")}`;
+    const batches = await prisma.sppBatch.findMany({ where: { period }, include: { details: true } });
+    const batchedClassIds = new Set(batches.map((b) => b.classId));
+
+    let proyeksi = batches.reduce(
+      (sum, b) => sum + b.details.reduce((s, d) => s + Number(d.amount), 0),
+      0
+    );
+    proyeksi += classes
+      .filter((c) => !batchedClassIds.has(c.id) && c.sppAmount != null)
+      .reduce((sum, c) => sum + Number(c.sppAmount) * c.students.length, 0);
+
+    const aktual = batches.reduce(
+      (sum, b) => sum + b.details.filter((d) => d.status === "PAID").reduce((s, d) => s + Number(d.amount), 0),
+      0
+    );
+
+    results.push({
+      month: new Date(y, month).toLocaleString("id-ID", { month: "short" }),
+      period,
+      proyeksi,
+      aktual,
+    });
+  }
+  return results;
+}
+
+export async function getSppProjectionByClass(period: string) {
+  const classes = await prisma.class.findMany({
+    where: { isActive: true },
+    include: { students: { where: { status: "ACTIVE" }, select: { id: true } } },
+  });
+  const batches = await prisma.sppBatch.findMany({ where: { period }, include: { details: true } });
+  const byClass = new Map(batches.map((b) => [b.classId, b]));
+
+  return classes.map((cls) => {
+    const batch = byClass.get(cls.id);
+    const proyeksi = batch
+      ? batch.details.reduce((s, d) => s + Number(d.amount), 0)
+      : cls.sppAmount
+      ? Number(cls.sppAmount) * cls.students.length
+      : 0;
+    const aktual = batch
+      ? batch.details.filter((d) => d.status === "PAID").reduce((s, d) => s + Number(d.amount), 0)
+      : 0;
+    return {
+      classId: cls.id,
+      className: cls.name,
+      activeStudents: cls.students.length,
+      sppAmount: cls.sppAmount != null ? Number(cls.sppAmount) : null,
+      proyeksi,
+      aktual,
+      collectedPct: proyeksi > 0 ? Math.round((aktual / proyeksi) * 100) : null,
+    };
+  });
+}
+
 export async function getBranchComparison() {
   const branches = await prisma.branch.findMany({
     where: { isActive: true },

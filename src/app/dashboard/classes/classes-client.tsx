@@ -61,6 +61,7 @@ const emptyForm = {
   name: "",
   ageGroup: "U8" as any,
   maxStudents: 20,
+  sppAmount: "",
   branchId: "",
   coachId: "",
   scheduleDays: [] as number[],
@@ -117,6 +118,7 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
       name: c.name,
       ageGroup: c.ageGroup,
       maxStudents: c.maxStudents,
+      sppAmount: c.sppAmount != null ? String(c.sppAmount) : "",
       branchId: c.branchId,
       coachId: c.coachId || "",
       scheduleDays,
@@ -144,6 +146,7 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
         ageGroup: form.ageGroup,
         schedule,
         maxStudents: form.maxStudents,
+        sppAmount: form.sppAmount ? parseFloat(form.sppAmount) : undefined,
         branchId: form.branchId,
         coachId: form.coachId || undefined,
       };
@@ -176,6 +179,7 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
         "Pelatih": c.coach?.name || "-",
         "Jumlah Siswa": c._count?.students || 0,
         "Maks Siswa": c.maxStudents,
+        "Biaya SPP": c.sppAmount != null ? Number(c.sppAmount) : "-",
         "Cabang": c.branch?.name || "-",
       };
     });
@@ -213,6 +217,7 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
               <TableHead className="text-xs font-semibold text-gray-500">Jadwal & Lapangan</TableHead>
               <TableHead className="text-xs font-semibold text-gray-500">Pelatih</TableHead>
               <TableHead className="text-xs font-semibold text-gray-500">Siswa</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-500">Biaya SPP</TableHead>
               <TableHead className="text-xs font-semibold text-gray-500">Cabang</TableHead>
               <TableHead className="w-10"></TableHead>
             </TableRow>
@@ -220,7 +225,7 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
           <TableBody>
             {paginated.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-16">
+                <TableCell colSpan={8} className="text-center py-16">
                   <BookOpen className="w-8 h-8 text-gray-200 mx-auto mb-2" />
                   <p className="text-sm text-gray-400">Belum ada kelas</p>
                 </TableCell>
@@ -269,6 +274,11 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
                         <span className="text-xs text-gray-400">/ {c.maxStudents}</span>
                         {isFull && <span className="badge-red">Penuh</span>}
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-gray-600">
+                        {c.sppAmount != null ? `Rp ${Number(c.sppAmount).toLocaleString("id-ID")}` : <span className="text-gray-300">—</span>}
+                      </span>
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-gray-600">{c.branch?.name}</span>
@@ -321,6 +331,10 @@ export function ClassesClient({ classes: initial, branches, coaches, courts }: P
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Maks. Siswa</Label>
                 <Input type="number" value={form.maxStudents} onChange={(e) => setForm({ ...form, maxStudents: Number(e.target.value) })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-gray-700">Biaya SPP (Rp)</Label>
+                <Input type="number" min="0" value={form.sppAmount} onChange={(e) => setForm({ ...form, sppAmount: e.target.value })} placeholder="0" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-gray-700">Cabang *</Label>

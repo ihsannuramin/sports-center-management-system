@@ -3,26 +3,29 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { serializeDecimals } from "@/lib/serialize";
 
 const ClassSchema = z.object({
   name: z.string().min(2),
   ageGroup: z.enum(["U8", "U10", "U12", "U14", "U16", "SENIOR"]),
   schedule: z.string().optional(),
   maxStudents: z.number().int().positive().default(20),
+  sppAmount: z.number().nonnegative().optional(),
   branchId: z.string().min(1),
   coachId: z.string().optional(),
 });
 
 export async function getClasses(branchId?: string) {
-  return prisma.class.findMany({
+  const data = await prisma.class.findMany({
     where: branchId ? { branchId } : {},
     include: { branch: true, coach: true, _count: { select: { students: true } } },
     orderBy: { ageGroup: "asc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function getClassesForAttendance() {
-  return prisma.class.findMany({
+  const data = await prisma.class.findMany({
     where: { isActive: true },
     include: {
       branch: true,
@@ -35,6 +38,7 @@ export async function getClassesForAttendance() {
     },
     orderBy: { ageGroup: "asc" },
   });
+  return serializeDecimals(data);
 }
 
 export async function createClass(data: z.infer<typeof ClassSchema>) {
